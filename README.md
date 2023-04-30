@@ -1,6 +1,6 @@
 # zcnwebappscripts
 
-Scripts that Züs network webapps like Chimeny, Blimp to provision their servers. 
+Scripts that Züs network webapps like Chimeny, Blimp use to provision their servers.
 
 
 ### Chimney:
