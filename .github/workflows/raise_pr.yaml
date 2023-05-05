@@ -1,0 +1,20 @@
+name: config_change_PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  PR:
+    runs-on: 'arc-runner'
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Raise PR
+        uses: devops-infra/action-pull-request@v0.5.5
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          source_branch: update/image-tag-script
+          target_branch: main
+          title: Update Blimp Script Image Tag
+          body: update blimp script image tag
+          reviewer: boddumanohar
