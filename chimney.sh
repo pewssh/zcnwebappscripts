@@ -367,7 +367,7 @@ services:
       - ${PROJECT_ROOT}/keys_config:/validator/keysconfig
     ports:
       - "5061:31401"
-    command: ./bin/validator --port 31401 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0bnode02_keys.txt --log_dir /validator/log
+    command: ./bin/validator --port 31401 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log
     networks:
       default:
       testnet0:
