@@ -1,0 +1,8 @@
+- name: Setup Grafana Dashboards
+  hosts: localhost
+  become: false
+  tasks:
+
+    - name: Update Grafana Dashboards
+      include_role:
+        name: GrafanaDashboard

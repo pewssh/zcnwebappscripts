@@ -1,0 +1,51 @@
+---
+- name: Create grafana dashboard JSON files to Remote server
+  template:
+    src: "{{ item }}"
+    dest: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/"
+  loop:
+    - ../templates/homepage.json
+
+- name: Import Grafana dashboard HomePage
+  grafana_dashboard:
+    grafana_url: "https://{{ blobber_host }}/grafana"
+    grafana_user: "{{ grafana_username }}"
+    grafana_password: "{{ grafana_password }}"
+    state: present
+    commit_message: HomePage
+    overwrite: yes
+    path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/homepage.json"
+
+- name: make Home Dashboard
+  command: >
+    curl -H 'Content-Type: application/json' -X PUT "https://{{ grafana_username }}:{{ grafana_password }}@{{ blobber_host }}/grafana/api/org/preferences" -d'{ "theme": "",  "homeDashboardUID":"homepage",  "timezone":"utc"}'
+
+- name: Import Grafana dashboard Server
+  grafana_dashboard:
+    grafana_url: "https://{{ blobber_host }}/grafana"
+    grafana_user: "{{ grafana_username }}"
+    grafana_password: "{{ grafana_password }}"
+    state: present
+    commit_message: Server
+    overwrite: yes
+    path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/server.json"
+
+- name: Import Grafana dashboard cluster
+  grafana_dashboard:
+    grafana_url: "https://{{ blobber_host }}/grafana"
+    grafana_user: "{{ grafana_username }}"
+    grafana_password: "{{ grafana_password }}"
+    state: present
+    commit_message: cluster
+    overwrite: yes
+    path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/blobber.json"
+
+- name: Import Grafana dashboard blobber-details
+  grafana_dashboard:
+    grafana_url: "https://{{ blobber_host }}/grafana"
+    grafana_user: "{{ grafana_username }}"
+    grafana_password: "{{ grafana_password }}"
+    state: present
+    commit_message: blobber-details
+    overwrite: yes
+    path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/validator.json"

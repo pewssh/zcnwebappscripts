@@ -18,8 +18,16 @@ export GF_ADMIN_PASSWORD=0chaingfadminpassword
 export PROJECT_ROOT=/var/0chain/blobber
 export BLOCK_WORKER_URL=0chainblockworker
 export BLOBBER_HOST=0chainblobberhost
-# http://${NETWORK}.${DOMAIN}/dns
+
+export VALIDATOR_WALLET_ID=0chainvalwalletid
+export VALIDATOR_WALLET_PUBLIC_KEY=0chainvalwalletpublickey
+export VALIDATOR_WALLET_PRIV_KEY=0chainvalwalletprivkey
+export BLOBBER_WALLET_ID=0chainblobwalletid
+export BLOBBER_WALLET_PUBLIC_KEY=0chainblobwalletpublickey
+export BLOBBER_WALLET_PRIV_KEY=0chainblobwalletprivkey
+
 export DEBIAN_FRONTEND=noninteractive
+
 
 ## cleanup server before starting the deployment
 docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
@@ -48,11 +56,11 @@ done
 ls -al $PROJECT_ROOT
 
 # download and unzip files
-curl -L "https://github.com/0chain/blobber/raw/setup-blobber-quickly/docker.local/bin/blobber-files.zip" -o /tmp/blobber-files.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/new-flow-wallet/blobber-files/blobber-files.zip" -o /tmp/blobber-files.zip
 unzip -o /tmp/blobber-files.zip -d ${PROJECT_ROOT}
 rm /tmp/blobber-files.zip
 
-curl -L "https://github.com/0chain/blobber/raw/setup-new-blobber/docker.local/chimeny-dashboard.zip" -o /tmp/chimeny-dashboard.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/new-flow-wallet/chimeny-dashboard.zip" -o /tmp/chimeny-dashboard.zip
 unzip /tmp/chimeny-dashboard.zip -d ${PROJECT_ROOT}
 rm /tmp/chimeny-dashboard.zip
 
@@ -359,7 +367,7 @@ services:
       - ${PROJECT_ROOT}/keys_config:/validator/keysconfig
     ports:
       - "5061:31401"
-    command: ./bin/validator --port 31401 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0bnode02_keys.txt --log_dir /validator/log
+    command: ./bin/validator --port 31401 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log
     networks:
       default:
       testnet0:
@@ -505,14 +513,15 @@ volumes:
 
 EOF
 
-if [ ! -f ${PROJECT_ROOT}/keys_config/b0bnode01_keys.txt ]; then
-    echo "creating keys"
-    /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/zchain-compose.yml pull
-    /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/zchain-compose.yml up -d
+cat <<EOF >${PROJECT_ROOT}/keys_config/b0bnode01_keys.txt
+${VALIDATOR_WALLET_PUBLIC_KEY}
+${VALIDATOR_WALLET_PRIV_KEY}
+EOF
 
-    # wait for the keys keys_config/b0bnode01_keys.txt is created or not
-    while [ ! -f ${PROJECT_ROOT}/keys_config/b0bnode01_keys.txt ]; do echo "wait for keys_config/b0bnode01_keys.txt"; sleep 1; done
-fi
+cat <<EOF >${PROJECT_ROOT}/keys_config/b0vnode01_keys.txt
+${BLOBBER_WALLET_PUBLIC_KEY}
+${BLOBBER_WALLET_PRIV_KEY}
+EOF
 
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml  pull
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml up -d
@@ -522,5 +531,3 @@ while [ ! -d ${PROJECT_ROOT}/caddy_data/caddy/certificates ]; do echo "waiting f
 cd ${PROJECT_ROOT}/chimeny-dashboard
 ansible-playbook --extra-vars "{'blobber_host': '${BLOBBER_HOST}', 'grafana_username': '${GF_ADMIN_USER}', 'grafana_password': '${GF_ADMIN_PASSWORD}'}" grafana.yaml
 
-
-## setup node monitoring
