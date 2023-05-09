@@ -74,12 +74,14 @@ query_sleep_time: 5
 EOF
 
 # conform if the wallet belongs to an allocationID
+curl -L https://github.com/0chain/zboxcli/releases/download/v1.4.4/zbox-linux.tar.gz -o /tmp/zbox-linux.tar.gz
+sudo tar -xvf /tmp/zbox-linux.tar.gz -C /usr/local/bin
 
 _contains () {  # Check if space-separated list $1 contains line $2
   echo "$1" | tr ' ' '\n' | grep -F -x -q "$2"
 }
 
-allocations=$(zbox listallocations --configDir ${CONFIG_DIR_MIGRATION} --silent --json | jq -r ' .[] | .id')
+allocations=$(/usr/local/bin/zbox listallocations --configDir ${CONFIG_DIR_BLIMP} --silent --json | jq -r ' .[] | .id')
 
 if ! _contains "${allocations}" "${ALLOCATION}"; then
   echo "given allocation does not belong to the wallet"
