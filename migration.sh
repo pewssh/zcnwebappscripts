@@ -81,7 +81,7 @@ _contains () {  # Check if space-separated list $1 contains line $2
   echo "$1" | tr ' ' '\n' | grep -F -x -q "$2"
 }
 
-allocations=$(/usr/local/bin/zbox listallocations --configDir ${CONFIG_DIR_BLIMP} --silent --json | jq -r ' .[] | .id')
+allocations=$(/usr/local/bin/zbox listallocations --configDir ${CONFIG_DIR_MIGRATION} --silent --json | jq -r ' .[] | .id')
 
 if ! _contains "${allocations}" "${ALLOCATION}"; then
   echo "given allocation does not belong to the wallet"
