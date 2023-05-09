@@ -27,6 +27,8 @@ WORKING_DIR=0chainwd
 CONFIG_DIR=$HOME/.zcn
 CONFIG_DIR_MIGRATION=${CONFIG_DIR}/migration # to store wallet.json, config.json, allocation.json
 
+# docker image
+DOCKER_TAG=pr-13-6882a858
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq
@@ -137,7 +139,7 @@ services:
       - db:/var/lib/postgresql/data
 
   api:
-    image: 0chaindev/blimp-logsearchapi:pr-13-6882a858
+    image: 0chaindev/blimp-logsearchapi:${DOCKER_TAG}
     depends_on:
       - db
     environment:
@@ -149,7 +151,7 @@ services:
       - db
 
   minioserver:
-    image: 0chaindev/blimp-minioserver:pr-18-0dd2027e
+    image: 0chaindev/blimp-minioserver:${DOCKER_TAG}
     container_name: minioserver
     command: ["minio", "gateway", "zcn"]
     environment:
@@ -165,7 +167,7 @@ services:
       - ${CONFIG_DIR_MIGRATION}:/root/.zcn
 
   minioclient:
-    image: 0chaindev/blimp-clientapi:pr-13-6882a858
+    image: 0chaindev/blimp-clientapi:${DOCKER_TAG}
     container_name: minioclient
     depends_on:
       - minioserver
