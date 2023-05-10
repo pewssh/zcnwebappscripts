@@ -7,8 +7,8 @@ source $PWD/disk-setup/disk_func.sh
 hdd=()
 ssd=()
 
-ssd_path=/mnt/ssd
-hdd_path=/mnt/hdd
+ssd_path=/var/0chain/blobber
+hdd_path=/var/0chain/blobber
 
 # Pick sda type disk
 for n in `lsblk  --noheadings --raw | awk '{print substr($0,0,3)}' | uniq -c | grep 1 | awk '{print $2}' | grep -E "(sd.)"`; do
