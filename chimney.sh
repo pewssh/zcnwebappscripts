@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source $PWD/disk-setup/disk_func.sh
+./disk-setup/disk_func.sh
 
 set -e
 
