@@ -1,7 +1,9 @@
 #!/bin/bash
 
-source $PWD/disk-setup/disk_func.sh
-./disk-setup/disk_func.sh
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk_setup.sh -O ~/disk-setup/disk_setup.sh
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk_func.sh -O ~/disk-setup/disk_func.sh
+
+./disk-setup/disk_setup.sh
 
 set -e
 
