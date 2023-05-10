@@ -12,6 +12,7 @@ BLIMP_DOMAIN=blimpdomain
 WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
+DOCKER_IMAGE=staging
 
 sudo apt update
 sudo apt install -y unzip curl containerd docker.io jq
@@ -127,7 +128,7 @@ services:
       - db:/var/lib/postgresql/data
 
   api:
-    image: 0chaindev/blimp-logsearchapi:pr-13-6882a858
+    image: 0chaindev/blimp-logsearchapi:${DOCKER_IMAGE}
     depends_on:
       - db
     environment:
@@ -139,7 +140,7 @@ services:
       - db
 
   minioserver:
-    image: 0chaindev/blimp-minioserver:pr-18-0dd2027e
+    image: 0chaindev/blimp-minioserver:${DOCKER_IMAGE}
     container_name: minioserver
     command: ["minio", "gateway", "zcn"]
     environment:
@@ -155,7 +156,7 @@ services:
       - ${CONFIG_DIR_BLIMP}:/root/.zcn
 
   minioclient:
-    image: 0chaindev/blimp-clientapi:pr-13-6882a858
+    image: 0chaindev/blimp-clientapi:${DOCKER_IMAGE}
     container_name: minioclient
     depends_on:
       - minioserver
