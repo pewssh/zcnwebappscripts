@@ -519,13 +519,13 @@ volumes:
 EOF
 
 cat <<EOF >${PROJECT_ROOT}/keys_config/b0bnode01_keys.txt
-${VALIDATOR_WALLET_PUBLIC_KEY}
-${VALIDATOR_WALLET_PRIV_KEY}
+${BLOBBER_WALLET_PUBLIC_KEY}
+${BLOBBER_WALLET_PRIV_KEY}
 EOF
 
 cat <<EOF >${PROJECT_ROOT}/keys_config/b0vnode01_keys.txt
-${BLOBBER_WALLET_PUBLIC_KEY}
-${BLOBBER_WALLET_PRIV_KEY}
+${VALIDATOR_WALLET_PUBLIC_KEY}
+${VALIDATOR_WALLET_PRIV_KEY}
 EOF
 
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml  pull
