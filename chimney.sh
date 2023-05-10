@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir $PWD/disk-setup/
 wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
 wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
 
