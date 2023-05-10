@@ -2,7 +2,7 @@
 
 export PATH=$PATH:/root/bin
 source ~/.profile
-source ~/disk_func.sh
+source $PWD/disk-setup/disk_func.sh
 
 hdd=()
 ssd=()
