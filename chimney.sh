@@ -4,8 +4,7 @@ mkdir $PWD/disk-setup/
 wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/disk-setup/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
 wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/disk-setup/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
 
-./disk-setup/disk_setup.sh
-
+sudo chmod +x $PWD/disk-setup/disk_setup.sh
 set -e
 
 # setup variables
