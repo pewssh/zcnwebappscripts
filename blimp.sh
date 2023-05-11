@@ -39,6 +39,7 @@ cat <<EOF >${CONFIG_DIR_BLIMP}/wallet.json
       "private_key": "${WALLET_PRIVATE_KEY}"
     }
   ],
+  "mnemonics": "0chainmnemonics", 
   "version": "1.0"
 }
 EOF
