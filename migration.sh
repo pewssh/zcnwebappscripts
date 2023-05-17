@@ -27,9 +27,12 @@ WORKING_DIR=0chainwd
 CONFIG_DIR=$HOME/.zcn
 CONFIG_DIR_MIGRATION=${CONFIG_DIR}/migration # to store wallet.json, config.json, allocation.json
 
-MINIO_TOKEN=$(yq '.services.minioserver.environment.MINIO_AUDIT_WEBHOOK_ENDPOINT' $HOME/.zcn/docker-compose.yml)
-MINIO_USERNAME=$(yq '.services.minioserver.environment.MINIO_ROOT_USER' $HOME/.zcn/docker-compose.yml)
-MINIO_PASSWORD=$(yq '.services.minioserver.environment.MINIO_ROOT_PASSWORD' $HOME/.zcn/docker-compose.yml)
+if [[ -d $HOME/.zcn/docker-compose.yml ]]
+  then
+    MINIO_TOKEN=$(yq '.services.minioserver.environment.MINIO_AUDIT_WEBHOOK_ENDPOINT' $HOME/.zcn/docker-compose.yml)
+    MINIO_USERNAME=$(yq '.services.minioserver.environment.MINIO_ROOT_USER' $HOME/.zcn/docker-compose.yml)
+    MINIO_PASSWORD=$(yq '.services.minioserver.environment.MINIO_ROOT_PASSWORD' $HOME/.zcn/docker-compose.yml)
+fi
 
 # docker image
 DOCKER_TAG=pr-13-6882a858
