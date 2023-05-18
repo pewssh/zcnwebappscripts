@@ -31,7 +31,7 @@ export DEBIAN_FRONTEND=noninteractive
 export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
-mkdir $PWD/disk-setup/
+mkdir -p $PWD/disk-setup/
 wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
 wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
 
