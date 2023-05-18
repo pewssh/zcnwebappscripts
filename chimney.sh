@@ -56,11 +56,11 @@ done
 ls -al $PROJECT_ROOT
 
 # download and unzip files
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/new-flow-wallet/blobber-files/blobber-files.zip" -o /tmp/blobber-files.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/blobber-files/blobber-files.zip" -o /tmp/blobber-files.zip
 unzip -o /tmp/blobber-files.zip -d ${PROJECT_ROOT}
 rm /tmp/blobber-files.zip
 
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/new-flow-wallet/chimeny-dashboard.zip" -o /tmp/chimeny-dashboard.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/chimeny-dashboard.zip" -o /tmp/chimeny-dashboard.zip
 unzip /tmp/chimeny-dashboard.zip -d ${PROJECT_ROOT}
 rm /tmp/chimeny-dashboard.zip
 
