@@ -10,8 +10,10 @@ ssd=()
 ssd_path=/var/0chain/blobber
 hdd_path=/var/0chain/blobber
 
+sudo apt install parted -y
+
 # Pick sda type disk
-for n in `lsblk  --noheadings --raw | awk '{print substr($0,0,3)}' | uniq -c | grep 1 | awk '{print $2}' | grep -E "(sd.)"`; do
+for n in `lsblk --noheadings --raw -o NAME | grep "sd" | cut -c 1-3 | sort | uniq -u`; do
     if [[ `lsblk -o name,rota | grep $n | awk '{print $2}'` == 1 ]]; then
     # echo "inside sdd"
         hdd+=("$n")
@@ -22,7 +24,7 @@ for n in `lsblk  --noheadings --raw | awk '{print substr($0,0,3)}' | uniq -c | g
 done
 
 # Pick nvme type disk
-for n in `lsblk  --noheadings --raw | awk '{print substr($0,0,5)}' | uniq -c | grep 1 | awk '{print $2}' | grep -E "(nvme)[[:digit:]]"`; do
+for n in `lsblk --noheadings --raw -o NAME | grep "nvme" | cut -c 1-5 | sort | uniq -u`; do
     if [[ `lsblk -o name,rota | grep $n | awk '{print $2}'` == 1 ]]; then
     # echo "inside nvm"
         hdd+=("$n")
