@@ -1,11 +1,5 @@
 #!/bin/bash
 
-mkdir $PWD/disk-setup/
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
-
-sudo chmod +x $PWD/disk-setup/disk_setup.sh
-bash $PWD/disk-setup/disk_setup.sh
 set -e
 
 # setup variables
@@ -34,6 +28,15 @@ export BLOBBER_WALLET_PRIV_KEY=0chainblobwalletprivkey
 
 export DEBIAN_FRONTEND=noninteractive
 
+export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
+export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
+
+mkdir $PWD/disk-setup/
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
+
+sudo chmod +x $PWD/disk-setup/disk_setup.sh
+bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
 
 ## cleanup server before starting the deployment
 docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
@@ -337,7 +340,7 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - ${PROJECT_ROOT}/data/postgresql:/var/lib/postgresql/data
+      - ${PROJECT_ROOT_SSD}/data/postgresql:/var/lib/postgresql/data
       - ${PROJECT_ROOT}/postgresql.conf:/var/lib/postgresql/postgresql.conf
     command: postgres -c config_file=/var/lib/postgresql/postgresql.conf
     networks:
@@ -368,8 +371,8 @@ services:
       - postgres-post:postgres-post
     volumes:
       - ${PROJECT_ROOT}/config:/validator/config
-      - ${PROJECT_ROOT}/data:/validator/data
-      - ${PROJECT_ROOT}/log:/validator/log
+      - ${PROJECT_ROOT_HDD}/data:/validator/data
+      - ${PROJECT_ROOT_HDD}/log:/validator/log
       - ${PROJECT_ROOT}/keys_config:/validator/keysconfig
     ports:
       - "5061:31401"
@@ -395,11 +398,11 @@ services:
       - validator:validator
     volumes:
       - ${PROJECT_ROOT}/config:/blobber/config
-      - ${PROJECT_ROOT}/files:/blobber/files
-      - ${PROJECT_ROOT}/data:/blobber/data
-      - ${PROJECT_ROOT}/log:/blobber/log
+      - ${PROJECT_ROOT_HDD}/files:/blobber/files
+      - ${PROJECT_ROOT_HDD}/data:/blobber/data
+      - ${PROJECT_ROOT_HDD}/log:/blobber/log
       - ${PROJECT_ROOT}/keys_config:/blobber/keysconfig # keys and minio config
-      - ${PROJECT_ROOT}/data/tmp:/tmp
+      - ${PROJECT_ROOT_HDD}/data/tmp:/tmp
       - ${PROJECT_ROOT}/sql:/blobber/sql
     ports:
       - "5051:5051"

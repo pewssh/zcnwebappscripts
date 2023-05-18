@@ -7,8 +7,8 @@ source $PWD/disk-setup/disk_func.sh
 hdd=()
 ssd=()
 
-ssd_path=/var/0chain/blobber
-hdd_path=/var/0chain/blobber
+ssd_path=$1
+hdd_path=$2
 
 sudo apt install parted -y
 
