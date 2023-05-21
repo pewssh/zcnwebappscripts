@@ -43,8 +43,10 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 # generate password for portainer
-portainer_pwd=$(docker run --rm httpd:2.4-alpine htpasswd -nbB ${GF_ADMIN_USER} ${GF_ADMIN_PASSWORD} | cut -d ":" -f 2)
-echo -n $portainer_pwd > /tmp/portainer_password
+# portainer_pwd=$(docker run --rm httpd:2.4-alpine htpasswd -nbB ${GF_ADMIN_USER} ${GF_ADMIN_PASSWORD} | cut -d ":" -f 2)
+# echo -n $portainer_pwd > /tmp/portainer_password
+# todo: how will can the user reset this password
+echo -n ${GF_ADMIN_PASSWORD} >  /tmp/portainer_password
 
 #### ---- Start Blobber Setup ----- ####
 
