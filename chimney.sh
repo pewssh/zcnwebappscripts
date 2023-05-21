@@ -44,6 +44,7 @@ docker-compose --version
 
 # generate password for portainer
 portainer_pwd=$(docker run --rm httpd:2.4-alpine htpasswd -nbB ${GF_ADMIN_USER} ${GF_ADMIN_PASSWORD} | cut -d ":" -f 2)
+echo -n portainer_pwd > /tmp/portainer_password
 
 #### ---- Start Blobber Setup ----- ####
 
@@ -511,11 +512,12 @@ services:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
   portainer:   
     image: portainer/portainer-ce:2.18.2-alpine
-    command: '-H tcp://agent:9001 --tlsskipverify --admin-password="${portainer_pwd}"'
+    command: '-H tcp://agent:9001 --tlsskipverify --admin-password-file /tmp/portainer_password'
     ports:
       - "9000:9000"
     volumes:
       - portainer_data:/data
+      - /tmp/portainer_password:/tmp/portainer_password
 
 networks:
   default:
