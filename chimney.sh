@@ -31,7 +31,6 @@ export DEBIAN_FRONTEND=noninteractive
 
 ## cleanup server before starting the deployment
 docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
-docker-compose -f /var/0chain/blobber/zchain-compose.yml down --volumes || true
 rm -rf /var/0chain/blobber || true
 
 #TODO: Fix docker installation
