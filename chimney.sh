@@ -42,6 +42,9 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
+# generate password for portainer
+portainer_pwd=$(docker run --rm httpd:2.4-alpine htpasswd -nbB ${GF_ADMIN_USER} ${GF_ADMIN_PASSWORD} | cut -d ":" -f 2)
+
 #### ---- Start Blobber Setup ----- ####
 
 FOLDERS_TO_CREATE="config sql bin monitoringconfig keys_config"
@@ -299,9 +302,10 @@ ${BLOBBER_HOST} {
 		reverse_proxy blobber:5051
 	}
 
-	route /portainer* {
-		reverse_proxy portainer:9000
-	}
+        route /portainer* {
+		uri strip_prefix /portainer
+                reverse_proxy portainer:9000
+        }
 	
 	route /monitoring* {
 		uri strip_prefix /monitoring
@@ -507,7 +511,7 @@ services:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
   portainer:   
     image: portainer/portainer-ce:2.18.2-alpine
-    command: -H tcp://agent:9001 --tlsskipverify
+    command: -H tcp://agent:9001 --tlsskipverify --admin-password=${portainer_pwd}
     ports:
       - "9000:9000"
     volumes:
