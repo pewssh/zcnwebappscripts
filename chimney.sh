@@ -511,7 +511,7 @@ services:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
   portainer:   
     image: portainer/portainer-ce:2.18.2-alpine
-    command: -H tcp://agent:9001 --tlsskipverify --admin-password=${portainer_pwd}
+    command: '-H tcp://agent:9001 --tlsskipverify --admin-password="${portainer_pwd}"'
     ports:
       - "9000:9000"
     volumes:
