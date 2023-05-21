@@ -300,6 +300,10 @@ ${BLOBBER_HOST} {
 		reverse_proxy blobber:5051
 	}
 
+	route /portainer* {
+		reverse_proxy portainer:9000
+	}
+	
 	route /monitoring* {
 		uri strip_prefix /monitoring
 	        header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
@@ -497,6 +501,19 @@ services:
       - "3001:3001"
     restart: "always"
 
+  agent:
+    image: portainer/agent:2.18.2-alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+  portainer:   
+    image: portainer/portainer-ce:2.18.2-alpine
+    command: -H tcp://agent:9001 --tlsskipverify
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+
 networks:
   default:
     driver: bridge
@@ -510,6 +527,7 @@ networks:
 volumes:
   grafana_data:
   prometheus_data:
+  portainer_data:
 
 EOF
 
