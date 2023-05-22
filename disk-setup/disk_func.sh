@@ -4,10 +4,13 @@ single_ssd() {
     part_type=$2
     ssd_path=$3
     hdd_path=$4
+    echo "inside single ssd"
     for n in ${var_ssd[0]}
     do
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] ; then
+        echo $n
+        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
             echo /dev/$n
+            echo "inside function"
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
             # partprobe -s
             until sudo mkfs.ext4 /dev/${n}${part_type} &> /dev/null
@@ -45,7 +48,7 @@ function multiple_ssd {
     for n in ${ssd[@]}
     do
         echo "n --> $n"
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] ; then
+        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
             echo /dev/$n
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
             until sudo mkfs.ext4 /dev/${n}${part_type} &> /dev/null
@@ -80,13 +83,13 @@ function multiple_ssd {
 
 # when only hdd is present
 function single_hdd {
-    var_hdd=$1
+    # var_hdd=$1
     part_type=$2
     ssd_path=$3
     hdd_path=$4
-    for n in ${var_hdd[0]}
+    for n in ${hdd[0]}
     do
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] ; then
+        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
             echo /dev/$n
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
             # partprobe -s
@@ -114,13 +117,19 @@ function single_hdd {
 
 # when only multiple hdd are present
 function multiple_hdd {
-    var_hdd=$1
+    # var_hdd=$1
     part_type=$2
     ssd_path=$3
     hdd_path=$4
-    for n in ${var_hdd[@]}
+    # hdd_partition=$5
+    # echo "disks --> ${hdd[@]}"
+    # echo "2-->  $2"
+    # echo "disks partition --> ${hdd_partition[@]}"
+
+    for n in ${hdd[@]}
     do
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] ; then
+        echo $n
+        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
             until sudo mkfs.ext4 /dev/${n}${part_type} &> /dev/null
             do
