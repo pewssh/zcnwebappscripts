@@ -99,9 +99,9 @@ else
 fi
 
 # echo "ssd_disk_type $ssd_disk_type"
-# echo "disks ${ssd[@]}"
+# echo "disks ${hdd[@]}"
 # echo "disks len $len_ssd"
-# echo "disks partition ${ssd_partition[@]}"
+# echo "disks partition ${hdd_partition[@]}"
 
 if [[ $len_hdd == 1 ]] && [[ $hdd_disk_type == "nv" ]]; then
     echo "Only one hdd of nvme type is present" 
