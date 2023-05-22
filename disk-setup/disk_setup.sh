@@ -7,8 +7,8 @@ source $PWD/disk-setup/disk_func.sh
 hdd=()
 ssd=()
 
-ssd_path=/var/0chain/blobber
-hdd_path=/var/0chain/blobber
+ssd_path=$1 #/var/0chain/blobber
+hdd_path=$2 #/var/0chain/blobber
 
 sudo apt install parted -y
 
@@ -84,25 +84,24 @@ for x in ${hdd[@]}; do
 done
 
 len_hdd=${#hdd[@]}
-
 # Resolve the type of ssd disk type sda vs nvme
 hdd_partition=()
 if [[ $hdd_disk_type == "nv" ]]; then
     for i in "${hdd[@]}"; do
-        ssd_partition+=(/dev/"$i"p1)
+        hdd_partition+=(/dev/"$i"p1)
     done
 elif [[ $hdd_disk_type == "sd" ]]; then
     for i in "${hdd[@]}"; do
-        ssd_partition+=(/dev/"$i"1)
+        hdd_partition+=(/dev/"$i"1)
     done
 else
     echo ""
 fi
 
 # echo "ssd_disk_type $ssd_disk_type"
-# echo "disks ${ssd[@]}"
+# echo "disks ${hdd[@]}"
 # echo "disks len $len_ssd"
-# echo "disks partition ${ssd_partition[@]}"
+# echo "disks partition ${hdd_partition[@]}"
 
 if [[ $len_hdd == 1 ]] && [[ $hdd_disk_type == "nv" ]]; then
     echo "Only one hdd of nvme type is present" 
