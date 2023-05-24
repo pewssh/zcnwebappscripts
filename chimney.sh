@@ -31,7 +31,6 @@ export DEBIAN_FRONTEND=noninteractive
 
 ## cleanup server before starting the deployment
 docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
-docker-compose -f /var/0chain/blobber/zchain-compose.yml down --volumes || true
 rm -rf /var/0chain/blobber || true
 
 #TODO: Fix docker installation
@@ -42,6 +41,9 @@ sudo apt install -y unzip curl containerd docker.io ansible
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
+
+# generate password for portainer
+echo -n ${GF_ADMIN_PASSWORD} >  /tmp/portainer_password
 
 #### ---- Start Blobber Setup ----- ####
 
@@ -300,6 +302,11 @@ ${BLOBBER_HOST} {
 		reverse_proxy blobber:5051
 	}
 
+        route /portainer* {
+		uri strip_prefix /portainer
+		reverse_proxy portainer:9000
+        }
+	
 	route /monitoring* {
 		uri strip_prefix /monitoring
 	        header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
@@ -497,6 +504,20 @@ services:
       - "3001:3001"
     restart: "always"
 
+  agent:
+    image: portainer/agent:2.18.2-alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+  portainer:   
+    image: portainer/portainer-ce:2.18.2-alpine
+    command: '-H tcp://agent:9001 --tlsskipverify --admin-password-file /tmp/portainer_password'
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+      - /tmp/portainer_password:/tmp/portainer_password
+
 networks:
   default:
     driver: bridge
@@ -510,6 +531,7 @@ networks:
 volumes:
   grafana_data:
   prometheus_data:
+  portainer_data:
 
 EOF
 
