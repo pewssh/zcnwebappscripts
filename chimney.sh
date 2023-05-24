@@ -34,8 +34,8 @@ docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
 rm -rf /var/0chain/blobber || true
 
 #TODO: Fix docker installation
-sudo apt update
-sudo apt install -y unzip curl containerd docker.io ansible
+sudo apt update -qq
+sudo apt install -qqy unzip curl containerd docker.io ansible
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
