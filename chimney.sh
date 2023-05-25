@@ -44,13 +44,20 @@ docker-compose -f /var/0chain/blobber/zchain-compose.yml down --volumes || true
 rm -rf /var/0chain/blobber || true
 
 #TODO: Fix docker installation
-sudo apt update
-sudo apt install -y unzip curl containerd docker.io ansible
+sudo apt update -qq
+sudo apt install -qqy unzip curl containerd docker.io ansible
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
+
+# generate password for portainer
+echo -n ${GF_ADMIN_PASSWORD} >  /tmp/portainer_password
+
+## cleanup server before starting the deployment
+docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
+rm -rf /var/0chain/blobber || true
 
 #### ---- Start Blobber Setup ----- ####
 
@@ -65,11 +72,11 @@ done
 ls -al $PROJECT_ROOT
 
 # download and unzip files
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/new-flow-wallet/blobber-files/blobber-files.zip" -o /tmp/blobber-files.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/blobber-files/blobber-files.zip" -o /tmp/blobber-files.zip
 unzip -o /tmp/blobber-files.zip -d ${PROJECT_ROOT}
 rm /tmp/blobber-files.zip
 
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/new-flow-wallet/chimeny-dashboard.zip" -o /tmp/chimeny-dashboard.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/chimeny-dashboard.zip" -o /tmp/chimeny-dashboard.zip
 unzip /tmp/chimeny-dashboard.zip -d ${PROJECT_ROOT}
 rm /tmp/chimeny-dashboard.zip
 
@@ -176,7 +183,7 @@ challenge_response:
   max_retries: 20
 
 healthcheck:
-  frequency: 60s # send healthcheck to miners every 60 seconds
+  frequency: 3600s # send healthcheck to miners every 60 seconds
 
 pg:
   user: postgres
@@ -270,7 +277,7 @@ handlers:
   rate_limit: 10 # 10 per second
 
 healthcheck:
-  frequency: 60s # send healthcheck to miners every 60 seconds
+  frequency: 3600s # send healthcheck to miners every 60 seconds
 
 logging:
   level: "error"
@@ -309,6 +316,11 @@ ${BLOBBER_HOST} {
 		reverse_proxy blobber:5051
 	}
 
+        route /portainer* {
+		uri strip_prefix /portainer
+		reverse_proxy portainer:9000
+        }
+	
 	route /monitoring* {
 		uri strip_prefix /monitoring
 	        header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
@@ -506,6 +518,20 @@ services:
       - "3001:3001"
     restart: "always"
 
+  agent:
+    image: portainer/agent:2.18.2-alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+  portainer:   
+    image: portainer/portainer-ce:2.18.2-alpine
+    command: '-H tcp://agent:9001 --tlsskipverify --admin-password-file /tmp/portainer_password'
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+      - /tmp/portainer_password:/tmp/portainer_password
+
 networks:
   default:
     driver: bridge
@@ -519,6 +545,7 @@ networks:
 volumes:
   grafana_data:
   prometheus_data:
+  portainer_data:
 
 EOF
 
