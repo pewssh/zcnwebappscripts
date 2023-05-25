@@ -28,12 +28,6 @@ export BLOBBER_WALLET_PRIV_KEY=0chainblobwalletprivkey
 
 export DEBIAN_FRONTEND=noninteractive
 
-
-## cleanup server before starting the deployment
-docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
-rm -rf /var/0chain/blobber || true
-
-#TODO: Fix docker installation
 sudo apt update -qq
 sudo apt install -qqy unzip curl containerd docker.io ansible
 
@@ -44,6 +38,10 @@ docker-compose --version
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >  /tmp/portainer_password
+
+## cleanup server before starting the deployment
+docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
+rm -rf /var/0chain/blobber || true
 
 #### ---- Start Blobber Setup ----- ####
 
