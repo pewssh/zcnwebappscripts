@@ -28,6 +28,10 @@ export BLOBBER_WALLET_PRIV_KEY=0chainblobwalletprivkey
 
 export DEBIAN_FRONTEND=noninteractive
 
+export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
+export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
+
+#TODO: Fix docker installation
 sudo apt update -qq
 sudo apt install -qqy unzip curl containerd docker.io ansible
 
@@ -35,6 +39,19 @@ sudo apt install -qqy unzip curl containerd docker.io ansible
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
+
+## cleanup server before starting the deployment
+docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
+docker-compose -f /var/0chain/blobber/zchain-compose.yml down --volumes || true
+rm -rf /var/0chain/blobber || true
+
+#Disk setup
+mkdir -p $PWD/disk-setup/
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
+
+sudo chmod +x $PWD/disk-setup/disk_setup.sh
+bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >  /tmp/portainer_password
@@ -336,7 +353,7 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - ${PROJECT_ROOT}/data/postgresql:/var/lib/postgresql/data
+      - ${PROJECT_ROOT_SSD}/data/postgresql:/var/lib/postgresql/data
       - ${PROJECT_ROOT}/postgresql.conf:/var/lib/postgresql/postgresql.conf
     command: postgres -c config_file=/var/lib/postgresql/postgresql.conf
     networks:
@@ -367,8 +384,8 @@ services:
       - postgres-post:postgres-post
     volumes:
       - ${PROJECT_ROOT}/config:/validator/config
-      - ${PROJECT_ROOT}/data:/validator/data
-      - ${PROJECT_ROOT}/log:/validator/log
+      - ${PROJECT_ROOT_HDD}/data:/validator/data
+      - ${PROJECT_ROOT_HDD}/log:/validator/log
       - ${PROJECT_ROOT}/keys_config:/validator/keysconfig
     ports:
       - "5061:31401"
@@ -394,11 +411,11 @@ services:
       - validator:validator
     volumes:
       - ${PROJECT_ROOT}/config:/blobber/config
-      - ${PROJECT_ROOT}/files:/blobber/files
-      - ${PROJECT_ROOT}/data:/blobber/data
-      - ${PROJECT_ROOT}/log:/blobber/log
+      - ${PROJECT_ROOT_HDD}/files:/blobber/files
+      - ${PROJECT_ROOT_HDD}/data:/blobber/data
+      - ${PROJECT_ROOT_HDD}/log:/blobber/log
       - ${PROJECT_ROOT}/keys_config:/blobber/keysconfig # keys and minio config
-      - ${PROJECT_ROOT}/data/tmp:/tmp
+      - ${PROJECT_ROOT_HDD}/data/tmp:/tmp
       - ${PROJECT_ROOT}/sql:/blobber/sql
     ports:
       - "5051:5051"
@@ -536,13 +553,13 @@ volumes:
 EOF
 
 cat <<EOF >${PROJECT_ROOT}/keys_config/b0bnode01_keys.txt
-${VALIDATOR_WALLET_PUBLIC_KEY}
-${VALIDATOR_WALLET_PRIV_KEY}
+${BLOBBER_WALLET_PUBLIC_KEY}
+${BLOBBER_WALLET_PRIV_KEY}
 EOF
 
 cat <<EOF >${PROJECT_ROOT}/keys_config/b0vnode01_keys.txt
-${BLOBBER_WALLET_PUBLIC_KEY}
-${BLOBBER_WALLET_PRIV_KEY}
+${VALIDATOR_WALLET_PUBLIC_KEY}
+${VALIDATOR_WALLET_PRIV_KEY}
 EOF
 
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml  pull
