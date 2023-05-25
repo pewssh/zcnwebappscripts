@@ -31,18 +31,6 @@ export DEBIAN_FRONTEND=noninteractive
 export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
-mkdir -p $PWD/disk-setup/
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
-
-sudo chmod +x $PWD/disk-setup/disk_setup.sh
-bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
-
-## cleanup server before starting the deployment
-docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
-docker-compose -f /var/0chain/blobber/zchain-compose.yml down --volumes || true
-rm -rf /var/0chain/blobber || true
-
 #TODO: Fix docker installation
 sudo apt update -qq
 sudo apt install -qqy unzip curl containerd docker.io ansible
@@ -51,6 +39,19 @@ sudo apt install -qqy unzip curl containerd docker.io ansible
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
+
+## cleanup server before starting the deployment
+docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
+docker-compose -f /var/0chain/blobber/zchain-compose.yml down --volumes || true
+rm -rf /var/0chain/blobber || true
+
+#Disk setup
+mkdir -p $PWD/disk-setup/
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
+wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/enhance/disk-setup/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
+
+sudo chmod +x $PWD/disk-setup/disk_setup.sh
+bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >  /tmp/portainer_password
