@@ -512,6 +512,8 @@ services:
     command: '-H tcp://agent:9001 --tlsskipverify --admin-password-file /tmp/portainer_password'
     ports:
       - "9000:9000"
+    links:
+      - agent:agent
     volumes:
       - portainer_data:/data
       - /tmp/portainer_password:/tmp/portainer_password
