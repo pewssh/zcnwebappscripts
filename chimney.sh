@@ -303,7 +303,26 @@ EOF
 ### Caddyfile
 echo "creating Caddyfile"
 cat <<EOF >${PROJECT_ROOT}/Caddyfile
+(cors) {
+  @cors_preflight method OPTIONS
+  @cors header Origin {args.0}
+
+  handle @cors_preflight {
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE"
+    header Access-Control-Allow-Headers "*"
+    header Access-Control-Max-Age "3600"
+    respond "" 204
+  }
+
+  handle @cors {
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Expose-Headers "Link"
+  }
+}
+
 ${BLOBBER_HOST} {
+  import cors https://${BLOBBER_HOST}
   log {
     output file /var/log/access.log {
       roll_size 1gb
