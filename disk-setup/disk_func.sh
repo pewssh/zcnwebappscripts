@@ -5,16 +5,14 @@ single_ssd() {
     ssd_path=$3
     hdd_path=$4
     echo "inside single ssd"
-    for n in ${var_ssd[0]}
-    do
+    for n in ${var_ssd[0]}; do
         echo $n
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
+        if [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: msdos partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: gpt partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: loop partitions 1" ]]; then
             echo /dev/$n
             echo "inside function"
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
             # partprobe -s
-            until sudo mkfs.ext4 /dev/${n}${part_type} &> /dev/null
-            do
+            until sudo mkfs.ext4 /dev/${n}${part_type} &>/dev/null; do
                 echo "Waiting for disk format ..."
                 sleep 1
             done
@@ -24,11 +22,11 @@ single_ssd() {
             if grep -q $ssd_path /etc/fstab; then
                 echo "Entry in fstab exists."
             else
-                if [[ $(blkid /dev/${n}${part_type} -sUUID -ovalue)  == '' ]]; then
+                if [[ $(blkid /dev/${n}${part_type} -sUUID -ovalue) == '' ]]; then
                     echo "Disk is not mounted."
                 else
-                    sudo echo "UUID=$(blkid /dev/${n}${part_type} -sUUID -ovalue) $ssd_path ext4 defaults 0 0" >> sudo /etc/fstab
-                fi                  
+                    sudo echo "UUID=$(blkid /dev/${n}${part_type} -sUUID -ovalue) $ssd_path ext4 defaults 0 0" /etc/fstab >>sudo
+                fi
             fi
         fi
     done
@@ -45,21 +43,19 @@ function multiple_ssd {
     # echo "2-->  $2"
     # echo "disks partition --> ${ssd_partition[@]}"
 
-    for n in ${ssd[@]}
-    do
+    for n in ${ssd[@]}; do
         echo "n --> $n"
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
+        if [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: msdos partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: gpt partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: loop partitions 1" ]]; then
             echo /dev/$n
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
-            until sudo mkfs.ext4 /dev/${n}${part_type} &> /dev/null
-            do
+            until sudo mkfs.ext4 /dev/${n}${part_type} &>/dev/null; do
                 echo "Waiting for disk format ..."
             done
         fi
     done
     echo "test"
 
-    if [[ `sudo partprobe -d -s /dev/$n` == *"gpt partitions"* ]]; then
+    if [[ $(sudo partprobe -d -s /dev/$n) == *"gpt partitions"* ]]; then
         # partprobe -s
         sudo pvcreate ${ssd_partition[@]} -f
         echo y | sudo vgcreate ssdvg ${ssd_partition[@]}
@@ -71,15 +67,14 @@ function multiple_ssd {
         if grep -q $ssd_path /etc/fstab; then
             echo "Entry in fstab exists."
         else
-            if [[ $(sudo blkid /dev/ssdvg/lvssd -sUUID -ovalue)  == '' ]]; then
+            if [[ $(sudo blkid /dev/ssdvg/lvssd -sUUID -ovalue) == '' ]]; then
                 echo "Disk is not mounted."
             else
-                sudo echo "UUID=$(sudo blkid /dev/ssdvg/lvssd -sUUID -ovalue) $ssd_path ext4 defaults 0 0" >> sudo /etc/fstab
-            fi               
+                sudo echo "UUID=$(sudo blkid /dev/ssdvg/lvssd -sUUID -ovalue) $ssd_path ext4 defaults 0 0" /etc/fstab >>sudo
+            fi
         fi
     fi
 }
-
 
 # when only hdd is present
 function single_hdd {
@@ -87,14 +82,12 @@ function single_hdd {
     part_type=$2
     ssd_path=$3
     hdd_path=$4
-    for n in ${hdd[0]}
-    do
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
+    for n in ${hdd[0]}; do
+        if [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: msdos partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: gpt partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: loop partitions 1" ]]; then
             echo /dev/$n
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
             # partprobe -s
-            until sudo mkfs.ext4 /dev/${n}${part_type} &> /dev/null
-            do
+            until sudo mkfs.ext4 /dev/${n}${part_type} &>/dev/null; do
                 echo "Waiting for disk format ..."
                 sleep 1
             done
@@ -104,12 +97,12 @@ function single_hdd {
             if grep -q $hdd_path /etc/fstab; then
                 echo "Entry in fstab exists."
             else
-                if [[ $(blkid /dev/${n}${part_type} -sUUID -ovalue)  == '' ]]; then
+                if [[ $(blkid /dev/${n}${part_type} -sUUID -ovalue) == '' ]]; then
                     echo "Disk is not mounted."
                 else
-                    echo "UUID=$(blkid /dev/${n}${part_type} -sUUID -ovalue) $hdd_path ext4 defaults 0 0" >> sudo /etc/fstab
+                    echo "UUID=$(blkid /dev/${n}${part_type} -sUUID -ovalue) $hdd_path ext4 defaults 0 0" /etc/fstab >>sudo
                 fi
-                
+
             fi
         fi
     done
@@ -126,19 +119,17 @@ function multiple_hdd {
     # echo "2-->  $2"
     # echo "disks partition --> ${hdd_partition[@]}"
 
-    for n in ${hdd[@]}
-    do
+    for n in ${hdd[@]}; do
         echo $n
-        if [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: msdos partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: gpt partitions" ]] || [[ `sudo partprobe -d -s /dev/$n` = "/dev/$n: loop partitions 1" ]] ; then
+        if [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: msdos partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: gpt partitions" ]] || [[ $(sudo partprobe -d -s /dev/$n) = "/dev/$n: loop partitions 1" ]]; then
             sudo parted -a optimal --script /dev/$n mklabel gpt mkpart primary 0% 100%
-            until sudo mkfs.ext4 /dev/${n}${part_type} &> /dev/null
-            do
+            until sudo mkfs.ext4 /dev/${n}${part_type} &>/dev/null; do
                 echo "Waiting for disk format ..."
                 sleep 1
             done
         fi
     done
-    if [[ `sudo partprobe -d -s /dev/$n` == *"gpt partitions"* ]]; then
+    if [[ $(sudo partprobe -d -s /dev/$n) == *"gpt partitions"* ]]; then
         # partprobe -s
         sudo pvcreate ${hdd_partition[@]} -f
         echo y | sudo vgcreate hddvg ${hdd_partition[@]}
@@ -150,10 +141,10 @@ function multiple_hdd {
         if grep -q ${hdd_path} /etc/fstab; then
             echo "Entry in fstab exists."
         else
-            if [[ $(blkid /dev/hddvg/lvhdd -sUUID -ovalue)  == '' ]]; then
+            if [[ $(blkid /dev/hddvg/lvhdd -sUUID -ovalue) == '' ]]; then
                 echo "Disk is not mounted."
             else
-                echo "UUID=$(blkid /dev/hddvg/lvhdd -sUUID -ovalue) ${hdd_path} ext4 defaults 0 0" >> sudo /etc/fstab
+                echo "UUID=$(blkid /dev/hddvg/lvhdd -sUUID -ovalue) ${hdd_path} ext4 defaults 0 0" /etc/fstab >>sudo
             fi
         fi
     fi

@@ -39,7 +39,7 @@ cat <<EOF >${CONFIG_DIR_BLIMP}/wallet.json
       "private_key": "${WALLET_PRIVATE_KEY}"
     }
   ],
-  "mnemonics": "0chainmnemonics", 
+  "mnemonics": "0chainmnemonics",
   "version": "1.0"
 }
 EOF
@@ -59,7 +59,7 @@ EOF
 curl -L https://github.com/0chain/zboxcli/releases/download/v1.4.4/zbox-linux.tar.gz -o /tmp/zbox-linux.tar.gz
 sudo tar -xvf /tmp/zbox-linux.tar.gz -C /usr/local/bin
 
-_contains () {  # Check if space-separated list $1 contains line $2
+_contains() { # Check if space-separated list $1 contains line $2
   echo "$1" | tr ' ' '\n' | grep -F -x -q "$2"
 }
 
@@ -78,7 +78,7 @@ EOF
 # create a seperate folder to store caddy files
 mkdir -p ${CONFIG_DIR}/caddyfiles
 
-cat <<EOF > ${CONFIG_DIR}/caddyfiles/Caddyfile
+cat <<EOF >${CONFIG_DIR}/caddyfiles/Caddyfile
 import /etc/caddy/*.caddy
 EOF
 
@@ -95,7 +95,6 @@ ${BLIMP_DOMAIN} {
 	}
 }
 EOF
-
 
 sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
 

@@ -53,7 +53,7 @@ sudo chmod +x $PWD/disk-setup/disk_setup.sh
 bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
 
 # generate password for portainer
-echo -n ${GF_ADMIN_PASSWORD} >  /tmp/portainer_password
+echo -n ${GF_ADMIN_PASSWORD} >/tmp/portainer_password
 
 ## cleanup server before starting the deployment
 docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
@@ -64,9 +64,9 @@ rm -rf /var/0chain/blobber || true
 FOLDERS_TO_CREATE="config sql bin monitoringconfig keys_config"
 
 for i in ${FOLDERS_TO_CREATE}; do
-    folder=${PROJECT_ROOT}/${i}
-    echo "creating folder: $folder"
-    mkdir -p $folder
+  folder=${PROJECT_ROOT}/${i}
+  echo "creating folder: $folder"
+  mkdir -p $folder
 done
 
 ls -al $PROJECT_ROOT
@@ -304,43 +304,43 @@ EOF
 echo "creating Caddyfile"
 cat <<EOF >${PROJECT_ROOT}/Caddyfile
 ${BLOBBER_HOST} {
-	log {
-		output file /var/log/access.log {
-			roll_size 1gb
-			roll_keep 5
-			roll_keep_for 720h
-		}
-	}
-
-	route {
-		reverse_proxy blobber:5051
-	}
-
-  route /portainer* {
-		uri strip_prefix /portainer
-    header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
-    header Access-Control-Allow-Headers "*"
-    header Access-Control-Allow-Origin "*"
-    header Cache-Control max-age=3600
-		reverse_proxy portainer:9000
+  log {
+    output file /var/log/access.log {
+      roll_size 1gb
+      roll_keep 5
+      roll_keep_for 720h
+    }
   }
 
-	route /monitoring* {
-		uri strip_prefix /monitoring
+  route {
+    reverse_proxy blobber:5051
+  }
+
+  route /portainer* {
+    uri strip_prefix /portainer
     header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
     header Access-Control-Allow-Headers "*"
     header Access-Control-Allow-Origin "*"
     header Cache-Control max-age=3600
-		reverse_proxy monitoringapi:3001
-	}
+    reverse_proxy portainer:9000
+  }
 
-	route /grafana/* {
-		uri strip_prefix /grafana
-		reverse_proxy grafana:3000
-	}
+  route /monitoring* {
+    uri strip_prefix /monitoring
+    header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
+    header Access-Control-Allow-Headers "*"
+    header Access-Control-Allow-Origin "*"
+    header Cache-Control max-age=3600
+    reverse_proxy monitoringapi:3001
+  }
 
-	redir /grafana /grafana/
-	redir /monitoring /monitoring/
+  route /grafana/* {
+    uri strip_prefix /grafana
+    reverse_proxy grafana:3000
+  }
+
+  redir /grafana /grafana/
+  redir /monitoring /monitoring/
 }
 
 EOF
@@ -565,11 +565,13 @@ ${VALIDATOR_WALLET_PUBLIC_KEY}
 ${VALIDATOR_WALLET_PRIV_KEY}
 EOF
 
-/usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml  pull
+/usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml pull
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml up -d
 
-while [ ! -d ${PROJECT_ROOT}/caddy_data/caddy/certificates ]; do echo "waiting for certificates to be provisioned"; sleep 2; done
+while [ ! -d ${PROJECT_ROOT}/caddy_data/caddy/certificates ]; do
+  echo "waiting for certificates to be provisioned"
+  sleep 2
+done
 
 cd ${PROJECT_ROOT}/chimeny-dashboard
 ansible-playbook --extra-vars "{'blobber_host': '${BLOBBER_HOST}', 'grafana_username': '${GF_ADMIN_USER}', 'grafana_password': '${GF_ADMIN_PASSWORD}'}" grafana.yaml
-
