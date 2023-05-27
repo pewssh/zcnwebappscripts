@@ -33,7 +33,7 @@ export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 #TODO: Fix docker installation
 sudo apt update -qq
-sudo apt install -qqy unzip curl containerd docker.io ansible
+sudo apt install -qqy unzip curl containerd docker.io ansible=2.9.6+dfsg-1
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -316,17 +316,21 @@ ${BLOBBER_HOST} {
 		reverse_proxy blobber:5051
 	}
 
-        route /portainer* {
+  route /portainer* {
 		uri strip_prefix /portainer
+    header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
+    header Access-Control-Allow-Headers "*"
+    header Access-Control-Allow-Origin "*"
+    header Cache-Control max-age=3600
 		reverse_proxy portainer:9000
-        }
-	
+  }
+
 	route /monitoring* {
 		uri strip_prefix /monitoring
-	        header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
-                header Access-Control-Allow-Headers "*"
-	        header Access-Control-Allow-Origin "*"
-	        header Cache-Control max-age=3600
+    header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
+    header Access-Control-Allow-Headers "*"
+    header Access-Control-Allow-Origin "*"
+    header Cache-Control max-age=3600
 		reverse_proxy monitoringapi:3001
 	}
 
@@ -523,7 +527,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
-  portainer:   
+  portainer:
     image: portainer/portainer-ce:2.18.2-alpine
     command: '-H tcp://agent:9001 --tlsskipverify --admin-password-file /tmp/portainer_password'
     ports:

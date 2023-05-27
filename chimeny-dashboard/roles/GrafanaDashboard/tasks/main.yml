@@ -8,11 +8,10 @@
 
 - name: Import Grafana dashboard HomePage
   grafana_dashboard:
-    grafana_url: "https://{{ blobber_host }}/grafana"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
+    url: "https://{{ blobber_host }}/grafana"
+    url_username: "{{ grafana_username }}"
+    url_password: "{{ grafana_password }}"
     state: present
-    commit_message: HomePage
     overwrite: yes
     path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/homepage.json"
 
@@ -22,30 +21,27 @@
 
 - name: Import Grafana dashboard Server
   grafana_dashboard:
-    grafana_url: "https://{{ blobber_host }}/grafana"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
+    url: "https://{{ blobber_host }}/grafana"
+    url_username: "{{ grafana_username }}"
+    url_password: "{{ grafana_password }}"
     state: present
-    commit_message: Server
     overwrite: yes
     path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/server.json"
 
 - name: Import Grafana dashboard cluster
   grafana_dashboard:
-    grafana_url: "https://{{ blobber_host }}/grafana"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
+    url: "https://{{ blobber_host }}/grafana"
+    url_username: "{{ grafana_username }}"
+    url_password: "{{ grafana_password }}"
     state: present
-    commit_message: cluster
     overwrite: yes
     path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/blobber.json"
 
 - name: Import Grafana dashboard blobber-details
   grafana_dashboard:
-    grafana_url: "https://{{ blobber_host }}/grafana"
-    grafana_user: "{{ grafana_username }}"
-    grafana_password: "{{ grafana_password }}"
+    url: "https://{{ blobber_host }}/grafana"
+    url_username: "{{ grafana_username }}"
+    url_password: "{{ grafana_password }}"
     state: present
-    commit_message: blobber-details
     overwrite: yes
     path: "{{ lookup('env', 'PWD') }}/roles/GrafanaDashboard/files/validator.json"
