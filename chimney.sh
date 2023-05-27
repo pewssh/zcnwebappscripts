@@ -431,7 +431,7 @@ services:
     restart: "always"
 
   caddy:
-    image: caddy:latest
+    image: caddy:2.6.4
     ports:
       - 80:80
       - 443:443
@@ -443,7 +443,7 @@ services:
     restart: "always"
 
   promtail:
-    image: grafana/promtail:2.3.0
+    image: grafana/promtail:2.8.2
     volumes:
       - ${PROJECT_ROOT}/log/:/logs
       - ${PROJECT_ROOT}/monitoringconfig/promtail-config.yaml:/mnt/config/promtail-config.yaml
@@ -453,7 +453,7 @@ services:
     restart: "always"
 
   loki:
-    image: grafana/loki:2.3.0
+    image: grafana/loki:2.8.2
     user: "1001"
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/loki-config.yaml:/mnt/config/loki-config.yaml
@@ -463,7 +463,7 @@ services:
     restart: "always"
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.44.0
     user: root
     ports:
       - "9090:9090"
@@ -478,7 +478,7 @@ services:
     - cadvisor
 
   cadvisor:
-    image: wywywywy/docker_stats_exporter:latest
+    image: wywywywy/docker_stats_exporter:20220516
     container_name: cadvisor
     ports:
     - 9487:9487
@@ -487,7 +487,7 @@ services:
     restart: "always"
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.5.0
     container_name: node-exporter
     restart: unless-stopped
     volumes:
@@ -504,7 +504,7 @@ services:
     restart: "always"
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:9.5.2
     environment:
       GF_SERVER_ROOT_URL: "https://${BLOBBER_HOST}/grafana"
       GF_SECURITY_ADMIN_USER: ${GF_ADMIN_USER}
