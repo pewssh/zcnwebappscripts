@@ -183,7 +183,7 @@ challenge_response:
   max_retries: 20
 
 healthcheck:
-  frequency: 60s # send healthcheck to miners every 60 seconds
+  frequency: 3600s # send healthcheck to miners every 60 seconds
 
 pg:
   user: postgres
