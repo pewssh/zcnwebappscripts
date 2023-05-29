@@ -588,7 +588,7 @@ while [ ! -d ${PROJECT_ROOT}/caddy_data/caddy/certificates ]; do
   sleep 2
 done
 
-DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard/
+DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard
 
 echo "setting up chimney dashboards..."
 
@@ -607,5 +607,5 @@ for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DAS
     curl -X POST -H "Content-Type: application/json" \
           -d "@${dashboard}" \
          "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
-    echo ""
+    echo -e "\n\n"
 done
