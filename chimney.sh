@@ -33,7 +33,7 @@ export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 #TODO: Fix docker installation
 sudo apt update -qq
-sudo apt install -qqy unzip curl containerd docker.io ansible
+sudo apt install -qqy unzip curl containerd docker.io
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -76,9 +76,9 @@ curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/blobber-files/blobb
 unzip -o /tmp/blobber-files.zip -d ${PROJECT_ROOT}
 rm /tmp/blobber-files.zip
 
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/chimeny-dashboard.zip" -o /tmp/chimeny-dashboard.zip
-unzip /tmp/chimeny-dashboard.zip -d ${PROJECT_ROOT}
-rm /tmp/chimeny-dashboard.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/chimney-dashboard.zip" -o /tmp/chimney-dashboard.zip
+unzip /tmp/chimney-dashboard.zip -d ${PROJECT_ROOT}
+rm /tmp/chimney-dashboard.zip
 
 # create 0chain_blobber.yaml file
 echo "creating 0chain_validator.yaml"
@@ -414,8 +414,6 @@ services:
     command: ./bin/validator --port 31401 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log
     networks:
       default:
-      testnet0:
-        ipv4_address: 198.18.0.61
     restart: "always"
 
   blobber:
@@ -445,8 +443,6 @@ services:
     command: ./bin/blobber --port 5051 --grpc_port 31501 --hostname ${BLOBBER_HOST}  --deployment_mode 0 --keys_file keysconfig/b0bnode01_keys.txt --files_dir /blobber/files --log_dir /blobber/log --db_dir /blobber/data --hosturl https://${BLOBBER_HOST}
     networks:
       default:
-      testnet0:
-        ipv4_address: 198.18.0.91
     restart: "always"
 
   caddy:
@@ -592,5 +588,24 @@ while [ ! -d ${PROJECT_ROOT}/caddy_data/caddy/certificates ]; do
   sleep 2
 done
 
-cd ${PROJECT_ROOT}/chimeny-dashboard
-ansible-playbook --extra-vars "{'blobber_host': '${BLOBBER_HOST}', 'grafana_username': '${GF_ADMIN_USER}', 'grafana_password': '${GF_ADMIN_PASSWORD}'}" grafana.yaml
+DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard/
+
+echo "setting up chimney dashboards..."
+
+curl -X POST -H "Content-Type: application/json" \
+      -d "{\"dashboard\":$(cat ${DASHBOARDS}/homepage.json)}" \
+      "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@https://${BLOBBER_HOST}/grafana/api/dashboards/import"
+
+
+curl -X PUT -H "Content-Type: application/json" \
+     -d '{ "theme": "", "homeDashboardUID": "homepage", "timezone": "utc" }' \
+     "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@https://${BLOBBER_HOST}/grafana/api/org/preferences"
+
+
+for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DASHBOARDS}/validator.json"; do
+    echo "uploading dashboard: ${dashboard}"
+    curl -X POST -H "Content-Type: application/json" \
+          -d "@${dashboard}" \
+         "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@https://${BLOBBER_HOST}/grafana/api/dashboards/import"
+    echo ""
+done
