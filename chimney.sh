@@ -460,7 +460,7 @@ services:
   promtail:
     image: grafana/promtail:2.8.2
     volumes:
-      - ${PROJECT_ROOT}/log/:/logs
+      - ${PROJECT_ROOT_HDD}/log/:/logs
       - ${PROJECT_ROOT}/monitoringconfig/promtail-config.yaml:/mnt/config/promtail-config.yaml
     command: -config.file=/mnt/config/promtail-config.yaml
     ports:
@@ -603,9 +603,8 @@ curl -X PUT -H "Content-Type: application/json" \
 
 
 for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DASHBOARDS}/validator.json"; do
-    echo "uploading dashboard: ${dashboard}"
+    echo -e "\n uploading dashboard: ${dashboard}"
     curl -X POST -H "Content-Type: application/json" \
           -d "@${dashboard}" \
          "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
-    echo -e "\n\n"
 done
