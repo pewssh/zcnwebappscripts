@@ -532,7 +532,7 @@ services:
     restart: "always"
 
   monitoringapi:
-    image: bmanu199/monitoringapi:latest
+    image: 0chaindev/chimney:monitoringapi-pr-2-217d0fcb
     ports:
       - "3001:3001"
     restart: "always"
