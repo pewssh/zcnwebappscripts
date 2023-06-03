@@ -226,10 +226,6 @@ version: 1.0
 
 # delegate wallet (must be set)
 delegate_wallet: ${DELEGATE_WALLET}
-# min stake allowed, tokens
-min_stake: ${MIN_STAKE}
-# max stake allowed, tokens
-max_stake: ${MAX_STAKE}
 # maximum allowed number of stake holders
 num_delegates: 50
 # service charge of related blobber
@@ -237,25 +233,33 @@ service_charge: ${SERVICE_CHARGE}
 
 block_worker: ${BLOCK_WORKER_URL}
 
-handlers:
-  rate_limit: 10 # 10 per second
-
-healthcheck:
-  frequency: 3600s # send healthcheck to miners every 60 seconds
+rate_limiters:
+  # Rate limiters will use this duration to clean unused token buckets.
+  # If it is 0 then token will expire in 10 years.
+  default_token_expire_duration: 5m
+  # If blobber is behind some proxy eg. nginx, cloudflare, etc.
+  proxy: true
 
 logging:
   level: "error"
   console: true # printing log to console is only supported in development mode
+
+healthcheck:
+  frequency: 60m # send healthcheck to miners every 60 mins
 
 server_chain:
   id: "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe"
   owner: "edb90b850f2e7e7cbd0a1fa370fdcc5cd378ffbec95363a7bc0e5a98b8ba5759"
   genesis_block:
     id: "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
-  network:
-    relay_time: 100 # milliseconds
   signature_scheme: "bls0chain"
-
+# integration tests related configurations
+integration_tests:
+  # address of the server
+  address: host.docker.internal:15210
+  # lock_interval used by nodes to request server to connect to blockchain
+  # after start
+  lock_interval: 1s
 EOF
 
 ### Create minio_config.txt file
