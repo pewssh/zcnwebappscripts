@@ -56,7 +56,7 @@
       },
       "id": 2,
       "options": {
-        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/server.PNG)](https://chimneylo7m4.devnet-0chain.net/grafana/d/server/)",
+        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/server.PNG)](https://blobber_host/grafana/d/server/)",
         "mode": "markdown"
       },
       "pluginVersion": "9.1.5",
@@ -84,7 +84,7 @@
       },
       "id": 14,
       "options": {
-        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/blobberlogs.png)](https://chimneylo7m4.devnet-0chain.net/grafana/d/bv/)",
+        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/blobberlogs.png)](https://blobber_host/grafana/d/blobber/)",
         "mode": "markdown"
       },
       "pluginVersion": "9.1.5",
@@ -112,7 +112,7 @@
       },
       "id": 15,
       "options": {
-        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/validatorlogs.png)](https://chimneylo7m4.devnet-0chain.net/grafana/d/validator/)",
+        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/validatorlogs.png)](https://blobber_host/grafana/d/validator/)",
         "mode": "markdown"
       },
       "pluginVersion": "9.1.5",

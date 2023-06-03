@@ -330,7 +330,7 @@ ${BLOBBER_HOST} {
     reverse_proxy monitoringapi:3001
   }
 
-  route /grafana/* {
+  route /grafana* {
     uri strip_prefix /grafana
     reverse_proxy grafana:3000
   }
@@ -557,6 +557,8 @@ while [ ! -d ${PROJECT_ROOT}/caddy_data/caddy/certificates ]; do
 done
 
 DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard
+
+sed -i "s/blobber_host/${BLOBBER_HOST}/g" ${DASHBOARDS}/homepage.json
 
 echo "setting up chimney dashboards..."
 
