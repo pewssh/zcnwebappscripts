@@ -39,8 +39,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 ## cleanup server before starting the deployment
-docker-compose -f ${PROJECT_ROOT}/docker-compose.yml down --volumes || true
-rm -rf ${PROJECT_ROOT} || true
+if [ -f "${PROJECT_ROOT}/docker-compose.yml" ]; then
+  echo "previous deployment exists. Clean it up..."
+  docker-compose -f ${PROJECT_ROOT}/docker-compose.yml down --volumes
+  rm -rf ${PROJECT_ROOT} || true
+fi
 
 #Disk setup
 mkdir -p $PWD/disk-setup/
@@ -381,8 +384,8 @@ services:
       - ${PROJECT_ROOT_HDD}/log:/validator/log
       - ${PROJECT_ROOT}/keys_config:/validator/keysconfig
     ports:
-      - "5061:31401"
-    command: ./bin/validator --port 31401 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log --hosturl https://${BLOBBER_HOST}/validator
+      - "5061:5061"
+    command: ./bin/validator --port 5061 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log --hosturl https://${BLOBBER_HOST}/validator
     networks:
       default:
     restart: "always"
@@ -568,7 +571,7 @@ curl -X PUT -H "Content-Type: application/json" \
 
 
 for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DASHBOARDS}/validator.json"; do
-    echo -e "\n uploading dashboard: ${dashboard}"
+    echo -e "\nUploading dashboard: ${dashboard}"
     curl -X POST -H "Content-Type: application/json" \
           -d "@${dashboard}" \
          "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
