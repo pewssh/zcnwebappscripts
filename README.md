@@ -15,3 +15,8 @@ the script [migration.sh](https://github.com/0chain/zcnwebappscripts/blob/main/m
 
 
 # preparing Zip file
+
+```
+zip -r artifacts/chimney-dashboard.zip chimney-dashboard
+zip -r artifacts/blobber-files.zip blobber-files/*
+```
