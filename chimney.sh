@@ -333,6 +333,9 @@ ${BLOBBER_HOST} {
     uri strip_prefix /grafana
     reverse_proxy grafana:3000
   }
+
+  redir /grafana /grafana/
+  redir /monitoring /monitoring/
 }
 
 EOF
