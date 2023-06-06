@@ -145,7 +145,8 @@
       "weekStart": ""
     },
     "id": null,
-    "title": "blobber-logs"
+    "title": "blobber-logs",
+    "uid": "blobber"
   },
   "overwrite": true,
   "inputs": [],

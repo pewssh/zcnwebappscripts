@@ -10,8 +10,6 @@ export WRITE_PRICE=0chainwritePrice
 # export MIN_STAKE=0chainminStake
 # export MAX_STAKE=0chainmaxStake
 # export SERVICE_CHARGE=0chainserviceCharge
-export MIN_STAKE="1.0"
-export MAX_STAKE="100.0"
 export SERVICE_CHARGE="0.30"
 export GF_ADMIN_USER=0chaingfadminuser
 export GF_ADMIN_PASSWORD=0chaingfadminpassword
@@ -41,8 +39,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 ## cleanup server before starting the deployment
-docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
-rm -rf /var/0chain/blobber || true
+if [ -f "${PROJECT_ROOT}/docker-compose.yml" ]; then
+  echo "previous deployment exists. Clean it up..."
+  docker-compose -f ${PROJECT_ROOT}/docker-compose.yml down --volumes
+  rm -rf ${PROJECT_ROOT} || true
+fi
 
 #Disk setup
 mkdir -p $PWD/disk-setup/
@@ -54,10 +55,6 @@ bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >/tmp/portainer_password
-
-## cleanup server before starting the deployment
-docker-compose -f /var/0chain/blobber/docker-compose.yml down --volumes || true
-rm -rf /var/0chain/blobber || true
 
 #### ---- Start Blobber Setup ----- ####
 
@@ -72,11 +69,11 @@ done
 ls -al $PROJECT_ROOT
 
 # download and unzip files
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/blobber-files/blobber-files.zip" -o /tmp/blobber-files.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/blobber-dashboards/artifacts/blobber-files.zip" -o /tmp/blobber-files.zip
 unzip -o /tmp/blobber-files.zip -d ${PROJECT_ROOT}
 rm /tmp/blobber-files.zip
 
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/chimney-dashboard.zip" -o /tmp/chimney-dashboard.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/blobber-dashboards/artifacts/chimney-dashboard.zip" -o /tmp/chimney-dashboard.zip
 unzip /tmp/chimney-dashboard.zip -d ${PROJECT_ROOT}
 rm /tmp/chimney-dashboard.zip
 
@@ -88,13 +85,6 @@ version: "1.0"
 logging:
   level: "info"
   console: true # printing log to console is only supported in development mode
-
-info:
-  name: my_blobber
-  logo_url: https://google.com
-  description: this is my test blobber
-  website_url: https://google.com
-
 
 # for testing
 #  500 MB - 536870912
@@ -120,14 +110,6 @@ price_worker_in_hours: 12
 #     allocation_size * write_price * min_lock_demand
 #
 min_lock_demand: 0.1
-# max_offer_duration restrict long contracts where,
-# in the future, prices can be changed
-max_offer_duration: 744h # 31 day
-
-# these timeouts required by blobber to check client pools, perform
-# a task and redeem tokens, it should be big enough
-read_lock_timeout: 1m
-write_lock_timeout: 1m
 
 # update_allocations_interval used to refresh known allocation objects from SC
 update_allocations_interval: 1m
@@ -137,10 +119,6 @@ max_dirs_files: 50000
 
 # delegate wallet (must be set)
 delegate_wallet: ${DELEGATE_WALLET}
-# min stake allowed, tokens
-min_stake: ${MIN_STAKE}
-# max stake allowed, tokens
-max_stake: ${MAX_STAKE}
 # maximum allowed number of stake holders
 num_delegates: 50
 # service charge of the blobber
@@ -152,11 +130,30 @@ min_confirmation: 50
 
 block_worker: ${BLOCK_WORKER_URL}
 
-challenge_completion_time: 3m
+rate_limiters:
+  # Rate limiters will use this duration to clean unused token buckets.
+  # If it is 0 then token will expire in 10 years.
+  default_token_expire_duration: 5m
+  # If blobber is behind some proxy eg. nginx, cloudflare, etc.
+  proxy: true
 
-handlers:
-  rate_limit: 0 # 10 per second . it can't too small one if a large file is download with blocks
-  file_rate_limit: 100 # 100 files per second
+  # Rate limiter is applied with two parameters. One is ip-address and other is clientID.
+  # Rate limiter will track both parameters independently and will block request if both
+  # ip-address or clientID has reached its limit
+  # Blobber may not provide any rps values and default will work fine.
+
+  # Commit Request Per second. Commit endpoint is resource intensive.
+  # Default is 0.5
+  commit_rps: 1600
+  # File Request Per Second. This rps is used to rate limit basically upload and download requests.
+  # Its better to have 2 request per second. Default is 1
+  file_rps: 1600
+  # Object Request Per Second. This rps is used to rate limit GetReferencePath, GetObjectTree, etc.
+  # which is resource intensive. Default is 0.5
+  object_rps: 1600
+  # General Request Per Second. This rps is used to rate limit endpoints like copy, rename, get file metadata,
+  # get paginated refs, etc. Default is 5
+  general_rps: 1600
 
 server_chain:
   id: "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe"
@@ -183,7 +180,7 @@ challenge_response:
   max_retries: 20
 
 healthcheck:
-  frequency: 3600s # send healthcheck to miners every 60 seconds
+  frequency: 60m # send healthcheck to miners every 60 minutes
 
 pg:
   user: postgres
@@ -194,11 +191,6 @@ db:
   password: blobber
   host: postgres
   port: 5432
-
-
-geolocation:
-  latitude: 0
-  longitude: 0
 
 storage:
   files_dir: "/path/to/hdd"
@@ -213,34 +205,6 @@ storage:
   alloc_dir_level: [2, 1]
   file_dir_level: [2, 2, 1]
 
-minio:
-  # Enable or disable minio backup service
-  start: false
-  # The frequency at which the worker should look for files, Ex: 3600 means it will run every 3600 seconds
-  worker_frequency: 3600 # In Seconds
-  # Use SSL for connection or not
-  use_ssl: false
-
-  storage_service_url: "play.min.io"
-  access_id: "Q3AM3UQ867SPQQA43P2F"
-  secret_access_key: "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
-  bucket_name: "mytestbucket"
-  region: "us-east-1"
-
-cold_storage:
-  # Minimum file size to be considered for moving to cloud
-  min_file_size: 1048576 #in bytes
-  # Minimum time for which file is not updated or not used
-  file_time_limit_in_hours: 720 #in hours
-  # Number of files to be queried and processed at once
-  job_query_limit: 100
-  # Capacity filled in bytes after which the cloud backup should start work
-  start_capacity_size: 536870912 # 500MB
-  # Delete local copy once the file is moved to cloud
-  delete_local_copy: true
-  # Delete cloud copy if the file is deleted from the blobber by user/other process
-  delete_cloud_copy: true
-
 disk_update:
   # defaults to true. If false, blobber has to manually update blobber's capacity upon increase/decrease
   # If blobber has to limit its capacity to 5% of its capacity then it should turn automaci_update to false.
@@ -253,6 +217,9 @@ integration_tests:
   # lock_interval used by nodes to request server to connect to blockchain
   # after start
   lock_interval: 1s
+admin:
+  username: "${GF_ADMIN_USER}"
+  password: "${GF_ADMIN_PASSWORD}"
 EOF
 
 ### Create 0chain_validator.yaml file
@@ -262,10 +229,6 @@ version: 1.0
 
 # delegate wallet (must be set)
 delegate_wallet: ${DELEGATE_WALLET}
-# min stake allowed, tokens
-min_stake: ${MIN_STAKE}
-# max stake allowed, tokens
-max_stake: ${MAX_STAKE}
 # maximum allowed number of stake holders
 num_delegates: 50
 # service charge of related blobber
@@ -273,25 +236,33 @@ service_charge: ${SERVICE_CHARGE}
 
 block_worker: ${BLOCK_WORKER_URL}
 
-handlers:
-  rate_limit: 10 # 10 per second
-
-healthcheck:
-  frequency: 3600s # send healthcheck to miners every 60 seconds
+rate_limiters:
+  # Rate limiters will use this duration to clean unused token buckets.
+  # If it is 0 then token will expire in 10 years.
+  default_token_expire_duration: 5m
+  # If blobber is behind some proxy eg. nginx, cloudflare, etc.
+  proxy: true
 
 logging:
   level: "error"
   console: true # printing log to console is only supported in development mode
+
+healthcheck:
+  frequency: 60m # send healthcheck to miners every 60 mins
 
 server_chain:
   id: "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe"
   owner: "edb90b850f2e7e7cbd0a1fa370fdcc5cd378ffbec95363a7bc0e5a98b8ba5759"
   genesis_block:
     id: "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
-  network:
-    relay_time: 100 # milliseconds
   signature_scheme: "bls0chain"
-
+# integration tests related configurations
+integration_tests:
+  # address of the server
+  address: host.docker.internal:15210
+  # lock_interval used by nodes to request server to connect to blockchain
+  # after start
+  lock_interval: 1s
 EOF
 
 ### Create minio_config.txt file
@@ -335,6 +306,11 @@ ${BLOBBER_HOST} {
     reverse_proxy blobber:5051
   }
 
+  route /validator* {
+    uri strip_prefix /validator
+    reverse_proxy validator:5061
+  }
+
   route /portainer* {
     uri strip_prefix /portainer
     header Access-Control-Allow-Methods "POST,PATCH,PUT,DELETE, GET, OPTIONS"
@@ -353,13 +329,10 @@ ${BLOBBER_HOST} {
     reverse_proxy monitoringapi:3001
   }
 
-  route /grafana/* {
+  route /grafana* {
     uri strip_prefix /grafana
     reverse_proxy grafana:3000
   }
-
-  redir /grafana /grafana/
-  redir /monitoring /monitoring/
 }
 
 EOF
@@ -410,8 +383,8 @@ services:
       - ${PROJECT_ROOT_HDD}/log:/validator/log
       - ${PROJECT_ROOT}/keys_config:/validator/keysconfig
     ports:
-      - "5061:31401"
-    command: ./bin/validator --port 31401 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log
+      - "5061:5061"
+    command: ./bin/validator --port 5061 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log --hosturl https://${BLOBBER_HOST}/validator
     networks:
       default:
     restart: "always"
@@ -556,12 +529,6 @@ services:
 networks:
   default:
     driver: bridge
-  testnet0:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 198.18.0.0/15
-          gateway: 198.18.0.255
 
 volumes:
   grafana_data:
@@ -590,6 +557,8 @@ done
 
 DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard
 
+sed -i "s/blobber_host/${BLOBBER_HOST}/g" ${DASHBOARDS}/homepage.json
+
 echo "setting up chimney dashboards..."
 
 curl -X POST -H "Content-Type: application/json" \
@@ -603,7 +572,7 @@ curl -X PUT -H "Content-Type: application/json" \
 
 
 for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DASHBOARDS}/validator.json"; do
-    echo -e "\n uploading dashboard: ${dashboard}"
+    echo -e "\nUploading dashboard: ${dashboard}"
     curl -X POST -H "Content-Type: application/json" \
           -d "@${dashboard}" \
          "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
