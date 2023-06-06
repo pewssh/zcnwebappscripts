@@ -302,8 +302,7 @@ ${BLOBBER_HOST} {
     }
   }
 
-  route /blobber* {
-    uri strip_prefix /blobber
+  route {
     reverse_proxy blobber:5051
   }
 
