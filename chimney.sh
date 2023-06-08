@@ -505,7 +505,7 @@ services:
     restart: "always"
 
   monitoringapi:
-    image: 0chaindev/chimney:monitoringapi-pr-2-217d0fcb
+    image: 0chaindev/chimney:monitoringapi-latest
     ports:
       - "3001:3001"
     restart: "always"
