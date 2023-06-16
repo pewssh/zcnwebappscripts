@@ -34,7 +34,7 @@ if [[ -d $HOME/.zcn/docker-compose.yml ]]; then
 fi
 
 # docker image
-DOCKER_TAG=pr-13-6882a858
+DOCKER_TAG=pr-41-78b6c628
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq
