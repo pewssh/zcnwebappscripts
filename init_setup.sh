@@ -5,12 +5,12 @@ set -e
 ############################################################
 # setup variables
 ############################################################
-export MINER=1
-export SHARDER=0
+export MINER=4
+export SHARDER=2
 export PROJECT_ROOT=/root/codebase/zcnwebappscripts
 
-rm -rf miner
-rm -rf sharder
+# rm -rf miner
+# rm -rf sharder
 
 if [[ ${MINER} -gt 0 ]] ; then
     mkdir -p ${PROJECT_ROOT}/miner
@@ -76,10 +76,10 @@ pushd ${PROJECT_ROOT} > /dev/null;
 
 popd > /dev/null;
 
-pushd
-    ############################################################
-    # Downloading Keygen Binary
-    ############################################################
+############################################################
+# Downloading Keygen Binary
+############################################################
+pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -f bin/keygen ]] ; then
         echo "Keygen binary already present"
     else
@@ -87,20 +87,45 @@ pushd
         tar -xvf keygen-linux.tar.gz
         rm keygen-linux.tar.gz*
     fi
-popd
+popd > /dev/null;
 
-# pushd ${PROJECT_ROOT}
-# cat <<\EOF >config.yaml
-# miners:
-#   - n2n_ip: $PUBLIC_ENDPOINT
-#     public_ip: $PUBLIC_ENDPOINT
-#     port: 7071
-#     description:$EMAIL
-# EOF
-# popd
+############################################################
+# Creating config.yaml file
+############################################################
 
+config() {
+    echo "  - n2n_ip: ${PUBLIC_ENDPOINT}
+    public_ip: ${PUBLIC_ENDPOINT}
+    port: $1
+    description: ${EMAIL}" >> config.yaml
+}
 
+pushd ${PROJECT_ROOT} > /dev/null;
 
+    #Miners Only
+    if [[ ${MINER} -gt 0 && ${SHARDER} -eq 0 ]] ; then
+        echo "miners:"> config.yaml
+        for i in $(seq 1 ${MINER}); do
+            config 707$i
+        done
+    #Sharders Only
+    elif [[ ${SHARDER} -gt 0 && ${MINER} -eq 0 ]] ; then
+        echo "sharder:" > config.yaml
+        for i in $(seq 1 ${SHARDER}); do
+            config 717$i
+        done
+    #Sharders & Miners both
+    else
+        echo "miners:"> config.yaml
+        for i in $(seq 1 ${MINER}); do
+            config 707$i
+        done
+        echo "sharders:" >> config.yaml
+        for i in $(seq 1 ${SHARDER}); do
+            config 717$i
+        done
+    fi
+popd > /dev/null;
 
 
 exit
