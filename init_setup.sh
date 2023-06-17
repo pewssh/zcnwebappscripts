@@ -11,6 +11,13 @@ export PROJECT_ROOT=/root/codebase/zcnwebappscripts
 
 # rm -rf miner
 # rm -rf sharder
+# rm -rf output
+# rm -rf keys
+# rm -rf config.yaml
+# rm -rf nodes.yaml
+# rm -rf bin
+# rm -rf server-config.yaml
+
 
 if [[ ${MINER} -gt 0 ]] ; then
     mkdir -p ${PROJECT_ROOT}/miner
@@ -86,13 +93,13 @@ pushd ${PROJECT_ROOT} > /dev/null;
         wget https://github.com/0chain/onboarding-cli/releases/download/main/keygen-linux.tar.gz
         tar -xvf keygen-linux.tar.gz
         rm keygen-linux.tar.gz*
+        echo "server_url : http://localhost:3000/" > server-config.yaml
     fi
 popd > /dev/null;
 
 ############################################################
 # Creating config.yaml file
 ############################################################
-
 config() {
     echo "  - n2n_ip: ${PUBLIC_ENDPOINT}
     public_ip: ${PUBLIC_ENDPOINT}
@@ -101,21 +108,22 @@ config() {
 }
 
 pushd ${PROJECT_ROOT} > /dev/null;
-
     #Miners Only
     if [[ ${MINER} -gt 0 && ${SHARDER} -eq 0 ]] ; then
         echo "miners:"> config.yaml
         for i in $(seq 1 ${MINER}); do
             config 707$i
         done
+    fi
     #Sharders Only
-    elif [[ ${SHARDER} -gt 0 && ${MINER} -eq 0 ]] ; then
+    if [[ ${SHARDER} -gt 0 && ${MINER} -eq 0 ]] ; then
         echo "sharder:" > config.yaml
         for i in $(seq 1 ${SHARDER}); do
             config 717$i
         done
+    fi
     #Sharders & Miners both
-    else
+    if [[ ${SHARDER} -gt 0 && ${MINER} -gt 0 ]]; then
         echo "miners:"> config.yaml
         for i in $(seq 1 ${MINER}); do
             config 707$i
@@ -127,6 +135,17 @@ pushd ${PROJECT_ROOT} > /dev/null;
     fi
 popd > /dev/null;
 
+############################################################
+# Generating keys for Sharders/Miners
+############################################################
+pushd ${PROJECT_ROOT} > /dev/null;
+    ./bin/keygen generate-keys --signature_scheme bls0chain --miners ${MINER} --sharders ${SHARDER}
+    if [[ ${SHARDER} -gt 0 ]]; then
+        ./bin/keygen send-shares
+        ./bin/keygen validate-shares
+    fi
+    ./bin/keygen get-magicblock
+popd
 
 exit
 
