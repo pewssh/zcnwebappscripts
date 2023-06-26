@@ -49,6 +49,10 @@ chmod +x /usr/local/bin/s3mgrt
 /usr/local/bin/s3mgrt --version
 
 mkdir -p ${MIGRATION_ROOT}
+
+sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
+rm -rf ${MIGRATION_ROOT}/*
+
 mkdir -p ${MIGRATION_LOGS}
 mkdir -p ${CONFIG_DIR}
 mkdir -p ${CONFIG_DIR_MIGRATION}
@@ -111,12 +115,9 @@ ${BLIMP_DOMAIN} {
 	route /s3migration {
 		reverse_proxy s3mgrt:8080
 	}
-
 }
 
 EOF
-
-sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
 
 # create docker-compose
 cat <<EOF >${CONFIG_DIR}/docker-compose.yml
