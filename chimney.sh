@@ -350,6 +350,7 @@ services:
     volumes:
       - ${PROJECT_ROOT_SSD}/data/postgresql:/var/lib/postgresql/data
       - ${PROJECT_ROOT}/postgresql.conf:/var/lib/postgresql/postgresql.conf
+      - ${PROJECT_ROOT}/sql_init:/docker-entrypoint-initdb.d
     command: postgres -c config_file=/var/lib/postgresql/postgresql.conf
     networks:
       default:
