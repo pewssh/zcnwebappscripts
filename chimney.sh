@@ -9,6 +9,7 @@ export READ_PRICE=0chainreadPrice
 export WRITE_PRICE=0chainwritePrice
 export MIN_STAKE=0chainminStake
 export MAX_STAKE=0chainmaxStake
+export NO_OF_DELEGATES=0chaindelegates
 export SERVICE_CHARGE=0chainserviceCharge
 export GF_ADMIN_USER=0chaingfadminuser
 export GF_ADMIN_PASSWORD=0chaingfadminpassword
@@ -119,7 +120,7 @@ max_dirs_files: 50000
 # delegate wallet (must be set)
 delegate_wallet: ${DELEGATE_WALLET}
 # maximum allowed number of stake holders
-num_delegates: 50
+num_delegates: ${NO_OF_DELEGATES}
 # service charge of the blobber
 service_charge: ${SERVICE_CHARGE}
 # min submit from miners
