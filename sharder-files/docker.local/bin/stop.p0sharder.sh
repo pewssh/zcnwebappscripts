@@ -18,9 +18,9 @@ else
     HDD_PATH=".."
 fi
 
-# echo $SSD_PATH
-# echo $HDD_PATH
+echo $SSD_PATH
+echo $HDD_PATH
 
-echo Starting sharder"$SHARDER_ID" in daemon mode ...
+echo Stoping sharder"$SHARDER_ID" in daemon mode ...
 
-SHARDER=$SHARDER_ID PROJECT_ROOT_SSD=$SSD_PATH PROJECT_ROOT_HDD=$HDD_PATH docker-compose -p sharder"$SHARDER_ID" -f ../build.sharder/p0docker-compose.yaml up -d
+SHARDER=$SHARDER_ID PROJECT_ROOT_SSD=$SSD_PATH PROJECT_ROOT_HDD=$HDD_PATH docker-compose -p sharder"$SHARDER_ID" -f ../build.sharder/p0docker-compose.yaml down

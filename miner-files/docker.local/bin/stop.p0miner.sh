@@ -23,4 +23,4 @@ fi
 
 echo Starting miner"$MINER_ID" in daemon mode ...
 
-MINER=$MINER_ID PROJECT_ROOT_SSD=$SSD_PATH PROJECT_ROOT_HDD=$HDD_PATH docker-compose -p miner"$MINER_ID" -f ../build.miner/p0docker-compose.yaml up -d
+MINER=$MINER_ID PROJECT_ROOT_SSD=$SSD_PATH PROJECT_ROOT_HDD=$HDD_PATH docker-compose -p miner"$MINER_ID" -f ../build.miner/p0docker-compose.yaml down

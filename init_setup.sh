@@ -5,8 +5,8 @@ set -e
 ############################################################
 # setup variables
 ############################################################
-export MINER=1
-export SHARDER=1
+export MINER=3
+export SHARDER=3
 export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1/ #/var/0chain
 
 cd ~
@@ -63,7 +63,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
 
     #Miner
     if [[ ${MINER} -gt 0 ]] ; then
-        if [[ -f sharder/numsharder.txt ]] ; then
+        if [[ -f miner/numminers.txt ]] ; then
             MINER=$(cat miner/numminers.txt)
         else
             echo -n ${MINER} > miner/numminers.txt
@@ -88,16 +88,15 @@ popd > /dev/null;
 ############################################################
 # Checking URL entered is resolving or not
 ############################################################
-URL=$(cat ${PROJECT_ROOT}/url.txt)
-ipaddr=$(curl api.ipify.org)
-myip=$(dig +short $URL)
-if [[ "$myip" != "$ipaddr" ]]
-then
-  echo "$PUBLIC_ENDPOINT IP resolution mistmatch $myip vs $ipaddr"
-  exit 1
-else
-  echo "SUCCESS $PUBLIC_ENDPOINT resolves to $myip"
-fi
+# ipaddr=$(curl api.ipify.org)
+# myip=$(dig +short $PUBLIC_ENDPOINT)
+# if [[ "$myip" != "$ipaddr" ]]
+# then
+#   echo "$PUBLIC_ENDPOINT IP resolution mistmatch $myip vs $ipaddr"
+#   exit 1
+# else
+#   echo "SUCCESS $PUBLIC_ENDPOINT resolves to $myip"
+# fi
 
 ############################################################
 # Downloading Keygen Binary
