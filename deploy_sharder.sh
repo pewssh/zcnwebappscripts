@@ -12,7 +12,6 @@ export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1 # /var/0chain
 # Checking Sharder counts.
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
-
     #Sharder
     if [[ -f sharder/numsharder.txt ]] ; then
         echo "Checking for Sharders."
@@ -28,7 +27,13 @@ popd > /dev/null;
 ############################################################
 # Extract sharder files
 ############################################################
-cp -rf sharder-files/* ${PROJECT_ROOT}/sharder/ssd/
+pushd ${PROJECT_ROOT} > /dev/null;
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
+    unzip -o /tmp/sharder-files.zip
+    rm -rf /tmp/sharder-files.zip
+    mv -rf sharder-files/* ${PROJECT_ROOT}/sharder/ssd/
+    rm -rf /tmp/sharder-files*
+popd > /dev/null;
 
 ############################################################
 # Copy configs.
