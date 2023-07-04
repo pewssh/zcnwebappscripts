@@ -7,6 +7,8 @@ set -e
 ############################################################
 
 export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1 # /var/0chain
+export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
+export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain//sharder/ssd
 
 ############################################################
 # Checking Sharder counts.
@@ -22,6 +24,18 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -z ${SHARDER} ]] ; then
         exit 1
     fi
+popd > /dev/null;
+
+############################################################
+# Disk setup
+############################################################
+pushd ${PROJECT_ROOT} > /dev/null;
+    mkdir -p disk-setup/
+    wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
+    wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
+
+    sudo chmod +x disk-setup/disk_setup.sh
+    # bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
 popd > /dev/null;
 
 ############################################################
