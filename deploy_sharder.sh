@@ -29,10 +29,9 @@ popd > /dev/null;
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
     curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
-    unzip -o /tmp/sharder-files.zip
-    rm -rf /tmp/sharder-files.zip
-    mv -rf sharder-files/* ${PROJECT_ROOT}/sharder/ssd/
-    rm -rf /tmp/sharder-files*
+    unzip -o /tmp/sharder-files.zip && rm -rf /tmp/sharder-files.zip
+    cp -rf sharder-files/* ${PROJECT_ROOT}/sharder/ssd/
+    rm -rf sharder-files
 popd > /dev/null;
 
 ############################################################

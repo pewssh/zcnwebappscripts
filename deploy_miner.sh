@@ -28,7 +28,12 @@ popd > /dev/null;
 ############################################################
 # Extract miner files
 ############################################################
-cp -rf miner-files/* ${PROJECT_ROOT}/miner/ssd/
+pushd ${PROJECT_ROOT} > /dev/null;
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/artifacts/miner-files.zip" -o /tmp/miner-files.zip
+    unzip -o /tmp/miner-files.zip && rm -rf /tmp/miner-files.zip
+    cp -rf miner-files/* ${PROJECT_ROOT}/miner/ssd/
+    rm -rf miner-files
+popd > /dev/null;
 
 ############################################################
 # Copy configs.
