@@ -5,30 +5,32 @@ set -e
 ############################################################
 # setup variables
 ############################################################
-export MINER=4
-export SHARDER=2
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts
+export MINER=1
+export SHARDER=1
+export PROJECT_ROOT=/root/codebase/zcnwebappscripts #/var/0chain
 
-# rm -rf miner
-# rm -rf sharder
-# rm -rf output
-# rm -rf keys
-# rm -rf config.yaml
-# rm -rf nodes.yaml
-# rm -rf bin
-# rm -rf server-config.yaml
+cd ~
+mkdir -p ${PROJECT_ROOT}
 
+pushd ${PROJECT_ROOT} > /dev/null;
+    rm -rf miner
+    rm -rf sharder
+    rm -rf output
+    rm -rf keys
+    rm -rf config.yaml
+    rm -rf nodes.yaml
+    rm -rf bin
+    rm -rf server-config.yaml
 
-if [[ ${MINER} -gt 0 ]] ; then
-    mkdir -p ${PROJECT_ROOT}/miner
-fi
+    if [[ ${MINER} -gt 0 ]] ; then
+        mkdir -p ${PROJECT_ROOT}/miner
+    fi
 
-if [[ ${SHARDER} -gt 0 ]] ; then
-    mkdir -p ${PROJECT_ROOT}/sharder
-fi
+    if [[ ${SHARDER} -gt 0 ]] ; then
+        mkdir -p ${PROJECT_ROOT}/sharder
+    fi
 
-# cd ~
-# mkdir -p ${PROJECT_ROOT}
+popd
 
 ############################################################
 # Persisting Miner/Sharder inputs.
@@ -90,11 +92,12 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -f bin/keygen ]] ; then
         echo "Keygen binary already present"
     else
-        wget https://github.com/0chain/onboarding-cli/releases/download/main/keygen-linux.tar.gz
+        wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
         tar -xvf keygen-linux.tar.gz
         rm keygen-linux.tar.gz*
-        echo "server_url : http://localhost:3000/" > server-config.yaml
+        echo "server_url : http://65.108.96.106:3000/" > server-config.yaml
     fi
+    # echo "server_url : http://65.108.96.106:3000/" > server-config.yaml
 popd > /dev/null;
 
 ############################################################
@@ -144,7 +147,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
         ./bin/keygen send-shares
         ./bin/keygen validate-shares
     fi
-    ./bin/keygen get-magicblock
+    # ./bin/keygen get-magicblock
 popd
 
 exit
