@@ -7,14 +7,14 @@ set -e
 ############################################################
 export MINER=1
 export SHARDER=1
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts #/var/0chain
+export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1/ #/var/0chain
 
 cd ~
 mkdir -p ${PROJECT_ROOT}
 
 pushd ${PROJECT_ROOT} > /dev/null;
-    rm -rf miner
-    rm -rf sharder
+    rm -rf miner/*.txt
+    rm -rf sharder/*.txt
     rm -rf output
     rm -rf keys
     rm -rf config.yaml
@@ -23,11 +23,11 @@ pushd ${PROJECT_ROOT} > /dev/null;
     rm -rf server-config.yaml
 
     if [[ ${MINER} -gt 0 ]] ; then
-        mkdir -p ${PROJECT_ROOT}/miner
+        mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
     fi
 
     if [[ ${SHARDER} -gt 0 ]] ; then
-        mkdir -p ${PROJECT_ROOT}/sharder
+        mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
     fi
 
 popd
@@ -84,6 +84,20 @@ pushd ${PROJECT_ROOT} > /dev/null;
     fi
 
 popd > /dev/null;
+
+############################################################
+# Checking URL entered is resolving or not
+############################################################
+URL=$(cat ${PROJECT_ROOT}/url.txt)
+ipaddr=$(curl api.ipify.org)
+myip=$(dig +short $URL)
+if [[ "$myip" != "$ipaddr" ]]
+then
+  echo "$PUBLIC_ENDPOINT IP resolution mistmatch $myip vs $ipaddr"
+  exit 1
+else
+  echo "SUCCESS $PUBLIC_ENDPOINT resolves to $myip"
+fi
 
 ############################################################
 # Downloading Keygen Binary
@@ -149,45 +163,3 @@ pushd ${PROJECT_ROOT} > /dev/null;
     fi
     # ./bin/keygen get-magicblock
 popd
-
-exit
-
-
-sudo apt install parted build-essential dnsutils git nano jq htop zip unzip -y
-
-DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y ; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose ; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
-
-sudo chmod 777 /var/run/docker.sock
-
-if [[ ! -d z ]]
-then
-	apt install zip unzip -y
-#	wget https://zcdn.uk/wp-content/uploads/2022/11/zdeployment-docker-deploy.zip
-#	unzip zdeployment-docker-deploy.zip
-#	rm zdeployment-docker-deploy.zip
-#	mv zdeployment-docker-deploy z
-fi
-
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/config.sh -O config.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/keygen.sh -O keygen.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/fetchkeys.sh -O fetchkeys.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/sharekeys.sh -O sharekeys.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/minerdeploy.sh -O minerdeploy.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/sharderdeploy.sh -O sharderdeploy.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/nginx.sh -O nginx.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/blobberconfig.sh -O blobberconfig.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/blobgen.sh -O blobgen.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/blobinit.sh -O blobinit.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/blobrun.sh -O blobrun.sh
-wget https://raw.githubusercontent.com/0chain/asdeploy/main/blobdel.sh -O blobdel.sh
-
-URL=$(cat ${PROJECT_ROOT}/url.txt)
-ipaddr=$(curl api.ipify.org)
-myip=$(dig +short $URL)
-if [[ "$myip" != "$ipaddr" ]]
-then
-  echo "$URL IP resolution mistmatch $myip vs $ipaddr"
-else
-  echo "SUCCESS $URL resolves to $myip"
-fi
-
