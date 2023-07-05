@@ -8,7 +8,7 @@ set -e
 
 export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1 # /var/0chain
 export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
-export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain//sharder/ssd
+export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
 
 ############################################################
 # Checking Sharder counts.
@@ -20,7 +20,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
         SHARDER=$(cat sharder/numsharder.txt)
     fi
 
-    #checking miner/shader var's
+    #Checking shader var's
     if [[ -z ${SHARDER} ]] ; then
         exit 1
     fi
