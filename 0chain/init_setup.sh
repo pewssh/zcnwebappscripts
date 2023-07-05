@@ -7,20 +7,20 @@ set -e
 ############################################################
 export MINER=3
 export SHARDER=3
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1/ # /var/0chain
+export PROJECT_ROOT=/root/test1/ # /var/0chain
 
-cd ~
 mkdir -p ${PROJECT_ROOT}
 
 pushd ${PROJECT_ROOT} > /dev/null;
-    rm -rf miner/*.txt
-    rm -rf sharder/*.txt
-    rm -rf output
-    rm -rf keys
-    rm -rf config.yaml
-    rm -rf nodes.yaml
-    rm -rf bin
-    rm -rf server-config.yaml
+    # rm -rf ./*
+    # rm -rf miner/*.txt
+    # rm -rf sharder/*.txt
+    # rm -rf output
+    # rm -rf keys
+    # rm -rf config.yaml
+    # rm -rf nodes.yaml
+    # rm -rf bin
+    # rm -rf server-config.yaml
 
     if [[ ${MINER} -gt 0 ]] ; then
         mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
@@ -133,7 +133,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
     fi
     #Sharders Only
     if [[ ${SHARDER} -gt 0 && ${MINER} -eq 0 ]] ; then
-        echo "sharder:" > config.yaml
+        echo "sharders:" > config.yaml
         for i in $(seq 1 ${SHARDER}); do
             config 717$i
         done
@@ -156,9 +156,10 @@ popd > /dev/null;
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
     ./bin/keygen generate-keys --signature_scheme bls0chain --miners ${MINER} --sharders ${SHARDER}
-    if [[ ${SHARDER} -gt 0 ]]; then
+    if [[ ${MINER} -gt 0 ]]; then
+        sleep 10s
         ./bin/keygen send-shares
+        sleep 10s
         ./bin/keygen validate-shares
     fi
-    # ./bin/keygen get-magicblock
 popd

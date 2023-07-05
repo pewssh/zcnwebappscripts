@@ -7,17 +7,17 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ${PROJECT_ROOT}/Caddyfile:/etc/caddy/Caddyfile
-      - ${PROJECT_ROOT}/site:/srv
-      - ${PROJECT_ROOT}/caddy_data:/data
-      - ${PROJECT_ROOT}/caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./site:/srv
+      - ./caddy_data:/data
+      - ./caddy_config:/config
     restart: "always"
 
   promtail:
     container_name: promtail
     image: grafana/promtail:2.8.2
     volumes:
-      - ${PROJECT_ROOT_HDD}/promtail/log/:/logs
+      - ./promtail/log/:/logs
       - ./promtail/promtail-config.yaml:/mnt/config/promtail-config.yaml
     command: -config.file=/mnt/config/promtail-config.yaml
     ports:
@@ -72,9 +72,9 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)(\$\$|/)'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     ports:
-    - 9100:9100
+      - 9100:9100
 
   grafana:
     container_name: grafana

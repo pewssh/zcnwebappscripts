@@ -6,7 +6,7 @@ set -e
 # setup variables
 ############################################################
 
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1 # /var/0chain
+export PROJECT_ROOT=/root/test1 # /var/0chain
 export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
 export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
 
@@ -42,7 +42,7 @@ popd > /dev/null;
 # Extract sharder files
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
-    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
     unzip -o /tmp/sharder-files.zip && rm -rf /tmp/sharder-files.zip
     cp -rf sharder-files/* ${PROJECT_ROOT}/sharder/ssd/
     rm -rf sharder-files
@@ -55,8 +55,9 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ ${SHARDER} -gt 0 ]] ; then
         echo "Copying sharder keys & configs."
         cp -rf keys/b0s* sharder/ssd/docker.local/config    # sharder/ssd/docker.local/config
-        # cp -rf nodes.yaml sharder/ssd/docker.local/config
-        # cp -rf magicblock.json sharder/ssd/docker.local/config
+        cat nodes.yaml > sharder/ssd/docker.local/config/nodes.yaml
+        cat b0magicBlock.json > sharder/ssd/docker.local/config/b0magicBlock_4_miners_2_sharders.json
+        cat initial_states.yaml > sharder/ssd/docker.local/config/initial_state.yaml
     fi
 popd > /dev/null;
 
@@ -66,6 +67,7 @@ popd > /dev/null;
 pushd ${PROJECT_ROOT}/sharder/ssd > /dev/null;  #/sharder/ssd
     if [[ ${SHARDER} -gt 0 ]]; then
         bash docker.local/bin/init.setup.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd $SHARDER
+        bash docker.local/bin/setup.network.sh || true
     fi
 popd > /dev/null;
 
