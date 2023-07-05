@@ -6,7 +6,7 @@ set -e
 # setup variables
 ############################################################
 
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1 # /var/0chain
+export PROJECT_ROOT=/root/test1 # /var/0chain
 export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
 export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
 
@@ -42,7 +42,7 @@ popd > /dev/null;
 # Extract sharder files
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
-    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy2/0chain/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
     unzip -o /tmp/sharder-files.zip && rm -rf /tmp/sharder-files.zip
     cp -rf sharder-files/* ${PROJECT_ROOT}/sharder/ssd/
     rm -rf sharder-files
@@ -67,6 +67,7 @@ popd > /dev/null;
 pushd ${PROJECT_ROOT}/sharder/ssd > /dev/null;  #/sharder/ssd
     if [[ ${SHARDER} -gt 0 ]]; then
         bash docker.local/bin/init.setup.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd $SHARDER
+        bash docker.local/bin/setup.network.sh || true
     fi
 popd > /dev/null;
 
@@ -77,7 +78,7 @@ pushd ${PROJECT_ROOT}/sharder/ssd/docker.local > /dev/null;  #/sharder/ssd
     for i in $(seq 1 $SHARDER)
     do
         cd sharder${i}
-        # bash ../bin/start.p0sharder.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
+        bash ../bin/start.p0sharder.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
         cd ../
     done
 popd > /dev/null;

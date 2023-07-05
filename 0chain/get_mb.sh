@@ -6,7 +6,7 @@ set -e
 # setup variables
 ############################################################
 
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1/
+export PROJECT_ROOT=/root/test1/
 
 ############################################################
 # Checking Miner/Sharder counts.

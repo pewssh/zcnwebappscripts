@@ -7,10 +7,9 @@ set -e
 ############################################################
 export MINER=3
 export SHARDER=3
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1/ # /var/0chain
+export PROJECT_ROOT=/root/test1/ # /var/0chain
 
-# cd ~
-# mkdir -p ${PROJECT_ROOT}
+mkdir -p ${PROJECT_ROOT}
 
 pushd ${PROJECT_ROOT} > /dev/null;
     # rm -rf ./*
