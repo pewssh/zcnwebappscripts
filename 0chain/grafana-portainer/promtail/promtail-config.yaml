@@ -9,15 +9,3 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-- job_name: system
-  static_configs:
-  # - targets:
-  #     - localhost
-  #   labels:
-  #     app: blobber
-  #     __path__: /logs/0chainBlobber.log
-  # - targets:
-  #     - localhost
-  #   labels:
-  #     app: validator
-  #     __path__: /logs/validator.log
