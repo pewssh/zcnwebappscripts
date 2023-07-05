@@ -43,7 +43,7 @@ popd > /dev/null;
 # Extract miner files
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
-    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy2/0chain/artifacts/miner-files.zip" -o /tmp/miner-files.zip
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/miner-files.zip" -o /tmp/miner-files.zip
     unzip -o /tmp/miner-files.zip && rm -rf /tmp/miner-files.zip
     cp -rf miner-files/* ${PROJECT_ROOT}/miner/ssd/
     rm -rf miner-files

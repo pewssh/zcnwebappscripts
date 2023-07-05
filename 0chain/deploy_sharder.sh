@@ -42,7 +42,7 @@ popd > /dev/null;
 # Extract sharder files
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
-    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy2/0chain/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/sharder-files.zip" -o /tmp/sharder-files.zip
     unzip -o /tmp/sharder-files.zip && rm -rf /tmp/sharder-files.zip
     cp -rf sharder-files/* ${PROJECT_ROOT}/sharder/ssd/
     rm -rf sharder-files

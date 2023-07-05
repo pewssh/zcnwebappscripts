@@ -48,7 +48,7 @@ popd > /dev/null;
 # Extract sharder files
 ############################################################
 # pushd ${PROJECT_ROOT} > /dev/null;
-#     curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy2/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
+#     curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
 #     unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
 #     rm /tmp/grafana-portainer.zip
 # popd > /dev/null;
