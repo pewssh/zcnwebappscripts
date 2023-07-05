@@ -55,8 +55,9 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ ${SHARDER} -gt 0 ]] ; then
         echo "Copying sharder keys & configs."
         cp -rf keys/b0s* sharder/ssd/docker.local/config    # sharder/ssd/docker.local/config
-        # cp -rf nodes.yaml sharder/ssd/docker.local/config
-        # cp -rf magicblock.json sharder/ssd/docker.local/config
+        cat nodes.yaml > sharder/ssd/docker.local/config/nodes.yaml
+        cat b0magicBlock.json > sharder/ssd/docker.local/config/b0magicBlock_4_miners_2_sharders.json
+        cat initial_states.yaml > sharder/ssd/docker.local/config/initial_state.yaml
     fi
 popd > /dev/null;
 
@@ -76,7 +77,7 @@ pushd ${PROJECT_ROOT}/sharder/ssd/docker.local > /dev/null;  #/sharder/ssd
     for i in $(seq 1 $SHARDER)
     do
         cd sharder${i}
-        bash ../bin/start.p0sharder.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
+        # bash ../bin/start.p0sharder.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
         cd ../
     done
 popd > /dev/null;

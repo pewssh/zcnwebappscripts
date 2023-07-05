@@ -57,8 +57,10 @@ pushd ${PROJECT_ROOT} > /dev/null;
         echo "Copying miner keys & configs."
         cp -rf keys/b0m* miner/ssd/docker.local/config      # miner/ssd/docker.local/config
         cp -rf output/b0m* miner/ssd/docker.local/config
-        # cp -rf nodes.yaml miner/ssd/docker.local/config
-        # cp -rf magicblock.json miner/ssd/docker.local/config
+        cp -rf dkgSummary-* miner/ssd/docker.local/config
+        cat nodes.yaml > sharder/ssd/docker.local/config/nodes.yaml
+        cat b0magicBlock.json > sharder/ssd/docker.local/config/b0magicBlock_4_miners_2_sharders.json
+        cat initial_states.yaml > sharder/ssd/docker.local/config/initial_state.yaml
     fi
 popd > /dev/null;
 
@@ -78,8 +80,7 @@ pushd ${PROJECT_ROOT}/miner/ssd/docker.local > /dev/null;  #/miner/ssd
     for i in $(seq 1 $MINER)
     do
         cd miner${i}
-        # pwd
-        bash ../bin/start.p0miner.sh ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
+        # bash ../bin/start.p0miner.sh ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
         cd ../
     done
 popd > /dev/null;

@@ -6,7 +6,7 @@ set -e
 # setup variables
 ############################################################
 
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts
+export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1/
 
 ############################################################
 # Checking Miner/Sharder counts.
@@ -14,7 +14,7 @@ export PROJECT_ROOT=/root/codebase/zcnwebappscripts
 pushd ${PROJECT_ROOT} > /dev/null;
 
     #Miner
-    if [[ -f sharder/numsharder.txt ]] ; then
+    if [[ -f miner/numminers.txt ]] ; then
         MINER=$(cat miner/numminers.txt)
     else
         echo "Checking for Miners."
@@ -52,8 +52,11 @@ popd > /dev/null;
 # Downloading magicblock for Sharders/Miners
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
-    if [[ ${SHARDER} -gt 0 && ${MINER} -gt 0 ]]; then
+    if [[ ${SHARDER} -gt 0 || ${MINER} -gt 0 ]]; then
         echo "Downloading magicblock"
         ./bin/keygen get-magicblock
+        ./bin/keygen get-initialstates
+    else
+        echo "No sharder/miner present"
     fi
 popd
