@@ -8,14 +8,14 @@ set -e
 
 export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1 # /var/0chain
 export HOST=helm.0chain.net
-export GF_ADMIN_USER=admin
 export GF_ADMIN_PASSWORD=admin
+export BLOCK_WORKER_URL=helm.0chain.net
 
 # rm -rf test1
 mkdir -p $PROJECT_ROOT
 
 ############################################################
-# Checking Sharder counts.
+# Checking Sharder/Miner counts.
 ############################################################
 pushd ${PROJECT_ROOT} > /dev/null;
     #Sharder
@@ -28,7 +28,16 @@ pushd ${PROJECT_ROOT} > /dev/null;
         echo "Checking for Sharders."
         MINER=$(cat miner/numminers.txt)
     fi
-    #Checking shader var's
+    #Email
+    if [[ -f miner/email.txt ]] ; then
+        echo "Checking for Sharders."
+        EMAIL=$(cat miner/email.txt)
+    fi
+    if [[ -f sharder/email.txt ]] ; then
+        echo "Checking for Sharders."
+        EMAIL=$(cat sharder/email.txt)
+    fi
+    #Checking sharder var's
     if [[ -z ${SHARDER} && -z ${MINER} ]] ; then
         echo "No Sharder/Miner exist."
         exit 1
@@ -38,11 +47,11 @@ popd > /dev/null;
 ############################################################
 # Extract sharder files
 ############################################################
-pushd ${PROJECT_ROOT} > /dev/null;
-    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy2/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
-    unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
-    rm /tmp/grafana-portainer.zip
-popd > /dev/null;
+# pushd ${PROJECT_ROOT} > /dev/null;
+#     curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy2/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
+#     unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
+#     rm /tmp/grafana-portainer.zip
+# popd > /dev/null;
 
 ############################################################
 # promtail configs.
@@ -72,7 +81,6 @@ cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/promtail/promtail-config.yaml
         __path__: /var/log/miner${j}/log/*log
 EOF
     done
-# Promtail config for sharder
 popd > /dev/null;
 
 ############################################################
@@ -112,12 +120,12 @@ ${HOST} {
     }
   }
   route {
-    reverse_proxy <block-worker-url>
+    reverse_proxy ${BLOCK_WORKER_URL}
   }
 
 EOF
 
-for i in $(seq 1 $SHARDER); do
+for i in $(seq 1 ${SHARDER}); do
 cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/caddy/Caddyfile
   route /sharder0${i}* {
     uri strip_prefix /sharder0${i}
@@ -127,7 +135,7 @@ cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/caddy/Caddyfile
 EOF
 done
 
-for i in $(seq 1 $MINER); do
+for i in $(seq 1 ${MINER}); do
 cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/caddy/Caddyfile
   route /miner0${i}* {
     uri strip_prefix /miner0${i}
@@ -154,11 +162,17 @@ cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/caddy/Caddyfile
 }
 EOF
 
-exit
+############################################################
+# Generate random password for grafana and portainer
+############################################################
+pushd ${PROJECT_ROOT}/grafana-portainer/portainer > /dev/null;
+    tr -dc A-Za-z0-9 </dev/urandom | head -c 13 > portainer_password
+    PASSWORD=$(cat portainer_password)
+popd > /dev/null;
 
 ############################################################
 # Deploying grafana and portainer
 ############################################################
 pushd ${PROJECT_ROOT}/grafana-portainer > /dev/null;  #/sharder/ssd
-    bash ./start.p0monitor.sh ${BLOBBER_HOST} ${GF_ADMIN_USER} ${GF_ADMIN_PASSWORD}
+    bash ./start.p0monitor.sh ${BLOBBER_HOST} ${EMAIL} ${PASSWORD}
 popd > /dev/null;
