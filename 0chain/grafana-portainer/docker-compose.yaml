@@ -21,7 +21,7 @@ services:
       - ./promtail/promtail-config.yaml:/mnt/config/promtail-config.yaml
     command: -config.file=/mnt/config/promtail-config.yaml
     ports:
-      - "9090:9080"
+      - "9080:9080"
     restart: "always"
 
   loki:
