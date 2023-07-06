@@ -6,8 +6,8 @@ set -e
 # setup variables
 ############################################################
 
-export PROJECT_ROOT=/root/codebase/zcnwebappscripts/test1 # /var/0chain
-export HOST=helm.0chain.net
+export PROJECT_ROOT=/root/test1 # /var/0chain
+export HOST=mb-test.devnet-0chain.net
 export GF_ADMIN_PASSWORD=admin
 export BLOCK_WORKER_URL=helm.0chain.net
 
@@ -25,16 +25,15 @@ pushd ${PROJECT_ROOT} > /dev/null;
     fi
     #Miner
     if [[ -f miner/numminers.txt ]] ; then
-        echo "Checking for Sharders."
+        echo "Checking for miners."
         MINER=$(cat miner/numminers.txt)
     fi
     #Email
+    echo "Checking for email."
     if [[ -f miner/email.txt ]] ; then
-        echo "Checking for Sharders."
         EMAIL=$(cat miner/email.txt)
     fi
     if [[ -f sharder/email.txt ]] ; then
-        echo "Checking for Sharders."
         EMAIL=$(cat sharder/email.txt)
     fi
     #Checking sharder var's
@@ -45,13 +44,13 @@ pushd ${PROJECT_ROOT} > /dev/null;
 popd > /dev/null;
 
 ############################################################
-# Extract sharder files
+# Extract monitoring files
 ############################################################
-# pushd ${PROJECT_ROOT} > /dev/null;
-#     curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
-#     unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
-#     rm /tmp/grafana-portainer.zip
-# popd > /dev/null;
+pushd ${PROJECT_ROOT} > /dev/null;
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
+    unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
+    rm /tmp/grafana-portainer.zip
+popd > /dev/null;
 
 ############################################################
 # promtail configs.
@@ -166,8 +165,12 @@ EOF
 # Generate random password for grafana and portainer
 ############################################################
 pushd ${PROJECT_ROOT}/grafana-portainer/portainer > /dev/null;
-    tr -dc A-Za-z0-9 </dev/urandom | head -c 13 > portainer_password
-    PASSWORD=$(cat portainer_password)
+    if [[ -f portainer_password ]] ; then
+      PASSWORD=$(cat portainer_password)
+    else
+      tr -dc A-Za-z0-9 </dev/urandom | head -c 13 > portainer_password
+      PASSWORD=$(cat portainer_password)
+    fi
 popd > /dev/null;
 
 ############################################################
