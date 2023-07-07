@@ -1,0 +1,10 @@
+name: chimney_script_config_change_PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ChimneyScriptUpdate:
+    runs-on: arc-runner
+    steps:
+      - uses: actions/checkout@v3
