@@ -11,16 +11,32 @@ export PROJECT_ROOT=/root/test1/ # /var/0chain
 
 mkdir -p ${PROJECT_ROOT}
 
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                Installing some pre-requisite tools on your server 
+===============================================================================================================================================================================  \e[39m"
+echo -e "\e[32m 1. Apt update. \e[23m"
+sudo apt update &> /dev/null
+echo -e "\e[32m 2. Installing qq. \e[23m"
+sudo apt update -qq &> /dev/null
+echo -e "\e[32m 3. Installing unzip, dnsutils. \e[23m"
+sudo apt install unzip dnsutils &> /dev/null
+echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
+DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y &> /dev/null; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &> /dev/null; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
+sudo chmod 777 /var/run/docker.sock &> /dev/null
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                Setting up the folder structure 
+===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-    # rm -rf ./*
-    # rm -rf miner/*.txt
-    # rm -rf sharder/*.txt
-    # rm -rf output
-    # rm -rf keys
-    # rm -rf config.yaml
-    # rm -rf nodes.yaml
-    # rm -rf bin
-    # rm -rf server-config.yaml
+    rm -rf ./*
+    rm -rf miner/*.txt
+    rm -rf sharder/*.txt
+    rm -rf output
+    rm -rf keys
+    rm -rf config.yaml
+    rm -rf nodes.yaml
+    rm -rf bin
+    rm -rf server-config.yaml
 
     if [[ ${MINER} -gt 0 ]] ; then
         mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
@@ -29,12 +45,12 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ ${SHARDER} -gt 0 ]] ; then
         mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
     fi
+    echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
+popd > /dev/null;
 
-popd
-
-############################################################
-# Persisting Miner/Sharder inputs.
-############################################################
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                Persisting Miner/Sharder inputs. 
+===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
 
     #DNS Input
@@ -82,25 +98,25 @@ pushd ${PROJECT_ROOT} > /dev/null;
             echo -n ${EMAIL} > sharder/email.txt
         fi
     fi
+    echo -e "\e[32m Successfully Completed \e[23m \e[0;37m"
 
 popd > /dev/null;
 
-############################################################
-# Checking URL entered is resolving or not
-############################################################
-# ipaddr=$(curl api.ipify.org)
-# myip=$(dig +short $PUBLIC_ENDPOINT)
-# if [[ "$myip" != "$ipaddr" ]]
-# then
-#   echo "$PUBLIC_ENDPOINT IP resolution mistmatch $myip vs $ipaddr"
-#   exit 1
-# else
-#   echo "SUCCESS $PUBLIC_ENDPOINT resolves to $myip"
-# fi
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                Checking URL entered is resolving or not.
+===============================================================================================================================================================================  \e[39m"
+ipaddr=$(curl api.ipify.org)
+myip=$(dig +short $PUBLIC_ENDPOINT)
+if [[ "$myip" != "$ipaddr" ]]; then
+  echo "$PUBLIC_ENDPOINT IP resolution mistmatch $myip vs $ipaddr"
+  exit 1
+else
+  echo "SUCCESS $PUBLIC_ENDPOINT resolves to $myip"
+fi
 
-############################################################
-# Downloading Keygen Binary
-############################################################
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                       Downloading Keygen Binary.
+===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -f bin/keygen ]] ; then
         echo "Keygen binary already present"
@@ -110,12 +126,11 @@ pushd ${PROJECT_ROOT} > /dev/null;
         rm keygen-linux.tar.gz*
         echo "server_url : http://65.108.96.106:3000/" > server-config.yaml
     fi
-    # echo "server_url : http://65.108.96.106:3000/" > server-config.yaml
 popd > /dev/null;
 
-############################################################
-# Creating config.yaml file
-############################################################
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                       Creating config.yaml file.
+===============================================================================================================================================================================  \e[39m"
 config() {
     echo "  - n2n_ip: ${PUBLIC_ENDPOINT}
     public_ip: ${PUBLIC_ENDPOINT}
@@ -149,11 +164,12 @@ pushd ${PROJECT_ROOT} > /dev/null;
             config 717$i
         done
     fi
+    echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 popd > /dev/null;
 
-############################################################
-# Generating keys for Sharders/Miners
-############################################################
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                       Generating keys for Sharders/Miners.
+===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
     ./bin/keygen generate-keys --signature_scheme bls0chain --miners ${MINER} --sharders ${SHARDER}
     if [[ ${MINER} -gt 0 ]]; then
@@ -162,4 +178,4 @@ pushd ${PROJECT_ROOT} > /dev/null;
         sleep 10s
         ./bin/keygen validate-shares
     fi
-popd
+popd > /dev/null;
