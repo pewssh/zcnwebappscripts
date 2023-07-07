@@ -8,8 +8,7 @@ set -e
 
 export PROJECT_ROOT=/root/test1 # /var/0chain
 export HOST=mb-test.devnet-0chain.net
-export GF_ADMIN_PASSWORD=admin
-export BLOCK_WORKER_URL=helm.0chain.net
+export BLOCK_WORKER_URL=dev.zus.network
 
 # rm -rf test1
 mkdir -p $PROJECT_ROOT
@@ -119,7 +118,7 @@ ${HOST} {
     }
   }
   route {
-    reverse_proxy ${BLOCK_WORKER_URL}
+    redir https://${BLOCK_WORKER_URL}
   }
 
 EOF
@@ -177,5 +176,5 @@ popd > /dev/null;
 # Deploying grafana and portainer
 ############################################################
 pushd ${PROJECT_ROOT}/grafana-portainer > /dev/null;  #/sharder/ssd
-    bash ./start.p0monitor.sh ${BLOBBER_HOST} ${EMAIL} ${PASSWORD}
+    bash ./start.p0monitor.sh ${HOST} ${EMAIL} ${PASSWORD}
 popd > /dev/null;
