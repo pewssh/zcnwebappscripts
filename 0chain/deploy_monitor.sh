@@ -191,7 +191,7 @@ pushd ${PROJECT_ROOT}/grafana-portainer/grafana > /dev/null;
 
   sed -i "s/hostname/${HOST}/g" ./homepage_sharder.json
   sed -i "s/hostname/${HOST}/g" ./homepage_miner.json
-  sleep 10s
+  sleep 20s
 
   curl -X POST -H "Content-Type: application/json" \
        -d "@./server.json" \

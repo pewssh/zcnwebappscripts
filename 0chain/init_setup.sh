@@ -39,15 +39,15 @@ echo -e "\n\e[93m===============================================================
                                                                 Setting up the folder structure 
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-    rm -rf ./*
-    rm -rf miner/*.txt
-    rm -rf sharder/*.txt
-    rm -rf output
-    rm -rf keys
-    rm -rf config.yaml
-    rm -rf nodes.yaml
-    rm -rf bin
-    rm -rf server-config.yaml
+    # rm -rf ./*
+    # rm -rf miner/*.txt
+    # rm -rf sharder/*.txt
+    # rm -rf output
+    # rm -rf keys
+    # rm -rf config.yaml
+    # rm -rf nodes.yaml
+    # rm -rf bin
+    # rm -rf server-config.yaml
 
     if [[ ${MINER} -gt 0 ]] ; then
         mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
