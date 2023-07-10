@@ -5,8 +5,14 @@ scrape_configs:
   - targets:
     - cadvisor:9487
 
-- job_name: monitoring
+- job_name: node-exporter
   scrape_interval: 5s
   static_configs:
   - targets:
     - node-exporter:9100
+
+- job_name: prometheus
+  scrape_interval: 5s
+  static_configs:
+  - targets:
+    - prometheus:9090

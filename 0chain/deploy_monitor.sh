@@ -185,9 +185,55 @@ pushd ${PROJECT_ROOT}/grafana-portainer > /dev/null;  #/sharder/ssd
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                Grafana and Portainer credentials
+                                                                                Adding Grafana Dashboards
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT}/grafana-portainer/grafana
+
+  sed -i "s/hostname/${HOST}/g" ./homepage_sharder.json
+  sed -i "s/hostname/${HOST}/g" ./homepage_miner.json
+
+  curl -X POST -H "Content-Type: application/json" \
+       -d "@./server.json" \
+      "https://admin:zus-operator@${HOST}/grafana/api/dashboards/import"
+
+  # curl -X POST -H "Content-Type: application/json" \
+  #      -d "@./docker_system_monitoring.json" \
+  #     "https://admin:zus-operator@${HOST}/grafana/api/dashboards/import"
+
+  if [[ ${SHARDER} -gt 0 ]] ; then
+      curl -X POST -H "Content-Type: application/json" \
+        -d "{\"dashboard\":$(cat ./homepage_sharder.json)}" \
+        "https://admin:zus-operator@${HOST}/grafana/api/dashboards/import"
+      
+      curl -X PUT -H "Content-Type: application/json" \
+        -d '{ "theme": "", "homeDashboardUID": "homepage_sharder", "timezone": "utc" }' \
+        "https://admin:zus-operator@${HOST}/grafana/api/org/preferences"
+
+    curl -X POST -H "Content-Type: application/json" \
+         -d "@./sharder.json" \
+        "https://admin:zus-operator@${HOST}/grafana/api/dashboards/import"
+  fi
+
+  if [[ ${MINER} -gt 0 ]] ; then
+      curl -X POST -H "Content-Type: application/json" \
+        -d "{\"dashboard\":$(cat ./homepage_miner.json)}" \
+        "https://admin:zus-operator@${HOST}/grafana/api/dashboards/import"
+
+      curl -X PUT -H "Content-Type: application/json" \
+        -d '{ "theme": "", "homeDashboardUID": "homepage_miner", "timezone": "utc" }' \
+        "https://admin:zus-operator@${HOST}/grafana/api/org/preferences"
+
+      curl -X POST -H "Content-Type: application/json" \
+        -d "@./miner.json" \
+        "https://admin:zus-operator@${HOST}/grafana/api/dashboards/import"
+  fi
+
+popd > /dev/null;
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                                Grafana and Portainer Credentials
 ===============================================================================================================================================================================  \e[39m"
 echo "Grafana Username --> ${EMAIL}"
 echo "Grafana Password --> ${PASSWORD}"
-echo -e "\n Portainer Username --> admin"
+echo -e "\nPortainer Username --> admin"
 echo "Portainer Password --> ${PASSWORD}"

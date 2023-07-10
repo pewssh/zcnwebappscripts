@@ -20,7 +20,12 @@ services:
     container_name: promtail
     image: grafana/promtail:2.8.2
     volumes:
-      - ./promtail/log/:/logs
+      - ../sharder/hdd/docker.local/sharder1:/var/log/sharder1
+      - ../sharder/hdd/docker.local/sharder2:/var/log/sharder2
+      - ../sharder/hdd/docker.local/sharder3:/var/log/sharder3
+      - ../miner/ssd/docker.local/miner1:/var/log/miner1
+      - ../miner/ssd/docker.local/miner2:/var/log/miner2
+      - ../miner/ssd/docker.local/miner3:/var/log/miner3
       - ./promtail/promtail-config.yaml:/mnt/config/promtail-config.yaml
     command: -config.file=/mnt/config/promtail-config.yaml
     ports:

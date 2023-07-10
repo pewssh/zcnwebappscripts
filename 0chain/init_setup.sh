@@ -121,10 +121,14 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -f bin/keygen ]] ; then
         echo "Keygen binary already present"
     else
-        wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
+        # wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
+        wget https://github.com/0chain/onboarding-cli/releases/download/refactor%2Fnode-path/keygen-linux.tar.gz
         tar -xvf keygen-linux.tar.gz
         rm keygen-linux.tar.gz*
         echo "server_url : http://65.108.96.106:3000/" > server-config.yaml
+        echo "T: 3" >> server-config.yaml
+        echo "N: 3" >> server-config.yaml
+        echo "K: 2" >> server-config.yaml
     fi
 popd > /dev/null;
 
