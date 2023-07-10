@@ -31,14 +31,16 @@ popd > /dev/null;
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                         Disk setup
 ===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT} > /dev/null;
-    mkdir -p disk-setup/
-    wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
-    wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
+if [ ! -d ${PROJECT_ROOT_SSD} ]; then
+    pushd ${PROJECT_ROOT} > /dev/null;
+        mkdir -p disk-setup/
+        wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
+        wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
 
-    sudo chmod +x disk-setup/disk_setup.sh
-    # bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
-popd > /dev/null;
+        sudo chmod +x disk-setup/disk_setup.sh
+        bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+    popd > /dev/null;
+fi
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                         Extract miner files

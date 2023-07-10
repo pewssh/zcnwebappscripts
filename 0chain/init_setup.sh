@@ -25,6 +25,17 @@ DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y &> /dev/null; sudo syste
 sudo chmod 777 /var/run/docker.sock &> /dev/null
 
 echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                Checking docker service running or not
+===============================================================================================================================================================================  \e[39m"
+echo -e "\e[32m 1. Docker status. \e[23m"
+if (systemctl is-active --quiet docker) ; then
+    echo -e "\e[32m  docker is running fine. \e[23m \n"
+else
+    echo -e "\e[31m  $REQUIRED_PKG is failing to run. Please check and resolve it first. You can connect with team for support too. \e[13m \n"
+    exit 1
+fi
+
+echo -e "\n\e[93m===============================================================================================================================================================================
                                                                 Setting up the folder structure 
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
