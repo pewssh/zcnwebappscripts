@@ -1,152 +1,147 @@
 {
   "dashboard": {
-    "dashboard": {
-      "annotations": {
-        "list": [
-          {
-            "builtIn": 1,
-            "datasource": {
-              "type": "datasource",
-              "uid": "grafana"
-            },
-            "enable": true,
-            "hide": true,
-            "iconColor": "rgba(0, 211, 255, 1)",
-            "name": "Annotations & Alerts",
-            "target": {
-              "limit": 100,
-              "matchAny": false,
-              "tags": [],
-              "type": "dashboard"
-            },
-            "type": "dashboard"
-          }
-        ]
-      },
-      "description": "Filter the blobber logs",
-      "editable": true,
-      "fiscalYearStartMonth": 0,
-      "graphTooltip": 1,
-      "id": 6,
-      "links": [
+    "annotations": {
+      "list": [
         {
-          "asDropdown": true,
-          "icon": "external link",
-          "includeVars": false,
-          "keepTime": false,
-          "tags": [
-            "k8s"
-          ],
-          "targetBlank": false,
-          "title": "Dashboards",
-          "tooltip": "",
-          "type": "dashboards",
-          "url": ""
-        }
-      ],
-      "liveNow": false,
-      "panels": [
-        {
+          "builtIn": 1,
           "datasource": {
-            "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "type": "datasource",
+            "uid": "grafana"
           },
-          "gridPos": {
-            "h": 16,
-            "w": 24,
-            "x": 0,
-            "y": 0
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
           },
-          "id": 2,
-          "options": {
-            "dedupStrategy": "none",
-            "enableLogDetails": true,
-            "prettifyLogMessage": false,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Filter the blobber logs",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "id": null,
+    "links": [
+      {
+        "asDropdown": true,
+        "icon": "external link",
+        "includeVars": false,
+        "keepTime": false,
+        "tags": [
+          "k8s"
+        ],
+        "targetBlank": false,
+        "title": "Dashboards",
+        "tooltip": "",
+        "type": "dashboards",
+        "url": ""
+      }
+    ],
+    "liveNow": false,
+    "panels": [
+      {
+        "datasource": {
+          "type": "loki",
+          "uid": "P8E80F9AEF21F6940"
+        },
+        "gridPos": {
+          "h": 16,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "dedupStrategy": "none",
+          "enableLogDetails": true,
+          "prettifyLogMessage": false,
+          "showCommonLabels": false,
+          "showLabels": false,
+          "showTime": false,
+          "sortOrder": "Descending",
+          "wrapLogMessage": false
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "editorMode": "code",
+            "expr": "{app=\"blobber\"} |~ \"$Filter\"  !~ \"$Eliminate|water\"",
+            "legendFormat": "{{blobber}}",
+            "queryType": "range",
+            "refId": "A"
+          }
+        ],
+        "title": "blobber logs",
+        "type": "logs"
+      }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 37,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": false,
+            "text": "",
+            "value": ""
           },
-          "targets": [
+          "description": "",
+          "hide": 0,
+          "label": "Keyword Search",
+          "name": "Filter",
+          "options": [
             {
-              "datasource": {
-                "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
-              },
-              "editorMode": "code",
-              "expr": "{app=\"blobber\"} |~ \"$Filter\"  !~ \"$Eliminate|water\"",
-              "legendFormat": "{{blobber}}",
-              "queryType": "range",
-              "refId": "A"
+              "selected": true,
+              "text": "",
+              "value": ""
             }
           ],
-          "title": "$blobber",
-          "type": "logs"
-        }
-      ],
-      "refresh": "10s",
-      "schemaVersion": 37,
-      "style": "dark",
-      "tags": [],
-      "templating": {
-        "list": [
-          {
-            "current": {
-              "selected": false,
-              "text": "",
-              "value": ""
-            },
-            "description": "",
-            "hide": 0,
-            "label": "Keyword Search",
-            "name": "Filter",
-            "options": [
-              {
-                "selected": true,
-                "text": "",
-                "value": ""
-              }
-            ],
-            "query": "",
-            "skipUrlSync": false,
-            "type": "textbox"
+          "query": "",
+          "skipUrlSync": false,
+          "type": "textbox"
+        },
+        {
+          "current": {
+            "selected": false,
+            "text": "",
+            "value": ""
           },
-          {
-            "current": {
-              "selected": false,
+          "hide": 0,
+          "name": "Eliminate",
+          "options": [
+            {
+              "selected": true,
               "text": "",
               "value": ""
-            },
-            "hide": 0,
-            "name": "Eliminate",
-            "options": [
-              {
-                "selected": true,
-                "text": "",
-                "value": ""
-              }
-            ],
-            "query": "",
-            "skipUrlSync": false,
-            "type": "textbox"
-          }
-        ]
-      },
-      "time": {
-        "from": "now-30m",
-        "to": "now"
-      },
-      "timepicker": {},
-      "timezone": "",
-      "title": "02. Blobber Logs",
-      "uid": "bv",
-      "version": 3,
-      "weekStart": ""
+            }
+          ],
+          "query": "",
+          "skipUrlSync": false,
+          "type": "textbox"
+        }
+      ]
     },
-    "id": null,
-    "title": "blobber-logs",
-    "uid": "blobber"
+    "time": {
+      "from": "now-30m",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "02. Blobber Logs",
+    "uid": "blobber",
+    "version": 3,
+    "weekStart": ""
   },
   "overwrite": true,
   "inputs": [],

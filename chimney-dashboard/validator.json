@@ -103,8 +103,8 @@
           "options": [
             {
               "selected": true,
-              "text": "cpu",
-              "value": "cpu"
+              "text": "",
+              "value": ""
             }
           ],
           "query": "",
@@ -122,8 +122,8 @@
           "options": [
             {
               "selected": true,
-              "text": "sharder",
-              "value": "sharder"
+              "text": "",
+              "value": ""
             }
           ],
           "query": "",

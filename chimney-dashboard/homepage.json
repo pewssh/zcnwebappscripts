@@ -84,7 +84,7 @@
       },
       "id": 14,
       "options": {
-        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/blobberlogs.png)](https://blobber_host/grafana/d/blobber/)",
+        "content": "[![button](https://grafanadashboard.s3.us-east-2.amazonaws.com/blobberlogs.png)](https://blobber_host/grafana/d/blobber)",
         "mode": "markdown"
       },
       "pluginVersion": "9.1.5",
