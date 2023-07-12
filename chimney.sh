@@ -73,7 +73,7 @@ curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/artifacts/blobber-f
 unzip -o /tmp/blobber-files.zip -d ${PROJECT_ROOT}
 rm /tmp/blobber-files.zip
 
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/dashboards/artifacts/chimney-dashboard.zip" -o /tmp/chimney-dashboard.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/artifacts/chimney-dashboard.zip" -o /tmp/chimney-dashboard.zip
 unzip /tmp/chimney-dashboard.zip -d ${PROJECT_ROOT}
 rm /tmp/chimney-dashboard.zip
 
