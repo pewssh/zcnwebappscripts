@@ -5,12 +5,12 @@ set -e
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                                 setup variables 
 ===============================================================================================================================================================================  \e[39m"
-export PROJECT_ROOT=/root/test1 # /var/0chain
+export PROJECT_ROOT=/var/0chain # /var/0chain
 export HOST=mb-test.devnet-0chain.net
 export BLOCK_WORKER_URL=dev.zus.network
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 
-mkdir -p $PROJECT_ROOT
+sudo mkdir -p $PROJECT_ROOT
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                                 Checking Sharder/Miner counts.
@@ -47,8 +47,8 @@ echo -e "\n\e[93m===============================================================
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
     curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
-    unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
-    rm /tmp/grafana-portainer.zip
+    sudo unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
+    sudo rm /tmp/grafana-portainer.zip
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================

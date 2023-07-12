@@ -6,7 +6,7 @@ echo -e "\n\e[93m===============================================================
                                                                                     Setup variables
 ===============================================================================================================================================================================  \e[39m"
 
-export PROJECT_ROOT=/root/test1/ # /var/0chain
+export PROJECT_ROOT="/var/0chain" # /var/0chain
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 
 echo -e "\n\e[93m===============================================================================================================================================================================
@@ -54,10 +54,16 @@ echo -e "\n\e[93m===============================================================
                                                                             Downloading magicblock for Sharders/Miners.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
+    if [[ ${MINER} -gt 0 ]]; then
+        sudo ./bin/keygen send-shares
+        sleep 11s
+        sudo ./bin/keygen validate-shares
+        sleep 11s
+    fi
     if [[ ${SHARDER} -gt 0 || ${MINER} -gt 0 ]]; then
         echo "Downloading magicblock"
-        ./bin/keygen get-magicblock
-        ./bin/keygen get-initialstates
+        sudo ./bin/keygen get-magicblock
+        sudo ./bin/keygen get-initialstates
     else
         echo "No sharder/miner present"
     fi

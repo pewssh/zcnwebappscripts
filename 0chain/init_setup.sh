@@ -7,7 +7,7 @@ set -e
 ############################################################
 export MINER=3
 export SHARDER=3
-export PROJECT_ROOT=/root/test1/ # /var/0chain
+export PROJECT_ROOT="/var/0chain" # /var/0chain
 
 mkdir -p ${PROJECT_ROOT}
 
@@ -17,7 +17,7 @@ echo -e "\n\e[93m===============================================================
 echo -e "\e[32m 1. Apt update. \e[23m"
 sudo apt update &> /dev/null
 echo -e "\e[32m 2. Installing qq. \e[23m"
-sudo apt update -qq &> /dev/null
+sudo apt install -qq -y &> /dev/null
 echo -e "\e[32m 3. Installing unzip, dnsutils. \e[23m"
 sudo apt install unzip dnsutils &> /dev/null
 echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
@@ -50,11 +50,11 @@ pushd ${PROJECT_ROOT} > /dev/null;
     # rm -rf server-config.yaml
 
     if [[ ${MINER} -gt 0 ]] ; then
-        mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
+        sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
     fi
 
     if [[ ${SHARDER} -gt 0 ]] ; then
-        mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
+        sudo mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
     fi
     echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 popd > /dev/null;
@@ -93,9 +93,9 @@ pushd ${PROJECT_ROOT} > /dev/null;
         if [[ -f miner/numminers.txt ]] ; then
             MINER=$(cat miner/numminers.txt)
         else
-            echo -n ${MINER} > miner/numminers.txt
-            echo -n ${PUBLIC_ENDPOINT} > miner/url.txt
-            echo -n ${EMAIL} > miner/email.txt
+            sudo sh -c "echo -n ${MINER} > miner/numminers.txt"
+            sudo sh -c "echo -n ${PUBLIC_ENDPOINT} > miner/url.txt"
+            sudo sh -c "echo -n ${EMAIL} > miner/email.txt"
         fi
     fi
 
@@ -104,9 +104,9 @@ pushd ${PROJECT_ROOT} > /dev/null;
         if [[ -f sharder/numsharder.txt ]] ; then
             SHARDER=$(cat sharder/numsharder.txt)
         else
-            echo -n ${SHARDER} > sharder/numsharder.txt
-            echo -n ${PUBLIC_ENDPOINT} > sharder/url.txt
-            echo -n ${EMAIL} > sharder/email.txt
+            sudo sh -c "echo -n ${SHARDER} > sharder/numsharder.txt"
+            sudo sh -c "echo -n ${PUBLIC_ENDPOINT} > sharder/url.txt"
+            sudo sh -c "echo -n ${EMAIL} > sharder/email.txt"
         fi
     fi
     echo -e "\e[32m Successfully Completed \e[23m \e[0;37m"
@@ -133,13 +133,13 @@ pushd ${PROJECT_ROOT} > /dev/null;
         echo "Keygen binary already present"
     else
         # wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
-        wget https://github.com/0chain/onboarding-cli/releases/download/refactor%2Fnode-path/keygen-linux.tar.gz
-        tar -xvf keygen-linux.tar.gz
-        rm keygen-linux.tar.gz*
-        echo "server_url : http://65.108.96.106:3000/" > server-config.yaml
-        echo "T: 3" >> server-config.yaml
-        echo "N: 3" >> server-config.yaml
-        echo "K: 2" >> server-config.yaml
+        sudo wget https://github.com/0chain/onboarding-cli/releases/download/refactor%2Fnode-path/keygen-linux.tar.gz
+        sudo tar -xvf keygen-linux.tar.gz
+        sudo rm keygen-linux.tar.gz*
+        echo "server_url : http://65.108.96.106:3000/" | sudo tee server-config.yaml > /dev/null
+        echo "T: 2" | sudo tee -a server-config.yaml > /dev/null
+        echo "N: 3" | sudo tee -a server-config.yaml > /dev/null
+        echo "K: 3" | sudo tee -a server-config.yaml > /dev/null
     fi
 popd > /dev/null;
 
@@ -147,34 +147,34 @@ echo -e "\n\e[93m===============================================================
                                                                        Creating config.yaml file.
 ===============================================================================================================================================================================  \e[39m"
 config() {
-    echo "  - n2n_ip: ${PUBLIC_ENDPOINT}
-    public_ip: ${PUBLIC_ENDPOINT}
-    port: $1
-    description: ${EMAIL}" >> config.yaml
+    echo "  - n2n_ip: ${PUBLIC_ENDPOINT}" | sudo tee -a config.yaml > /dev/null
+    echo "    public_ip: ${PUBLIC_ENDPOINT}" | sudo tee -a config.yaml > /dev/null
+    echo "    port: $1" | sudo tee -a config.yaml > /dev/null
+    echo "    description: ${EMAIL}" | sudo tee -a config.yaml > /dev/null
 }
 
 pushd ${PROJECT_ROOT} > /dev/null;
     #Miners Only
     if [[ ${MINER} -gt 0 && ${SHARDER} -eq 0 ]] ; then
-        echo "miners:"> config.yaml
+        sudo sh -c "echo "miners:"> config.yaml"
         for i in $(seq 1 ${MINER}); do
             config 707$i
         done
     fi
     #Sharders Only
     if [[ ${SHARDER} -gt 0 && ${MINER} -eq 0 ]] ; then
-        echo "sharders:" > config.yaml
+        sudo sh -c "echo "sharders:" > config.yaml"
         for i in $(seq 1 ${SHARDER}); do
             config 717$i
         done
     fi
     #Sharders & Miners both
     if [[ ${SHARDER} -gt 0 && ${MINER} -gt 0 ]]; then
-        echo "miners:"> config.yaml
+        sudo sh -c "echo "miners:"> config.yaml"
         for i in $(seq 1 ${MINER}); do
             config 707$i
         done
-        echo "sharders:" >> config.yaml
+        sudo sh -c "echo "sharders:" >> config.yaml"
         for i in $(seq 1 ${SHARDER}); do
             config 717$i
         done
@@ -186,11 +186,5 @@ echo -e "\n\e[93m===============================================================
                                                                        Generating keys for Sharders/Miners.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-    ./bin/keygen generate-keys --signature_scheme bls0chain --miners ${MINER} --sharders ${SHARDER}
-    if [[ ${MINER} -gt 0 ]]; then
-        sleep 10s
-        ./bin/keygen send-shares
-        sleep 10s
-        ./bin/keygen validate-shares
-    fi
+    sudo ./bin/keygen generate-keys --signature_scheme bls0chain --miners ${MINER} --sharders ${SHARDER}
 popd > /dev/null;
