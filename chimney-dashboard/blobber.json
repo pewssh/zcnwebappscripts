@@ -26,7 +26,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 1,
-    "id": 6,
+    "id": null,
     "links": [
       {
         "asDropdown": true,
@@ -80,7 +80,7 @@
             "refId": "A"
           }
         ],
-        "title": "$blobber",
+        "title": "blobber logs",
         "type": "logs"
       }
     ],
@@ -139,7 +139,7 @@
     "timepicker": {},
     "timezone": "",
     "title": "02. Blobber Logs",
-    "uid": "bv",
+    "uid": "blobber",
     "version": 3,
     "weekStart": ""
   },
