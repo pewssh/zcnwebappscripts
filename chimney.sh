@@ -78,7 +78,7 @@ unzip /tmp/chimney-dashboard.zip -d ${PROJECT_ROOT}
 rm /tmp/chimney-dashboard.zip
 
 # create 0chain_blobber.yaml file
-echo "creating 0chain_validator.yaml"
+echo "creating 0chain_blobber.yaml"
 cat <<EOF >${PROJECT_ROOT}/config/0chain_blobber.yaml
 version: "1.0"
 
