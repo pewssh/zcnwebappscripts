@@ -5,9 +5,7 @@ set -e
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                                 setup variables 
 ===============================================================================================================================================================================  \e[39m"
-export PROJECT_ROOT=/var/0chain # /var/0chain
-export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
-export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
+export PROJECT_ROOT=/root/test1 # /var/0chain
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 
 echo -e "\n\e[93m===============================================================================================================================================================================
@@ -26,20 +24,6 @@ pushd ${PROJECT_ROOT} > /dev/null;
         exit 1
     fi
 popd > /dev/null;
-
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                Disk setup 
-===============================================================================================================================================================================  \e[39m"
-# if [ ! -d ${PROJECT_ROOT_HDD} ]; then
-    pushd ${PROJECT_ROOT} > /dev/null;
-        sudo mkdir -p disk-setup/
-        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
-        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
-
-        sudo chmod +x disk-setup/disk_setup.sh
-        bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
-    popd > /dev/null;
-# fi
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                             Extract sharder files
@@ -72,6 +56,22 @@ pushd ${PROJECT_ROOT}/sharder/ssd > /dev/null;  #/sharder/ssd
         sudo bash docker.local/bin/init.setup.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd $SHARDER
         sudo bash docker.local/bin/setup.network.sh || true
     fi
+popd > /dev/null;
+exit
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                                Generate random password & updating for sharder postgres
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT}/sharder/ssd > /dev/null;
+    if [[ -f sharder_pg_password ]] ; then
+      PG_PASSWORD=$(cat sharder_pg_password)
+    else
+      tr -dc A-Za-z0-9 </dev/urandom | head -c 13 > sharder_pg_password
+      PG_PASSWORD=$(cat sharder_pg_password)
+    fi
+    echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
+    sed -i "s/zchian/${PG_PASSWORD}/g" ./docker.local/config/0chain.yaml
+    sed -i "s/zchian/${PG_PASSWORD}/g" ./docker.local/sql_script/00-create-user.sql
+    sed -i "s/zchian/${PG_PASSWORD}/g" ./docker.local/build.sharder/p0docker-compose.yaml
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
