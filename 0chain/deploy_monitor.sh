@@ -5,9 +5,8 @@ set -e
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                                 setup variables 
 ===============================================================================================================================================================================  \e[39m"
-export PROJECT_ROOT=/root/test1 # /var/0chain
-export HOST=mb-test.devnet-0chain.net
-export BLOCK_WORKER_URL=dev.zus.network
+export PROJECT_ROOT=/var/0chain # /var/0chain
+export BLOCK_WORKER_URL=beta.zus.network
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 
 sudo mkdir -p $PROJECT_ROOT
@@ -38,6 +37,14 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -z ${SHARDER} && -z ${MINER} ]] ; then
         echo "No Sharder/Miner exist."
         exit 1
+    fi
+    #Checking for hosts
+    echo "Checking for email."
+    if [[ -f miner/url.txt ]] ; then
+        HOST=$(cat miner/url.txt)
+    fi
+    if [[ -f sharder/url.txt ]] ; then
+        HOST=$(cat sharder/url.txt)
     fi
     echo -e "\e[32m Counts exists \e[23m \e[0;37m"
 popd > /dev/null;
