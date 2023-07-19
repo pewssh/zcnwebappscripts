@@ -5,9 +5,7 @@ set -e
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                         setup variables
 ===============================================================================================================================================================================  \e[39m"
-export PROJECT_ROOT=/var/0chain # /var/0chain
-export PROJECT_ROOT_SSD=/var/0chain/miner/ssd # /var/0chain/miner/ssd
-export PROJECT_ROOT_HDD=/var/0chain/miner/hdd # /var/0chain//miner/ssd
+export PROJECT_ROOT=/root/test1 # /var/0chain
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 
 echo -e "\n\e[93m===============================================================================================================================================================================
@@ -26,21 +24,8 @@ pushd ${PROJECT_ROOT} > /dev/null;
         echo -e "\e[32m Miner's not present \e[23m \e[0;37m"
         exit 1
     fi
+    echo "hi"
 popd > /dev/null;
-
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                        Disk setup
-===============================================================================================================================================================================  \e[39m"
-# if [ ! -d ${PROJECT_ROOT_SSD} ]; then
-    pushd ${PROJECT_ROOT} > /dev/null;
-        sudo mkdir -p disk-setup/
-        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
-        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
-
-        sudo chmod +x disk-setup/disk_setup.sh
-        bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
-    popd > /dev/null;
-# fi
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                         Extract miner files

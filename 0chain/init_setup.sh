@@ -6,8 +6,10 @@ set -e
 # setup variables
 ############################################################
 export MINER=3
-export SHARDER=3
-export PROJECT_ROOT="/var/0chain" # /var/0chain
+export SHARDER=2
+export PROJECT_ROOT="/root/test1" # /var/0chain
+export PROJECT_ROOT_SSD=/root/test1/sharder/ssd # /var/0chain/sharder/ssd
+export PROJECT_ROOT_HDD=/root/test1/sharder/hdd # /var/0chain/sharder/ssd
 
 mkdir -p ${PROJECT_ROOT}
 
@@ -36,28 +38,61 @@ else
 fi
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                Setting up the folder structure 
+                                                                                Disk setup 
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-    # rm -rf ./*
-    # rm -rf miner/*.txt
-    # rm -rf sharder/*.txt
-    # rm -rf output
-    # rm -rf keys
-    # rm -rf config.yaml
-    # rm -rf nodes.yaml
-    # rm -rf bin
-    # rm -rf server-config.yaml
+    if [[ ! -d ${PROJECT_ROOT_HDD} || ! -d ${PROJECT_ROOT_SSD} ]]; then
+        sudo mkdir -p disk-setup/
+        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
+        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
 
-    if [[ ${MINER} -gt 0 ]] ; then
-        sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
-    fi
+        sudo chmod +x disk-setup/disk_setup.sh
+        bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+    else
+        rm -rf ./*
+        rm -rf miner/*.txt
+        rm -rf sharder/*.txt
+        rm -rf output
+        rm -rf keys
+        rm -rf config.yaml
+        rm -rf nodes.yaml
+        rm -rf bin
+        rm -rf server-config.yaml
 
-    if [[ ${SHARDER} -gt 0 ]] ; then
-        sudo mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
+        if [[ ${MINER} -gt 0 ]] ; then
+            sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
+        fi
+
+        if [[ ${SHARDER} -gt 0 ]] ; then
+            sudo mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
+        fi
+        echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
     fi
-    echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 popd > /dev/null;
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                Setting up the folder structure 
+===============================================================================================================================================================================  \e[39m"
+# pushd ${PROJECT_ROOT} > /dev/null;
+#     rm -rf ./*
+#     rm -rf miner/*.txt
+#     rm -rf sharder/*.txt
+#     rm -rf output
+#     rm -rf keys
+#     rm -rf config.yaml
+#     rm -rf nodes.yaml
+#     rm -rf bin
+#     rm -rf server-config.yaml
+
+#     if [[ ${MINER} -gt 0 ]] ; then
+#         sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
+#     fi
+
+#     if [[ ${SHARDER} -gt 0 ]] ; then
+#         sudo mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
+#     fi
+#     echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
+# popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                 Persisting Miner/Sharder inputs. 
@@ -132,8 +167,14 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -f bin/keygen ]] ; then
         echo "Keygen binary already present"
     else
-        # wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
-        sudo wget https://github.com/0chain/onboarding-cli/releases/download/refactor%2Fnode-path/keygen-linux.tar.gz
+        ubuntu_version=$(lsb_release -rs | cut -f1 -d'.')
+        if [[ ${ubuntu_version} -eq 18 ]]; then
+            sudo wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
+        elif [[ ${ubuntu_version} -eq 20 || ${ubuntu_version} -eq 22 ]]; then
+            sudo wget https://github.com/0chain/onboarding-cli/releases/download/refactor%2Fnode-path/keygen-linux.tar.gz
+        else
+            echo "Didn't found any Ubuntu version with 18/20/22."
+        fi
         sudo tar -xvf keygen-linux.tar.gz
         sudo rm keygen-linux.tar.gz*
         echo "server_url : http://65.108.96.106:3000/" | sudo tee server-config.yaml > /dev/null

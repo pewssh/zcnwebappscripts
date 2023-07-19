@@ -5,9 +5,10 @@ services:
     image: postgres:14
     environment:
       POSTGRES_PORT: 5432
-      POSTGRES_HOST: postgres
-      POSTGRES_USER: postgres
+      POSTGRES_HOST: sharder-postgres-${SHARDER}
+      POSTGRES_USER: zchain_user
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: zchian
     # ports:
     #   - 5432
     volumes:
