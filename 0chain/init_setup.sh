@@ -145,7 +145,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
     else
         ubuntu_version=$(lsb_release -rs | cut -f1 -d'.')
         if [[ ${ubuntu_version} -eq 18 ]]; then
-            sudo wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
+            sudo wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu18/keygen-linux.tar.gz
         elif [[ ${ubuntu_version} -eq 20 || ${ubuntu_version} -eq 22 ]]; then
             sudo wget https://github.com/0chain/onboarding-cli/releases/download/refactor%2Fnode-path/keygen-linux.tar.gz
         else
