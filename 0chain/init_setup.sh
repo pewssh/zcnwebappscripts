@@ -59,15 +59,14 @@ pushd ${PROJECT_ROOT} > /dev/null;
         rm -rf bin
         rm -rf server-config.yaml
 
-        if [[ ${MINER} -gt 0 ]] ; then
-            sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
-        fi
-
         if [[ ${SHARDER} -gt 0 ]] ; then
             sudo mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
         fi
-        echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
     fi
+    if [[ ${MINER} -gt 0 ]] ; then
+        sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
+    fi
+    echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
