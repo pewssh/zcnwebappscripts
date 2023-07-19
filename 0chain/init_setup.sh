@@ -7,9 +7,9 @@ set -e
 ############################################################
 export MINER=3
 export SHARDER=2
-export PROJECT_ROOT="/root/test1" # /var/0chain
-export PROJECT_ROOT_SSD=/root/test1/sharder/ssd # /var/0chain/sharder/ssd
-export PROJECT_ROOT_HDD=/root/test1/sharder/hdd # /var/0chain/sharder/ssd
+export PROJECT_ROOT="/var/0chain" # /var/0chain
+export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
+export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
 
 mkdir -p ${PROJECT_ROOT}
 
@@ -21,7 +21,7 @@ sudo apt update
 echo -e "\e[32m 2. Installing qq. \e[23m \e[0;37m"
 sudo apt install -qq -y
 echo -e "\e[32m 3. Installing unzip, dnsutils. \e[23m \e[0;37m"
-sudo apt install unzip dnsutils
+sudo apt install unzip dnsutils -y
 echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
 DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
 sudo chmod 777 /var/run/docker.sock &> /dev/null
@@ -69,30 +69,6 @@ pushd ${PROJECT_ROOT} > /dev/null;
         echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
     fi
 popd > /dev/null;
-
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                Setting up the folder structure 
-===============================================================================================================================================================================  \e[39m"
-# pushd ${PROJECT_ROOT} > /dev/null;
-#     rm -rf ./*
-#     rm -rf miner/*.txt
-#     rm -rf sharder/*.txt
-#     rm -rf output
-#     rm -rf keys
-#     rm -rf config.yaml
-#     rm -rf nodes.yaml
-#     rm -rf bin
-#     rm -rf server-config.yaml
-
-#     if [[ ${MINER} -gt 0 ]] ; then
-#         sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
-#     fi
-
-#     if [[ ${SHARDER} -gt 0 ]] ; then
-#         sudo mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
-#     fi
-#     echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
-# popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                 Persisting Miner/Sharder inputs. 
