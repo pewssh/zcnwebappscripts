@@ -3,7 +3,7 @@
 set -e
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                setup variables 
+                                                                                Setup variables
 ===============================================================================================================================================================================  \e[39m"
 export PROJECT_ROOT=/var/0chain # /var/0chain
 export BLOCK_WORKER_URL=beta.zus.network
@@ -12,14 +12,9 @@ echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 sudo mkdir -p $PROJECT_ROOT
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                Checking Sharder/Miner counts.
+                                                                                Checking Miner counts.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-    #Sharder
-    if [[ -f sharder/numsharder.txt ]] ; then
-        echo "Checking for Sharders."
-        SHARDER=$(cat sharder/numsharder.txt)
-    fi
     #Miner
     if [[ -f miner/numminers.txt ]] ; then
         echo "Checking for miners."
@@ -30,21 +25,15 @@ pushd ${PROJECT_ROOT} > /dev/null;
     if [[ -f miner/email.txt ]] ; then
         EMAIL=$(cat miner/email.txt)
     fi
-    if [[ -f sharder/email.txt ]] ; then
-        EMAIL=$(cat sharder/email.txt)
-    fi
-    #Checking sharder var's
-    if [[ -z ${SHARDER} && -z ${MINER} ]] ; then
-        echo "No Sharder/Miner exist."
+    #Checking Miner var's
+    if [[ -z ${MINER} ]] ; then
+        echo "No Miner exist."
         exit 1
     fi
     #Checking for hosts
     echo "Checking for email."
     if [[ -f miner/url.txt ]] ; then
         HOST=$(cat miner/url.txt)
-    fi
-    if [[ -f sharder/url.txt ]] ; then
-        HOST=$(cat sharder/url.txt)
     fi
     echo -e "\e[32m Counts exists \e[23m \e[0;37m"
 popd > /dev/null;
@@ -53,7 +42,7 @@ echo -e "\n\e[93m===============================================================
                                                                                 Extract monitoring files
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/sharder-deploy1/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
+    curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/as-deploy/0chain/artifacts/grafana-portainer.zip" -o /tmp/grafana-portainer.zip
     sudo unzip -o /tmp/grafana-portainer.zip -d ${PROJECT_ROOT}
     sudo rm /tmp/grafana-portainer.zip
 popd > /dev/null;
@@ -62,18 +51,6 @@ echo -e "\n\e[93m===============================================================
                                                                                 Creating promtail configs.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-# Promtail config for sharder
-    for i in $(seq 1 $SHARDER); do
-cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/promtail/promtail-config.yaml
-- job_name: sharder${i}
-  static_configs:
-    - targets:
-        - localhost
-      labels:
-        app: sharder-${i}
-        __path__: /var/log/sharder${i}/log/*log
-EOF
-    done
 # Promtail config for miner
     for j in $(seq 1 $MINER); do
 cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/promtail/promtail-config.yaml
@@ -93,7 +70,6 @@ echo -e "\n\e[93m===============================================================
                                                                                 Creating caddy configs.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-# Promtail config for sharder
 
 ### Caddyfile
 echo "creating Caddyfile"
@@ -130,13 +106,6 @@ ${HOST} {
   }
 
 EOF
-
-for i in $(seq 1 ${SHARDER}); do
-cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/caddy/Caddyfile
-  route /sharder0${i}* {
-    uri strip_prefix /sharder0${i}
-    reverse_proxy sharder-${i}:717${i}
-  }
 
 EOF
 done
@@ -187,7 +156,7 @@ popd > /dev/null;
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                                 Deploying grafana and portainer
 ===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT}/grafana-portainer > /dev/null;  #/sharder/ssd
+pushd ${PROJECT_ROOT}/grafana-portainer > /dev/null;  #/miner/ssd
     bash ./start.p0monitor.sh ${HOST} admin ${PASSWORD}
 popd > /dev/null;
 
@@ -196,7 +165,6 @@ echo -e "\n\e[93m===============================================================
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT}/grafana-portainer/grafana > /dev/null;
 
-  sed -i "s/hostname/${HOST}/g" ./homepage_sharder.json
   sed -i "s/hostname/${HOST}/g" ./homepage_miner.json
   sleep 20s
 
@@ -207,20 +175,6 @@ pushd ${PROJECT_ROOT}/grafana-portainer/grafana > /dev/null;
   # curl -X POST -H "Content-Type: application/json" \
   #      -d "@./docker_system_monitoring.json" \
   #     "https://admin:${PASSWORD}@${HOST}/grafana/api/dashboards/import"
-
-  if [[ ${SHARDER} -gt 0 ]] ; then
-      curl -X POST -H "Content-Type: application/json" \
-        -d "{\"dashboard\":$(cat ./homepage_sharder.json)}" \
-        "https://admin:${PASSWORD}@${HOST}/grafana/api/dashboards/import"
-      
-      curl -X PUT -H "Content-Type: application/json" \
-        -d '{ "theme": "", "homeDashboardUID": "homepage_sharder", "timezone": "utc" }' \
-        "https://admin:${PASSWORD}@${HOST}/grafana/api/org/preferences"
-
-    curl -X POST -H "Content-Type: application/json" \
-         -d "@./sharder.json" \
-        "https://admin:${PASSWORD}@${HOST}/grafana/api/dashboards/import"
-  fi
 
   if [[ ${MINER} -gt 0 ]] ; then
       curl -X POST -H "Content-Type: application/json" \
