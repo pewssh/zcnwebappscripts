@@ -5,8 +5,6 @@ set -e
 ############################################################
 # setup variables
 ############################################################
-export MINER=3
-export SHARDER=2
 export PROJECT_ROOT="/var/0chain" # /var/0chain
 export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
 export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
@@ -14,7 +12,7 @@ export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
 mkdir -p ${PROJECT_ROOT}
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                Installing some pre-requisite tools on your server 
+                                                                Installing some pre-requisite tools on your server
 ===============================================================================================================================================================================  \e[39m"
 echo -e "\e[32m 1. Apt update. \e[23m \e[0;37m"
 sudo apt update
@@ -38,7 +36,7 @@ else
 fi
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                Disk setup 
+                                                                                Disk setup
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
     if [[ ! -d ${PROJECT_ROOT_HDD} || ! -d ${PROJECT_ROOT_SSD} ]]; then
@@ -48,37 +46,17 @@ pushd ${PROJECT_ROOT} > /dev/null;
 
         sudo chmod +x disk-setup/disk_setup.sh
         bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
-    else
-        rm -rf ./*
-        rm -rf miner/*.txt
-        rm -rf sharder/*.txt
-        rm -rf output
-        rm -rf keys
-        rm -rf config.yaml
-        rm -rf nodes.yaml
-        rm -rf bin
-        rm -rf server-config.yaml
-
-        if [[ ${SHARDER} -gt 0 ]] ; then
-            sudo mkdir -p ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
-        fi
-    fi
-    if [[ ${MINER} -gt 0 ]] ; then
-        sudo mkdir -p ${PROJECT_ROOT}/miner/ssd ${PROJECT_ROOT}/miner/hdd
     fi
     echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                Persisting Miner/Sharder inputs. 
+                                                                Persisting Sharder inputs.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
 
     #DNS Input
-    if [[ -f miner/url.txt && ${MINER} -gt 0 ]] ; then
-        PUBLIC_ENDPOINT=$(cat miner/url.txt)
-    fi
-    if [[ -f sharder/url.txt && ${SHARDER} -gt 0 ]] ; then
+    if [[ -f sharder/url.txt ]] ; then
         PUBLIC_ENDPOINT=$(cat sharder/url.txt)
     fi
     while [[ -z ${PUBLIC_ENDPOINT} ]]
@@ -87,10 +65,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
     done
 
     #Email Input
-    if [[ -f miner/email.txt && ${MINER} -gt 0 ]] ; then
-        EMAIL=$(cat miner/email.txt)
-    fi
-    if [[ -f sharder/email.txt && ${SHARDER} -gt 0 ]] ; then
+    if [[ -f sharder/email.txt ]] ; then
         EMAIL=$(cat sharder/email.txt)
     fi
     while [[ -z ${EMAIL} ]]
@@ -98,26 +73,13 @@ pushd ${PROJECT_ROOT} > /dev/null;
         read -p "Enter the EMAIL: " EMAIL
     done
 
-    #Miner
-    if [[ ${MINER} -gt 0 ]] ; then
-        if [[ -f miner/numminers.txt ]] ; then
-            MINER=$(cat miner/numminers.txt)
-        else
-            sudo sh -c "echo -n ${MINER} > miner/numminers.txt"
-            sudo sh -c "echo -n ${PUBLIC_ENDPOINT} > miner/url.txt"
-            sudo sh -c "echo -n ${EMAIL} > miner/email.txt"
-        fi
-    fi
-
     #Sharder
-    if [[ ${SHARDER} -gt 0 ]] ; then
-        if [[ -f sharder/numsharder.txt ]] ; then
-            SHARDER=$(cat sharder/numsharder.txt)
-        else
-            sudo sh -c "echo -n ${SHARDER} > sharder/numsharder.txt"
-            sudo sh -c "echo -n ${PUBLIC_ENDPOINT} > sharder/url.txt"
-            sudo sh -c "echo -n ${EMAIL} > sharder/email.txt"
-        fi
+    if [[ -f sharder/numsharder.txt ]] ; then
+        SHARDER=$(cat sharder/numsharder.txt)
+    else
+        sudo sh -c "echo -n 1 > sharder/numsharder.txt"
+        sudo sh -c "echo -n ${PUBLIC_ENDPOINT} > sharder/url.txt"
+        sudo sh -c "echo -n ${EMAIL} > sharder/email.txt"
     fi
     echo -e "\e[32m Successfully Completed \e[23m \e[0;37m"
 
@@ -170,37 +132,15 @@ config() {
 }
 
 pushd ${PROJECT_ROOT} > /dev/null;
-    #Miners Only
-    if [[ ${MINER} -gt 0 && ${SHARDER} -eq 0 ]] ; then
-        sudo sh -c "echo "miners:"> config.yaml"
-        for i in $(seq 1 ${MINER}); do
-            config 707$i
-        done
-    fi
     #Sharders Only
-    if [[ ${SHARDER} -gt 0 && ${MINER} -eq 0 ]] ; then
-        sudo sh -c "echo "sharders:" > config.yaml"
-        for i in $(seq 1 ${SHARDER}); do
-            config 717$i
-        done
-    fi
-    #Sharders & Miners both
-    if [[ ${SHARDER} -gt 0 && ${MINER} -gt 0 ]]; then
-        sudo sh -c "echo "miners:"> config.yaml"
-        for i in $(seq 1 ${MINER}); do
-            config 707$i
-        done
-        sudo sh -c "echo "sharders:" >> config.yaml"
-        for i in $(seq 1 ${SHARDER}); do
-            config 717$i
-        done
-    fi
+    sudo sh -c "echo "sharders:" > config.yaml"
+    config 7171
     echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                       Generating keys for Sharders/Miners.
+                                                                       Generating keys for Sharder.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-    sudo ./bin/keygen generate-keys --signature_scheme bls0chain --miners ${MINER} --sharders ${SHARDER}
+    sudo ./bin/keygen generate-keys --signature_scheme bls0chain --miners 0 --sharders 1
 popd > /dev/null;
