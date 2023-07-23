@@ -143,8 +143,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    ports:
-      - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
 
@@ -197,6 +195,7 @@ volumes:
 
 EOF
 
+/usr/local/bin/docker-compose -f ${CONFIG_DIR}/docker-compose.yml pull
 /usr/local/bin/docker-compose -f ${CONFIG_DIR}/docker-compose.yml up -d
 
 flags="--configDir ${CONFIG_DIR_MIGRATION} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY} --secret-key ${SECRET_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET} "
