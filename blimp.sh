@@ -122,8 +122,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    ports:
-      - '5432'
     volumes:
       - db:/var/lib/postgresql/data
 
