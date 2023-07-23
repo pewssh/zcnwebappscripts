@@ -12,7 +12,7 @@ BLIMP_DOMAIN=blimpdomain
 WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
-DOCKER_IMAGE=pr-41-78b6c628
+DOCKER_IMAGE=staging
 
 sudo apt update
 sudo apt install -y unzip curl containerd docker.io jq
@@ -123,7 +123,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - '5432:5432'
+      - '5432'
     volumes:
       - db:/var/lib/postgresql/data
 
@@ -175,4 +175,5 @@ volumes:
 
 EOF
 
+sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml pull
 sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml up -d
