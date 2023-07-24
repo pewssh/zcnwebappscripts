@@ -356,35 +356,17 @@ services:
       default:
     restart: "always"
 
-  postgres-post:
-    image: postgres:14
-    environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_PORT: "5432"
-      POSTGRES_USER: postgres
-    volumes:
-      - ${PROJECT_ROOT}/bin:/blobber/bin
-      # - /var/0chain/blobber/sql:/blobber/sql
-    command: bash /blobber/bin/postgres-entrypoint.sh
-    links:
-      - postgres:postgres
-
   validator:
     image: 0chaindev/validator:staging
     environment:
       - DOCKER= true
     depends_on:
       - postgres-post
-    links:
-      - postgres-post:postgres-post
     volumes:
       - ${PROJECT_ROOT}/config:/validator/config
       - ${PROJECT_ROOT_HDD}/data:/validator/data
       - ${PROJECT_ROOT_HDD}/log:/validator/log
       - ${PROJECT_ROOT}/keys_config:/validator/keysconfig
-    ports:
-      - "5061:5061"
     command: ./bin/validator --port 5061 --hostname ${BLOBBER_HOST} --deployment_mode 0 --keys_file keysconfig/b0vnode01_keys.txt --log_dir /validator/log --hosturl https://${BLOBBER_HOST}/validator
     networks:
       default:
@@ -411,9 +393,6 @@ services:
       - ${PROJECT_ROOT}/keys_config:/blobber/keysconfig # keys and minio config
       - ${PROJECT_ROOT_HDD}/data/tmp:/tmp
       - ${PROJECT_ROOT}/sql:/blobber/sql
-    ports:
-      - "5051:5051"
-      - "31501:31501"
     command: ./bin/blobber --port 5051 --grpc_port 31501 --hostname ${BLOBBER_HOST}  --deployment_mode 0 --keys_file keysconfig/b0bnode01_keys.txt --files_dir /blobber/files --log_dir /blobber/log --db_dir /blobber/data --hosturl https://${BLOBBER_HOST}
     networks:
       default:
@@ -437,8 +416,6 @@ services:
       - ${PROJECT_ROOT_HDD}/log/:/logs
       - ${PROJECT_ROOT}/monitoringconfig/promtail-config.yaml:/mnt/config/promtail-config.yaml
     command: -config.file=/mnt/config/promtail-config.yaml
-    ports:
-      - "9080:9080"
     restart: "always"
 
   loki:
@@ -447,15 +424,11 @@ services:
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/loki-config.yaml:/mnt/config/loki-config.yaml
     command: -config.file=/mnt/config/loki-config.yaml
-    ports:
-      - "3100:3100"
     restart: "always"
 
   prometheus:
     image: prom/prometheus:v2.44.0
     user: root
-    ports:
-      - "9090:9090"
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -469,8 +442,6 @@ services:
   cadvisor:
     image: wywywywy/docker_stats_exporter:20220516
     container_name: cadvisor
-    ports:
-    - 9487:9487
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     restart: "always"
@@ -488,8 +459,6 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)(\$\$|/)'
-    expose:
-      - 9100
     restart: "always"
 
   grafana:
@@ -501,14 +470,10 @@ services:
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
       - grafana_data:/var/lib/grafana
-    ports:
-      - "3040:3000"
     restart: "always"
 
   monitoringapi:
     image: 0chaindev/chimney:monitoringapi-latest
-    ports:
-      - "3001:3001"
     restart: "always"
 
   agent:
@@ -516,11 +481,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
+
   portainer:
     image: portainer/portainer-ce:2.18.2-alpine
     command: '-H tcp://agent:9001 --tlsskipverify --admin-password-file /tmp/portainer_password'
-    ports:
-      - "9000:9000"
     links:
       - agent:agent
     volumes:
@@ -566,15 +530,14 @@ curl -X POST -H "Content-Type: application/json" \
       -d "{\"dashboard\":$(cat ${DASHBOARDS}/homepage.json)}" \
       "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
 
-
 curl -X PUT -H "Content-Type: application/json" \
      -d '{ "theme": "", "homeDashboardUID": "homepage", "timezone": "utc" }' \
      "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/org/preferences"
-
 
 for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DASHBOARDS}/validator.json"; do
     echo -e "\nUploading dashboard: ${dashboard}"
     curl -X POST -H "Content-Type: application/json" \
           -d "@${dashboard}" \
          "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
+     echo ""
 done
