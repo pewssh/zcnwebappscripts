@@ -205,8 +205,8 @@ if [ $ENCRYPT == "true" ]; then flags=$flags" --encrypt true"; fi
 if [ $DELETE_SOURCE == "true" ]; then flags=$flags" --delete-source true"; fi
 if [ $REGION != "0chainregion" ]; then flags=$flags"--region ${REGION}"; fi
 if [ $SKIP != "0chainskip" ]; then flags=$flags" --skip ${SKIP}"; fi
-if [ $NEWER_THAN != "0chainnewerthan" ]; then flags=$flags" --newer-than ${SKIP}"; fi
-if [ $OLDER_THAN != "0chainolderthan" ]; then flags=$flags" --older-than ${SKIP}"; fi
+if [ $NEWER_THAN != "0chainnewerthan" ]; then flags=$flags" --newer-than ${NEWER_THAN}"; fi
+if [ $OLDER_THAN != "0chainolderthan" ]; then flags=$flags" --older-than ${OLDER_THAN}"; fi
 if [ $PREFIX != "0chainprefix" ]; then flags=$flags" --prefix ${PREFIX}"; fi
 if [ $RESUME == "true" ]; then flags=$flags" --resume ${RESUME}"; fi
 if [ $MIGRATE_TO != "0chainmigrateto" ]; then flags=$flags" --migrate-to ${MIGRATE_TO}"; fi
