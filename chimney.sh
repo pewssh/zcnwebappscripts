@@ -360,8 +360,6 @@ services:
     image: 0chaindev/validator:staging
     environment:
       - DOCKER= true
-    depends_on:
-      - postgres-post
     volumes:
       - ${PROJECT_ROOT}/config:/validator/config
       - ${PROJECT_ROOT_HDD}/data:/validator/data
