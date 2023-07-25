@@ -34,7 +34,7 @@ if [[ -d $HOME/.zcn/docker-compose.yml ]]; then
 fi
 
 # docker image
-DOCKER_TAG=pr-41-78b6c628
+DOCKER_TAG=staging
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq
@@ -46,7 +46,6 @@ docker-compose --version
 
 sudo curl -L "https://s3-mig-binaries.s3.us-east-2.amazonaws.com/s3mgrt" -o /usr/local/bin/s3mgrt
 chmod +x /usr/local/bin/s3mgrt
-/usr/local/bin/s3mgrt --version
 
 mkdir -p ${MIGRATION_ROOT}
 
