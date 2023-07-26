@@ -107,9 +107,6 @@ ${HOST} {
 
 EOF
 
-EOF
-done
-
 for i in $(seq 1 ${MINER}); do
 cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/caddy/Caddyfile
   route /miner0${i}* {
