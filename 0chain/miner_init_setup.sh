@@ -143,4 +143,8 @@ echo -e "\n\e[93m===============================================================
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
     sudo ./bin/keygen generate-keys --signature_scheme bls0chain --miners 1 --sharders 0
+    sleep 11s
+    sudo ./bin/keygen send-shares
+    sleep 11s
+    sudo ./bin/keygen validate-shares
 popd > /dev/null;
