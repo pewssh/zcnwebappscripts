@@ -49,9 +49,9 @@ echo -e "\n\e[93m===============================================================
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
     if [[ ${MINER} -gt 0 ]]; then
-        sudo ./bin/keygen send-shares
+        sudo ./bin/keygen send-shares || true
         sleep 11s
-        sudo ./bin/keygen validate-shares
+        sudo ./bin/keygen validate-shares || true
         sleep 11s
         echo "Downloading magicblock"
         sudo ./bin/keygen get-magicblock
