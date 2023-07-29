@@ -96,7 +96,9 @@ ${BLIMP_DOMAIN} {
 }
 EOF
 
-sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
+if [[ -d ${CONFIG_DIR}/docker-compose.yml ]]; then
+	sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
+fi
 
 # create docker-compose
 cat <<EOF >${CONFIG_DIR}/docker-compose.yml
