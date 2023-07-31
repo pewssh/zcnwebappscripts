@@ -2,6 +2,11 @@
 
 set -e
 
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script requires sudo privileges. Please enter your password:"
+    exec sudo "$0" "$@"  # This re-executes the script with sudo
+fi
+
 # setup variables
 export CLUSTER=0chaincluster
 export DELEGATE_WALLET=0chainclientId
@@ -28,6 +33,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
+
 
 #TODO: Fix docker installation
 sudo apt update -qq
