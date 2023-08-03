@@ -525,6 +525,8 @@ while [ ! -d ${PROJECT_ROOT}/caddy_data/caddy/certificates ]; do
 done
 
 DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard
+echo "sleeping for 10secs.."
+sleep 10
 
 sed -i "s/blobber_host/${BLOBBER_HOST}/g" ${DASHBOARDS}/homepage.json
 
