@@ -35,9 +35,10 @@ export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 
-#TODO: Fix docker installation
 sudo apt update -qq
-sudo apt install -qqy unzip curl containerd docker.io
+sudo apt install -qqy unzip curl containerd docker.io ntp
+sudo systemctl start ntp
+sudo systemctl enable ntp
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
