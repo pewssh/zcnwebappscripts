@@ -123,7 +123,7 @@ cat <<EOF >${CONFIG_DIR}/docker-compose.yml
 version: '3.8'
 services:
   caddy:
-    image: caddy:latest
+    image: caddy:2.6.4
     ports:
       - 80:80
       - 443:443
