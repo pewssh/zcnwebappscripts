@@ -154,6 +154,8 @@ services:
       - api:api
     volumes:
       - ${CONFIG_DIR_BLIMP}:/root/.zcn
+    expose:
+      - "9000"
 
   minioclient:
     image: 0chaindev/blimp-clientapi:${DOCKER_IMAGE}
