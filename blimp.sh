@@ -96,7 +96,7 @@ ${BLIMP_DOMAIN} {
 }
 EOF
 
-if [[ -d ${CONFIG_DIR}/docker-compose.yml ]]; then
+if [[ -f ${CONFIG_DIR}/docker-compose.yml ]]; then
 	sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
 fi
 
