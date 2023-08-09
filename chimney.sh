@@ -36,9 +36,14 @@ export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 
 sudo apt update -qq
-sudo apt install -qqy unzip curl containerd docker.io ntp
+sudo apt install -qqy unzip curl containerd docker.io ntp systemd-timesyncd ntpdate
 sudo systemctl start ntp
 sudo systemctl enable ntp
+sudo systemctl enable systemd-timesyncd
+sudo systemctl restart systemd-timesyncd
+sudo ntpdate pool.ntp.org
+timedatectl status
+
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
