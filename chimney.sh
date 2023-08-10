@@ -47,7 +47,6 @@ sudo systemctl enable systemd-timesyncd
 sudo systemctl start ntp
 sudo systemctl restart systemd-timesyncd
 
-sudo ntpdate pool.ntp.org
 timedatectl status
 
 
