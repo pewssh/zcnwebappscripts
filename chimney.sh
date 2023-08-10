@@ -39,6 +39,7 @@ sudo apt update -qq
 sudo apt install -qqy unzip curl containerd docker.io ntp
 
 sudo systemctl enable ntp
+sudo systemctl unmask systemd-timesyncd
 sudo systemctl enable systemd-timesyncd
 sudo systemctl start ntp
 sudo systemctl restart systemd-timesyncd
