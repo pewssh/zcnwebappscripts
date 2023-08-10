@@ -36,7 +36,7 @@ export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 
 sudo apt update -qq
-sudo apt install -qqy unzip curl containerd docker.io ntp
+sudo apt install -qqy unzip curl containerd docker.io ntp systemd
 
 sudo systemctl enable ntp
 sudo systemctl unmask systemd-timesyncd
