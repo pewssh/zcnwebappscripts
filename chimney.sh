@@ -44,7 +44,7 @@ sudo systemctl enable ntp
 sudo systemctl unmask systemd-timesyncd
 sudo systemctl enable systemd-timesyncd
 
-sudo systemctl start ntp
+sudo systemctl restart ntp
 sudo systemctl restart systemd-timesyncd
 
 timedatectl status
