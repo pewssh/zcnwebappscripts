@@ -9,3 +9,27 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
+- job_name: miner1
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: 0chain_miner01
+      __path__: /var/log/miner1/log/0chain.log
+  - targets:
+      - localhost
+    labels:
+      job: n2n_miner01
+      __path__: /var/log/miner1/log/n2n.log
+- job_name: sharder1
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: 0chain_sharder01
+      __path__: /var/log/sharder1/log/0chain.log
+  - targets:
+      - localhost
+    labels:
+      job: n2n_sharder01
+      __path__: /var/log/sharder1/log/n2n.log
