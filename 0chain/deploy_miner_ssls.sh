@@ -60,7 +60,12 @@ cat <<EOF >>${PROJECT_ROOT}/grafana-portainer/promtail/promtail-config.yaml
         - localhost
       labels:
         app: miner-${j}
-        __path__: /var/log/miner${j}/log/*log
+        __path__: /var/log/miner${j}/log/0chain.log
+    - targets:
+        - localhost
+      labels:
+        app: n2n-miner-${j}
+        __path__: /var/log/miner${j}/log/n2n.log
 EOF
     done
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
