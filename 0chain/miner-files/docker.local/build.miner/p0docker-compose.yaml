@@ -34,7 +34,7 @@ services:
 
   miner:
     container_name: miner-${MINER}
-    image: 0chaindev/miner:staging
+    image: 0chaindev/miner:sprint-july-4-704bde90
     environment:
       - DOCKER=true
       - REDIS_HOST=miner-redis-${MINER}
