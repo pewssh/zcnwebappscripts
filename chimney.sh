@@ -35,8 +35,8 @@ export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 
-sudo apt update -qq
-sudo apt install -qqy unzip curl containerd docker.io systemd systemd-timesyncd
+sudo apt update
+sudo apt install -y unzip curl containerd docker.io systemd systemd-timesyncd
 sudo apt install -y ufw ntp ntpdate
 
 sudo ufw allow 123/udp
