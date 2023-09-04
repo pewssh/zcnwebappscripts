@@ -36,6 +36,14 @@ export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 
 sudo apt update
+
+if dpkg --get-selections | grep -q "unattended-upgrades"; then
+  echo "unattended-upgrades is installed. removing it"
+  sudo apt-get remove -y --purge unattended-upgrades
+else
+  echo "unattended-upgrades is not installed. Nothing to do."
+fi
+
 sudo apt install -y unzip curl containerd docker.io systemd systemd-timesyncd
 sudo apt install -y ufw ntp ntpdate
 
