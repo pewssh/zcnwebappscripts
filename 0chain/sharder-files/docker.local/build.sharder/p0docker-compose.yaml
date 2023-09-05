@@ -23,7 +23,7 @@ services:
 
   sharder:
     container_name: sharder-${SHARDER}
-    image: 0chaindev/sharder:sprint-july-4-704bde90
+    image: 0chaindev/sharder:v1.10.0
     environment:
       - POSTGRES_HOST=sharder-postgres-${SHARDER}
       - DOCKER=true
