@@ -542,3 +542,24 @@ done
 DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard
 echo "sleeping for 10secs.."
 sleep 10
+
+
+sed -i "s/blobber_host/${BLOBBER_HOST}/g" ${DASHBOARDS}/homepage.json
+
+echo "setting up chimney dashboards..."
+
+curl -X POST -H "Content-Type: application/json" \
+      -d "{\"dashboard\":$(cat ${DASHBOARDS}/homepage.json)}" \
+      "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
+
+curl -X PUT -H "Content-Type: application/json" \
+     -d '{ "theme": "", "homeDashboardUID": "homepage", "timezone": "utc" }' \
+     "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/org/preferences"
+
+for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DASHBOARDS}/validator.json"; do
+    echo -e "\nUploading dashboard: ${dashboard}"
+    curl -X POST -H "Content-Type: application/json" \
+          -d "@${dashboard}" \
+         "https://${GF_ADMIN_USER}:${GF_ADMIN_PASSWORD}@${BLOBBER_HOST}/grafana/api/dashboards/import"
+     echo ""
+done
