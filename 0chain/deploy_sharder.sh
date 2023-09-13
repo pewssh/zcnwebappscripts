@@ -71,7 +71,7 @@ pushd ${PROJECT_ROOT}/sharder/ssd > /dev/null;
       PG_PASSWORD=$(cat sharder_pg_password)
     fi
     echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
-    sed -i "s/zchian/${PG_PASSWORD}/g" ./docker.local/config/0chain.yaml
+    # sed -i "s/zchian/${PG_PASSWORD}/g" ./docker.local/config/0chain.yaml
     sed -i "s/zchian/${PG_PASSWORD}/g" ./docker.local/sql_script/00-create-user.sql
     sed -i "s/zchian/${PG_PASSWORD}/g" ./docker.local/build.sharder/p0docker-compose.yaml
 popd > /dev/null;
