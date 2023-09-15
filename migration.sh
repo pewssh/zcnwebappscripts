@@ -184,7 +184,7 @@ services:
       MINIO_SERVER: "minioserver:9000"
 
   s3mgrt:
-    image: 0chaindev/s3mgrt:pr-756-c5dcad5c
+    image: 0chaindev/s3mgrt:pr-756-b0886880
     restart: always
     environment:
       BUCKET: "${BUCKET}"
