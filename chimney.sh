@@ -61,7 +61,7 @@ install_tools_utilities curl
 install_tools_utilities containerd
 install_tools_utilities docker.io
 install_tools_utilities systemd
-install_tools_utilities systemd-timesyncd
+install_tools_utilities "systemd-timesyncd"
 install_tools_utilities ufw
 install_tools_utilities ntp
 install_tools_utilities ntpdate
