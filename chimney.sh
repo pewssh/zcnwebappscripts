@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script requires sudo privileges. Please enter your password:"
     exec sudo "$0" "$@"  # This re-executes the script with sudo
