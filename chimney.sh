@@ -509,7 +509,7 @@ services:
     restart: "always"
 
   monitoringapi:
-    image: 0chaindev/chimney:monitoringapi-latest
+    image: 0chaindev/monitoringapi:latest
     restart: "always"
 
   agent:
