@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script requires sudo privileges. Please enter your password:"
     exec sudo "$0" "$@"  # This re-executes the script with sudo
@@ -44,8 +42,27 @@ else
   echo "unattended-upgrades is not installed. Nothing to do."
 fi
 
-sudo apt install -y unzip curl containerd docker.io systemd systemd-timesyncd
-sudo apt install -y ufw ntp ntpdate
+install_tools_utilities() {
+  REQUIRED_PKG=$1
+  PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG | grep "install ok installed")
+  echo -e "\e[37mChecking for $REQUIRED_PKG if it is already installed. \e[73m"
+  if [ "" = "$PKG_OK" ]; then
+    echo -e "\e[31m  No $REQUIRED_PKG is found on the server. \e[13m\e[32m$REQUIRED_PKG installed. \e[23m \n"
+    sudo apt --yes install $REQUIRED_PKG &> /dev/null
+  else
+    echo -e "\e[32m  $REQUIRED_PKG is already installed on the server/machine.  \e[23m \n"
+  fi
+}
+
+install_tools_utilities unzip
+install_tools_utilities curl
+install_tools_utilities containerd
+install_tools_utilities docker.io
+install_tools_utilities systemd
+install_tools_utilities "systemd-timesyncd"
+install_tools_utilities ufw
+install_tools_utilities ntp
+install_tools_utilities ntpdate
 
 sudo ufw allow 123/udp
 sudo ufw allow out to any port 123
