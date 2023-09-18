@@ -22,3 +22,4 @@ fi
 pwd
 docker stop loki
 docker start loki
+docker restart miner-redis-txns-1 miner-redis-1 miner-1
