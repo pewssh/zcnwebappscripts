@@ -20,6 +20,6 @@ else
     find . -print0 | xargs -0 rm
 fi
 pwd
-docker stop loki
-docker start loki
+cd /var/0chain/grafana-portainer
+docker-compose up -d
 docker restart miner-redis-txns-1 miner-redis-1 miner-1
