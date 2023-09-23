@@ -135,22 +135,12 @@ read_price: ${READ_PRICE}  # token / GB for reading
 write_price: ${WRITE_PRICE}    # token / GB / time_unit for writing
 price_in_usd: false
 price_worker_in_hours: 12
-# the time_unit configured in Storage SC and can be given using
-#
-#     ./zbox sc-config
-#
-
-# min_lock_demand is value in [0; 1] range; it represents number of tokens the
-# blobber earned even if a user will not read or write something
-# to an allocation; the number of tokens will be calculated by the following
-# formula (regarding the time_unit and allocation duration)
-#
-#     allocation_size * write_price * min_lock_demand
-#
-min_lock_demand: 0.1
 
 # update_allocations_interval used to refresh known allocation objects from SC
 update_allocations_interval: 1m
+
+#finalize_allocations_interval used to get and finalize empty allocations
+finalize_allocations_interval: 24h
 
 # maximum limit on the number of combined directories and files on each allocation
 max_dirs_files: 50000
@@ -192,7 +182,10 @@ rate_limiters:
   # General Request Per Second. This rps is used to rate limit endpoints like copy, rename, get file metadata,
   # get paginated refs, etc. Default is 5
   general_rps: 1600
-
+  # Number of blocks downloaded in a day. Default is 100GB(the value needs to be in blocks which is data/64KB)
+  block_limit_daily: 1562500
+  # Max blocks per download request. Default is 500
+  block_limit_request: 500
 server_chain:
   id: "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe"
   owner: "edb90b850f2e7e7cbd0a1fa370fdcc5cd378ffbec95363a7bc0e5a98b8ba5759"
