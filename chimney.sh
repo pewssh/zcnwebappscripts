@@ -139,10 +139,10 @@ echo "updating block_worker"
 sed -i "s/block_worker.*/block_worker: ${BLOCK_WORKER_URL}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
 echo "updating username"
-rev ${PROJECT_ROOT}/config/0chain_blobber.yaml | sed -i "" "s/.*username.*/  username: ${GF_ADMIN_USER}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
+rev ${PROJECT_ROOT}/config/0chain_blobber.yaml | sed -i "s/.*username.*/  username: ${GF_ADMIN_USER}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
 echo "updating password"
-rev ${PROJECT_ROOT}/config/0chain_blobber.yaml | sed -i "" "s/.*password.*/  password: ${GF_ADMIN_PASSWORD}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
+rev ${PROJECT_ROOT}/config/0chain_blobber.yaml | sed -i "s/.*password.*/  password: ${GF_ADMIN_PASSWORD}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
 echo "updating service_charge"
 sed -i "s/service_charge.*/service_charge: ${SERVICE_CHARGE}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
