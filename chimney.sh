@@ -117,184 +117,39 @@ rm /tmp/chimney-dashboard.zip
 
 # create 0chain_blobber.yaml file
 echo "creating 0chain_blobber.yaml"
-cat <<EOF >${PROJECT_ROOT}/config/0chain_blobber.yaml
-version: "1.0"
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/config/0chain_blobber.yaml" -o ${PROJECT_ROOT}/config/0chain_blobber.yaml
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/config/0chain_validator.yaml" -o ${PROJECT_ROOT}/config/0chain_validator.yaml
 
-logging:
-  level: "info"
-  console: true # printing log to console is only supported in development mode
+echo "updating write_price"
+sed -i "s/write_price.*/write_price: ${WRITE_PRICE}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-# for testing
-#  500 MB - 536870912
-#    1 GB - 1073741824
-#    2 GB - 2147483648
-#    3 GB - 3221225472
-#  100 GB - 107374182400
-capacity: 1073741824 # 1 GB bytes total blobber capacity
-read_price: ${READ_PRICE}  # token / GB for reading
-write_price: ${WRITE_PRICE}    # token / GB / time_unit for writing
-price_in_usd: false
-price_worker_in_hours: 12
+echo "updating read_price"
+sed -i "s/read_price.*/read_price: ${READ_PRICE}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-# update_allocations_interval used to refresh known allocation objects from SC
-update_allocations_interval: 1m
+echo "updating delegate_wallet"
+sed -i "s/delegate_wallet.*/delegate_wallet: ${DELEGATE_WALLET}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-#finalize_allocations_interval used to get and finalize empty allocations
-finalize_allocations_interval: 24h
+echo "updating num_delegates"
+sed -i "s/num_delegates.*/num_delegates: ${NO_OF_DELEGATES}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-# maximum limit on the number of combined directories and files on each allocation
-max_dirs_files: 50000
+echo "updating service_charge"
+sed -i "s/service_charge.*/service_charge: ${SERVICE_CHARGE}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-# delegate wallet (must be set)
-delegate_wallet: ${DELEGATE_WALLET}
-# maximum allowed number of stake holders
-num_delegates: ${NO_OF_DELEGATES}
-# service charge of the blobber
-service_charge: ${SERVICE_CHARGE}
-# min submit from miners
-min_submit: 50
-# min confirmation from sharder
-min_confirmation: 50
+echo "updating block_worker"
+sed -i "s/block_worker.*/block_worker: ${BLOCK_WORKER_URL}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-block_worker: ${BLOCK_WORKER_URL}
+echo "updating username"
+rev ${PROJECT_ROOT}/config/0chain_blobber.yaml | sed -i "" "s/.*username.*/  username: ${GF_ADMIN_USER}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-rate_limiters:
-  # Rate limiters will use this duration to clean unused token buckets.
-  # If it is 0 then token will expire in 10 years.
-  default_token_expire_duration: 5m
-  # If blobber is behind some proxy eg. nginx, cloudflare, etc.
-  proxy: true
+echo "updating password"
+rev ${PROJECT_ROOT}/config/0chain_blobber.yaml | sed -i "" "s/.*password.*/  password: ${GF_ADMIN_PASSWORD}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
-  # Rate limiter is applied with two parameters. One is ip-address and other is clientID.
-  # Rate limiter will track both parameters independently and will block request if both
-  # ip-address or clientID has reached its limit
-  # Blobber may not provide any rps values and default will work fine.
+echo "updating service_charge"
+sed -i "s/service_charge.*/service_charge: ${SERVICE_CHARGE}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
 
-  # Commit Request Per second. Commit endpoint is resource intensive.
-  # Default is 0.5
-  commit_rps: 1600
-  # File Request Per Second. This rps is used to rate limit basically upload and download requests.
-  # Its better to have 2 request per second. Default is 1
-  file_rps: 1600
-  # Object Request Per Second. This rps is used to rate limit GetReferencePath, GetObjectTree, etc.
-  # which is resource intensive. Default is 0.5
-  object_rps: 1600
-  # General Request Per Second. This rps is used to rate limit endpoints like copy, rename, get file metadata,
-  # get paginated refs, etc. Default is 5
-  general_rps: 1600
-  # Number of blocks downloaded in a day. Default is 100GB(the value needs to be in blocks which is data/64KB)
-  block_limit_daily: 1562500
-  # Max blocks per download request. Default is 500
-  block_limit_request: 500
-server_chain:
-  id: "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe"
-  owner: "edb90b850f2e7e7cbd0a1fa370fdcc5cd378ffbec95363a7bc0e5a98b8ba5759"
-  genesis_block:
-    id: "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
-  signature_scheme: "bls0chain"
+echo "updating block_worker"
+sed -i "s/block_worker.*/block_worker: ${BLOCK_WORKER_URL}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
 
-contentref_cleaner:
-  frequency: 30
-  tolerance: 3600
-openconnection_cleaner:
-  frequency: 30
-  tolerance: 3600 # 60 * 60
-writemarker_redeem:
-  frequency: 10
-  num_workers: 5
-readmarker_redeem:
-  frequency: 10
-  num_workers: 5
-challenge_response:
-  frequency: 10
-  num_workers: 5
-  max_retries: 20
-
-healthcheck:
-  frequency: 60m # send healthcheck to miners every 60 minutes
-
-pg:
-  user: postgres
-  password: postgres
-db:
-  name: blobber_meta
-  user: blobber_user
-  password: blobber
-  host: postgres
-  port: 5432
-
-storage:
-  files_dir: "/path/to/hdd"
-#  sha256 hash will have 64 characters of hex encoded length. So if dir_level is [2,2] this means for an allocation id
-#  "4c9bad252272bc6e3969be637610d58f3ab2ff8ca336ea2fadd6171fc68fdd56" directory below will be created.
-#  alloc_dir = {files_dir}/4c/9b/ad252272bc6e3969be637610d58f3ab2ff8ca336ea2fadd6171fc68fdd56
-#
-#  So this means, there will maximum of 16^4 = 65536 numbers directories for all allocations stored by blobber.
-#  Similarly for some file_hash "ef935503b66b1ce026610edf18bffd756a79676a8fe317d951965b77a77c0227" with dir_level [2, 2, 1]
-#  following path is created for the file:
-# {alloc_dir}/ef/93/5/503b66b1ce026610edf18bffd756a79676a8fe317d951965b77a77c0227
-  alloc_dir_level: [2, 1]
-  file_dir_level: [2, 2, 1]
-
-disk_update:
-  # defaults to true. If false, blobber has to manually update blobber's capacity upon increase/decrease
-  # If blobber has to limit its capacity to 5% of its capacity then it should turn automaci_update to false.
-  automatic_update: true
-  blobber_update_interval: 5m # In minutes
-# integration tests related configurations
-integration_tests:
-  # address of the server
-  address: host.docker.internal:15210
-  # lock_interval used by nodes to request server to connect to blockchain
-  # after start
-  lock_interval: 1s
-admin:
-  username: "${GF_ADMIN_USER}"
-  password: "${GF_ADMIN_PASSWORD}"
-EOF
-
-### Create 0chain_validator.yaml file
-echo "creating 0chain_validator.yaml"
-cat <<EOF >${PROJECT_ROOT}/config/0chain_validator.yaml
-version: 1.0
-
-# delegate wallet (must be set)
-delegate_wallet: ${DELEGATE_WALLET}
-# maximum allowed number of stake holders
-num_delegates: 50
-# service charge of related blobber
-service_charge: ${SERVICE_CHARGE}
-
-block_worker: ${BLOCK_WORKER_URL}
-
-rate_limiters:
-  # Rate limiters will use this duration to clean unused token buckets.
-  # If it is 0 then token will expire in 10 years.
-  default_token_expire_duration: 5m
-  # If blobber is behind some proxy eg. nginx, cloudflare, etc.
-  proxy: true
-
-logging:
-  level: "error"
-  console: true # printing log to console is only supported in development mode
-
-healthcheck:
-  frequency: 60m # send healthcheck to miners every 60 mins
-
-server_chain:
-  id: "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe"
-  owner: "edb90b850f2e7e7cbd0a1fa370fdcc5cd378ffbec95363a7bc0e5a98b8ba5759"
-  genesis_block:
-    id: "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
-  signature_scheme: "bls0chain"
-# integration tests related configurations
-integration_tests:
-  # address of the server
-  address: host.docker.internal:15210
-  # lock_interval used by nodes to request server to connect to blockchain
-  # after start
-  lock_interval: 1s
-EOF
 
 ### Create minio_config.txt file
 echo "creating minio_config.txt"

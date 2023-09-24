@@ -1,0 +1,38 @@
+version: 1.0
+
+# delegate wallet (must be set)
+delegate_wallet: '9c693cb14f29917968d6e8c909ebbea3425b4c1bc64b6732cadc2a1869f49be9'
+# maximum allowed number of stake holders
+num_delegates: 50
+# service charge of related blobber
+service_charge: 0.10
+
+block_worker: https://dev.0chain.net/dns
+
+rate_limiters:
+  # Rate limiters will use this duration to clean unused token buckets.
+  # If it is 0 then token will expire in 10 years.
+  default_token_expire_duration: 5m
+  # If blobber is behind some proxy eg. nginx, cloudflare, etc.
+  proxy: true
+
+logging:
+  level: "error"
+  console: true # printing log to console is only supported in development mode
+
+healthcheck:
+  frequency: 60s # send healthcheck to miners every 60 seconds
+
+server_chain:
+  id: "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe"
+  owner: "edb90b850f2e7e7cbd0a1fa370fdcc5cd378ffbec95363a7bc0e5a98b8ba5759"
+  genesis_block:
+    id: "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
+  signature_scheme: "bls0chain"
+# integration tests related configurations
+integration_tests:
+  # address of the server
+  address: host.docker.internal:15210
+  # lock_interval used by nodes to request server to connect to blockchain
+  # after start
+  lock_interval: 1s
