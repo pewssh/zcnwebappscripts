@@ -349,8 +349,8 @@ services:
     image: grafana/grafana:9.5.2
     environment:
       GF_SERVER_ROOT_URL: "https://${BLOBBER_HOST}/grafana"
-      GF_SECURITY_ADMIN_USER: ${GF_ADMIN_USER}
-      GF_SECURITY_ADMIN_PASSWORD: ${GF_ADMIN_PASSWORD}
+      GF_SECURITY_ADMIN_USER: "${GF_ADMIN_USER}"
+      GF_SECURITY_ADMIN_PASSWORD: "${GF_ADMIN_PASSWORD}"
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
       - grafana_data:/var/lib/grafana
