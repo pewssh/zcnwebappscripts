@@ -307,10 +307,7 @@ services:
     user: "1001"
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/loki-config.yaml:/mnt/config/loki-config.yaml
-      - ${PROJECT_ROOT_HDD}/loki/wal:/tmp/wal
-      - ${PROJECT_ROOT_HDD}/loki/boltdb-shipper-active:/tmp/loki/boltdb-shipper-active
-      - ${PROJECT_ROOT_HDD}/loki/boltdb-shipper-cache:/tmp/loki/boltdb-shipper-cache
-      - ${PROJECT_ROOT_HDD}/loki/chunks:/tmp/loki/chunks
+      - ${PROJECT_ROOT_HDD}/loki:/data
       - ${PROJECT_ROOT_HDD}/loki/rules:/tmp/loki/rules
     command: -config.file=/mnt/config/loki-config.yaml
     restart: "always"

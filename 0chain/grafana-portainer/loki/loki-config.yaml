@@ -7,7 +7,7 @@ server:
 ingester:
   wal:
     enabled: true
-    dir: /tmp/wal
+    dir: /data/wal
     #
     # Create checkpoints every minute.  I wouldn't normally do this in production,
     # but for testing/dev where I could be slamming in a bunch of events all at once
@@ -37,26 +37,30 @@ schema_config:
       schema: v11
       index:
         prefix: index_
-        period: 24h
+        period: 24h # must be set to atleast 24h for the compactor to work.
 
 # The storage_config block configures one of many possible stores for both the
 # index and chunks. Which configuration to be picked should be defined in
 # schema_config block.
 storage_config:
   boltdb_shipper:
-    active_index_directory: /tmp/loki/boltdb-shipper-active
-    cache_location: /tmp/loki/boltdb-shipper-cache
+    active_index_directory: /data/boltdb-shipper-active
+    cache_location: /data/boltdb-shipper-cache
     cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
     shared_store: filesystem
   filesystem:
-    directory: /tmp/loki/chunks
+    directory: /data/chunks
 
 # The compactor block configures the compactor component, which compacts index
 # shards for performance.
 compactor:
-  working_directory: /tmp/loki/boltdb-shipper-compactor
+  working_directory: /data/compactor # directory where marked chunks and temporary tables will be saved
   shared_store: filesystem
   retention_enabled: true
+  compaction_interval: 24h
+  retention_delete_delay: 1m
+  retention_delete_worker_count: 150
+
 
 # The limits_config block configures global and per-tenant limits in Loki.
 limits_config:
