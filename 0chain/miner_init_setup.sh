@@ -18,11 +18,21 @@ echo -e "\e[32m 1. Apt update. \e[23m \e[0;37m"
 sudo apt update
 echo -e "\e[32m 2. Installing qq. \e[23m \e[0;37m"
 sudo apt install -qq -y
-echo -e "\e[32m 3. Installing unzip, dnsutils. \e[23m \e[0;37m"
-sudo apt install unzip dnsutils -y
+echo -e "\e[32m 3. Installing unzip, dnsutils, ufw, ntp, ntpdate. \e[23m \e[0;37m"
+sudo apt install unzip dnsutils ufw ntp ntpdate -y
 echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
 DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
 sudo chmod 777 /var/run/docker.sock &> /dev/null
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                            Setting up ntp
+===============================================================================================================================================================================  \e[39m"
+sudo ufw allow 123/udp
+sudo ufw allow out to any port 123
+sudo systemctl stop ntp
+sudo ntpdate pool.ntp.org
+sudo systemctl start ntp
+sudo systemctl enable ntp
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                 Checking docker service running or not
@@ -115,9 +125,9 @@ pushd ${PROJECT_ROOT} > /dev/null;
         fi
         sudo tar -xvf keygen-linux.tar.gz
         sudo rm keygen-linux.tar.gz*
-        echo "server_url : http://65.108.96.106:3000/" | sudo tee server-config.yaml > /dev/null
+        echo "server_url : https://mb-gen.0chain.net/" | sudo tee server-config.yaml > /dev/null
         echo "T: 2" | sudo tee -a server-config.yaml > /dev/null
-        echo "N: 3" | sudo tee -a server-config.yaml > /dev/null
+        echo "N: 104" | sudo tee -a server-config.yaml > /dev/null
         echo "K: 3" | sudo tee -a server-config.yaml > /dev/null
     fi
 popd > /dev/null;

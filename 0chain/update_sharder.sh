@@ -2,57 +2,49 @@
 
 set -e
 
-sed -i "s/104/103/g" /var/0chain/server-config.yaml
-
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                    Setup variables
+                                                                                setup variables & yq
 ===============================================================================================================================================================================  \e[39m"
+export PROJECT_ROOT=/var/0chain # /var/0chain
 
-export PROJECT_ROOT="/var/0chain" # /var/0chain
+sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 || true
+sudo chmod a+x /usr/local/bin/yq || true
+yq --version || true
+
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                Checking Sharder counts.
+                                                                            Checking Sharder counts.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
     #Sharder
     if [[ -f sharder/numsharder.txt ]] ; then
+        echo -e "\e[32m Sharders count present \e[23m \e[0;37m"
         SHARDER=$(cat sharder/numsharder.txt)
-    else
-        echo "Checking for Sharders."
     fi
-    echo -e "\e[32m Successfully Checked \e[23m \e[0;37m"
 
-popd > /dev/null;
-
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                Downloading Keygen Binary
-===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT} > /dev/null;
-    if [[ ${SHARDER} -gt 0 ]] ; then
-        if [[ -f bin/keygen ]] ; then
-            echo -e "\e[32m Keygen binary present \e[23m \e[0;37m"
-        else
-            wget https://github.com/0chain/onboarding-cli/releases/download/binary%2Fubuntu-18/keygen-linux.tar.gz
-            tar -xvf keygen-linux.tar.gz
-            rm keygen-linux.tar.gz*
-            echo "server_url : https://mb-gen.0chain.net/" > server-config.yaml
-        fi
-    else
-        echo "No sharder present."
+    #Checking shader var's
+    if [[ -z ${SHARDER} ]] ; then
+        echo -e "\e[32m Sharder's not present' \e[23m \e[0;37m"
         exit 1
     fi
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                            Downloading magicblock for Sharder.
+                                                                                Updating image sharder image tag
 ===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT} > /dev/null;
-    if [[ ${SHARDER} -gt 0 ]]; then
-        echo "Downloading magicblock"
-        sudo ./bin/keygen get-magicblock
-        sudo ./bin/keygen get-initialstates
-    else
-        echo "No sharder present"
-    fi
-popd
+pushd ${PROJECT_ROOT}/sharder/ssd > /dev/null;
+    yq e -i '.services.sharder.image = "0chaindev/sharder:sprint-1.10.1"' ./docker.local/build.sharder/p0docker-compose.yaml
+popd > /dev/null;
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                            Starting sharders
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT}/sharder/ssd/docker.local > /dev/null;  #/sharder/ssd
+    for i in $(seq 1 $SHARDER)
+    do
+        cd sharder${i}
+        sudo bash ../bin/start.p0sharder.sh ${PROJECT_ROOT}/sharder/ssd ${PROJECT_ROOT}/sharder/hdd
+        cd ../
+    done
+popd > /dev/null;
