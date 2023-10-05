@@ -139,9 +139,9 @@ pushd ${PROJECT_ROOT} > /dev/null;
         sudo tar -xvf keygen-linux.tar.gz
         sudo rm keygen-linux.tar.gz*
         echo "server_url : https://mb-gen.0chain.net/" | sudo tee server-config.yaml > /dev/null
-        echo "T: 2" | sudo tee -a server-config.yaml > /dev/null
-        echo "N: 104" | sudo tee -a server-config.yaml > /dev/null
-        echo "K: 3" | sudo tee -a server-config.yaml > /dev/null
+        echo "T: 66" | sudo tee -a server-config.yaml > /dev/null
+        echo "N: 103" | sudo tee -a server-config.yaml > /dev/null
+        echo "K: 66" | sudo tee -a server-config.yaml > /dev/null
     fi
 popd > /dev/null;
 
