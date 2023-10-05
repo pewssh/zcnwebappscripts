@@ -11,6 +11,19 @@ export PROJECT_ROOT_HDD=/var/0chain/miner/hdd # /var/0chain/miner/hdd
 
 mkdir -p ${PROJECT_ROOT}
 
+if [ ! -d "${PROJECT_ROOT}/backup-deploy1" ]; then
+    echo "Creating backup"
+    mkdir -p ${PROJECT_ROOT}/backup-deploy1
+    mv ${PROJECT_ROOT}/bin ${PROJECT_ROOT}/backup-deploy1/ || true
+    mv ${PROJECT_ROOT}/keys ${PROJECT_ROOT}/backup-deploy1/ || true
+    mv ${PROJECT_ROOT}/miner/*.txt ${PROJECT_ROOT}/backup-deploy1/ || true
+    mv ${PROJECT_ROOT}/output ${PROJECT_ROOT}/backup-deploy1/ || true
+    mv ${PROJECT_ROOT}/*.json ${PROJECT_ROOT}/backup-deploy1/ || true
+    mv ${PROJECT_ROOT}/*.yaml ${PROJECT_ROOT}/backup-deploy1/ || true
+else
+    echo "Backup already exists"
+fi
+
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                 Installing some pre-requisite tools on your server
 ===============================================================================================================================================================================  \e[39m"
@@ -20,9 +33,9 @@ echo -e "\e[32m 2. Installing qq. \e[23m \e[0;37m"
 sudo apt install -qq -y
 echo -e "\e[32m 3. Installing unzip, dnsutils, ufw, ntp, ntpdate. \e[23m \e[0;37m"
 sudo apt install unzip dnsutils ufw ntp ntpdate -y
-echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
-DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
-sudo chmod 777 /var/run/docker.sock &> /dev/null
+# echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
+# DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
+# sudo chmod 777 /var/run/docker.sock &> /dev/null
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                             Setting up ntp
@@ -45,20 +58,20 @@ else
     exit 1
 fi
 
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                                Disk setup
-===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT} > /dev/null;
-    if [[ ! -d ${PROJECT_ROOT_HDD} || ! -d ${PROJECT_ROOT_SSD} ]]; then
-        sudo mkdir -p disk-setup/
-        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
-        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
+# echo -e "\n\e[93m===============================================================================================================================================================================
+#                                                                                 Disk setup
+# ===============================================================================================================================================================================  \e[39m"
+# pushd ${PROJECT_ROOT} > /dev/null;
+#     if [[ ! -d ${PROJECT_ROOT_HDD} || ! -d ${PROJECT_ROOT_SSD} ]]; then
+#         sudo mkdir -p disk-setup/
+#         sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
+#         sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
 
-        sudo chmod +x disk-setup/disk_setup.sh
-        bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
-    fi
-    echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
-popd > /dev/null;
+#         sudo chmod +x disk-setup/disk_setup.sh
+#         bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+#     fi
+#     echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
+# popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                 Persisting Miner inputs.
@@ -74,14 +87,14 @@ pushd ${PROJECT_ROOT} > /dev/null;
         read -p "Enter the PUBLIC_URL or your domain name. Example: john.mydomain.com : " PUBLIC_ENDPOINT
     done
 
-    #Email Input
-    if [[ -f miner/email.txt ]] ; then
-        EMAIL=$(cat miner/email.txt)
-    fi
-    while [[ -z ${EMAIL} ]]
-    do
-        read -p "Enter the EMAIL: " EMAIL
-    done
+    # #Email Input
+    # if [[ -f miner/email.txt ]] ; then
+    #     EMAIL=$(cat miner/email.txt)
+    # fi
+    # while [[ -z ${EMAIL} ]]
+    # do
+    #     read -p "Enter the EMAIL: " EMAIL
+    # done
 
     #Miner
     if [[ -f miner/numminers.txt ]] ; then
@@ -89,7 +102,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
     else
         sudo sh -c "echo -n 1 > miner/numminers.txt"
         sudo sh -c "echo -n ${PUBLIC_ENDPOINT} > miner/url.txt"
-        sudo sh -c "echo -n ${EMAIL} > miner/email.txt"
+        sudo sh -c "echo -n ${PUBLIC_ENDPOINT} > miner/email.txt"
     fi
 
     echo -e "\e[32m Successfully Completed \e[23m \e[0;37m"
@@ -139,7 +152,7 @@ config() {
     echo "  - n2n_ip: ${PUBLIC_ENDPOINT}" | sudo tee -a config.yaml > /dev/null
     echo "    public_ip: ${PUBLIC_ENDPOINT}" | sudo tee -a config.yaml > /dev/null
     echo "    port: $1" | sudo tee -a config.yaml > /dev/null
-    echo "    description: ${EMAIL}" | sudo tee -a config.yaml > /dev/null
+    echo "    description: ${PUBLIC_ENDPOINT}" | sudo tee -a config.yaml > /dev/null
 }
 
 pushd ${PROJECT_ROOT} > /dev/null;
