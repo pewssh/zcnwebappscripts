@@ -32,9 +32,9 @@ echo -e "\e[32m 2. Installing qq. \e[23m \e[0;37m"
 sudo apt install -qq -y
 echo -e "\e[32m 3. Installing unzip, dnsutils, ufw, ntp, ntpdate. \e[23m \e[0;37m"
 sudo apt install unzip dnsutils ufw ntp ntpdate -y
-# echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
-# DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
-# sudo chmod 777 /var/run/docker.sock &> /dev/null
+echo -e "\e[32m 4. Installing docker & docker-compose. \e[23m \e[0;37m"
+DOCKERCOMPOSEVER=v2.2.3 ; sudo apt install docker.io -y; sudo systemctl enable --now docker ; docker --version	 ; sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKERCOMPOSEVER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; sudo chmod +x /usr/local/bin/docker-compose ; docker-compose --version
+sudo chmod 777 /var/run/docker.sock &> /dev/null
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                             Setting up ntp
