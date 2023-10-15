@@ -132,6 +132,9 @@ sed -i "s/delegate_wallet.*/delegate_wallet: ${DELEGATE_WALLET}/g" ${PROJECT_ROO
 echo "updating num_delegates"
 sed -i "s/num_delegates.*/num_delegates: ${NO_OF_DELEGATES}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
+echo "updating num_delegates in 0chain_validator.yaml"
+sed -i "s/num_delegates.*/num_delegates: ${NO_OF_DELEGATES}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
+
 echo "updating service_charge"
 sed -i "s/service_charge.*/service_charge: ${SERVICE_CHARGE}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
