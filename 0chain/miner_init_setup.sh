@@ -11,15 +11,15 @@ export PROJECT_ROOT_HDD=/var/0chain/miner/hdd # /var/0chain/miner/hdd
 
 mkdir -p ${PROJECT_ROOT}/miner/ssd
 
-if [ ! -d "${PROJECT_ROOT}/backup-deploy1" ]; then
+if [ ! -d "${PROJECT_ROOT}/backup-deploy2" ]; then
     echo "Creating backup"
-    mkdir -p ${PROJECT_ROOT}/backup-deploy1
-    mv ${PROJECT_ROOT}/bin ${PROJECT_ROOT}/backup-deploy1/ || true
-    mv ${PROJECT_ROOT}/keys ${PROJECT_ROOT}/backup-deploy1/ || true
-    mv ${PROJECT_ROOT}/miner/*.txt ${PROJECT_ROOT}/backup-deploy1/ || true
-    mv ${PROJECT_ROOT}/output ${PROJECT_ROOT}/backup-deploy1/ || true
-    mv ${PROJECT_ROOT}/*.json ${PROJECT_ROOT}/backup-deploy1/ || true
-    mv ${PROJECT_ROOT}/*.yaml ${PROJECT_ROOT}/backup-deploy1/ || true
+    mkdir -p ${PROJECT_ROOT}/backup-deploy2
+    mv ${PROJECT_ROOT}/bin ${PROJECT_ROOT}/backup-deploy2/ || true
+    mv ${PROJECT_ROOT}/keys ${PROJECT_ROOT}/backup-deploy2/ || true
+    mv ${PROJECT_ROOT}/miner/*.txt ${PROJECT_ROOT}/backup-deploy2/ || true
+    mv ${PROJECT_ROOT}/output ${PROJECT_ROOT}/backup-deploy2/ || true
+    mv ${PROJECT_ROOT}/*.json ${PROJECT_ROOT}/backup-deploy2/ || true
+    mv ${PROJECT_ROOT}/*.yaml ${PROJECT_ROOT}/backup-deploy2/ || true
 else
     echo "Backup already exists"
 fi
@@ -87,15 +87,6 @@ pushd ${PROJECT_ROOT} > /dev/null;
         read -p "Enter the PUBLIC_URL or your domain name. Example: john.mydomain.com : " PUBLIC_ENDPOINT
     done
 
-    # #Email Input
-    # if [[ -f miner/email.txt ]] ; then
-    #     EMAIL=$(cat miner/email.txt)
-    # fi
-    # while [[ -z ${EMAIL} ]]
-    # do
-    #     read -p "Enter the EMAIL: " EMAIL
-    # done
-
     #Miner
     if [[ -f miner/numminers.txt ]] ; then
         MINER=$(cat miner/numminers.txt)
@@ -139,9 +130,9 @@ pushd ${PROJECT_ROOT} > /dev/null;
         sudo tar -xvf keygen-linux.tar.gz
         sudo rm keygen-linux.tar.gz*
         echo "server_url : https://mb-gen.0chain.net/" | sudo tee server-config.yaml > /dev/null
-        echo "T: 66" | sudo tee -a server-config.yaml > /dev/null
-        echo "N: 103" | sudo tee -a server-config.yaml > /dev/null
-        echo "K: 66" | sudo tee -a server-config.yaml > /dev/null
+        echo "T: 61" | sudo tee -a server-config.yaml > /dev/null
+        echo "N: 92" | sudo tee -a server-config.yaml > /dev/null
+        echo "K: 61" | sudo tee -a server-config.yaml > /dev/null
     fi
 popd > /dev/null;
 
