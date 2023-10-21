@@ -7,6 +7,8 @@ echo -e "\n\e[93m===============================================================
 ===============================================================================================================================================================================  \e[39m"
 
 export PROJECT_ROOT="/var/0chain" # /var/0chain
+export PROJECT_ROOT_SSD=/var/0chain/sharder/ssd # /var/0chain/sharder/ssd
+export PROJECT_ROOT_HDD=/var/0chain/sharder/hdd # /var/0chain/sharder/ssd
 echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
 
 echo -e "\n\e[93m===============================================================================================================================================================================
@@ -54,3 +56,18 @@ pushd ${PROJECT_ROOT} > /dev/null;
         echo "No sharder present"
     fi
 popd
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                                Disk setup
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT} > /dev/null;
+    # if [[ ! -d ${PROJECT_ROOT_HDD} || ! -d ${PROJECT_ROOT_SSD} ]]; then
+        sudo mkdir -p disk-setup/
+        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O disk-setup/disk_setup.sh
+        sudo wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O disk-setup/disk_func.sh
+
+        sudo chmod +x disk-setup/disk_setup.sh
+        bash disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+    # fi
+    echo -e "\e[32m Successfully Created \e[23m \e[0;37m"
+popd > /dev/null;
