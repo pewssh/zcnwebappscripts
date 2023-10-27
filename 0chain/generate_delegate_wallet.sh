@@ -51,7 +51,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
             fi
         fi
         
-        ./bin/zwallet create-wallet --wallet delegate_wallet.json --configDir . --config config.yaml
+        ./bin/zwallet create-wallet --wallet delegate_wallet.json --configDir . --config config.yaml --silent
         CLIENTID=$( jq -r .client_id delegate_wallet.json )
     fi
     echo "Delegate wallet ID: ${CLIENTID}"
