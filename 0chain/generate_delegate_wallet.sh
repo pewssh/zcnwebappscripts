@@ -50,7 +50,6 @@ pushd ${PROJECT_ROOT} > /dev/null;
                 echo "Didn't found any Ubuntu version with 20/22."
             fi
         fi
-        
         ./bin/zwallet create-wallet --wallet delegate_wallet.json --configDir . --config config.yaml --silent
         CLIENTID=$( jq -r .client_id delegate_wallet.json )
     fi
