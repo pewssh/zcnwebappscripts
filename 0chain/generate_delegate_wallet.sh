@@ -34,7 +34,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
                 echo "Ubuntu 18 is not supported"
                 exit 1
             elif [[ ${ubuntu_version} -eq 20 || ${ubuntu_version} -eq 22 ]]; then
-                curl -L "https://github.com/0chain/zcnwebappscripts/raw/add/zwallet/0chain/artifacts/zwallet-binary.zip" -o /tmp/zwallet-binary.zip
+                curl -L "https://github.com/0chain/zcnwebappscripts/raw/as-deploy/0chain/artifacts/zwallet-binary.zip" -o /tmp/zwallet-binary.zip
                 sudo unzip -o /tmp/zwallet-binary.zip && rm -rf /tmp/zwallet-binary.zip
                 mkdir bin
                 sudo cp -rf zwallet-binary/* ${PROJECT_ROOT}/bin/
@@ -53,5 +53,17 @@ pushd ${PROJECT_ROOT} > /dev/null;
         ./bin/zwallet create-wallet --wallet delegate_wallet.json --configDir . --config config.yaml --silent
         CLIENTID=$( jq -r .client_id delegate_wallet.json )
     fi
-    echo "Delegate wallet ID: ${CLIENTID}"
+popd > /dev/null;
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                Ouput delegate wallet id.
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT} > /dev/null;
+    if [[ -z ${CLIENTID} ]]; then
+        echo "Delegate wallet didn't got created. Please check with zus team"
+        exit 1
+    else
+        echo "Delegate wallet ID: ${CLIENTID}"
+        sudo sh -c "echo -n ${CLIENTID} > del_wal_id.txt"
+    fi
 popd > /dev/null;
