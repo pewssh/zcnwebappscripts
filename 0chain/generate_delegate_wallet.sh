@@ -39,11 +39,19 @@ pushd ${PROJECT_ROOT} > /dev/null;
                 mkdir bin
                 sudo cp -rf zwallet-binary/* ${PROJECT_ROOT}/bin/
                 sudo rm -rf zwallet-binary
+                echo "block_worker: https://beta.zus.network/dns" > config.yaml
+                echo "signature_scheme: bls0chain" >> config.yaml
+                echo "min_submit: 50" >> config.yaml
+                echo "min_confirmation: 50" >> config.yaml
+                echo "confirmation_chain_length: 3" >> config.yaml
+                echo "max_txn_query: 5" >> config.yaml
+                echo "query_sleep_time: 5" >> config.yaml
             else
                 echo "Didn't found any Ubuntu version with 20/22."
             fi
         fi
-        ./bin/zwallet create-wallet --wallet delegate_wallet.json --configDir .
+        
+        ./bin/zwallet create-wallet --wallet delegate_wallet.json --configDir . --config config.yaml
         CLIENTID=$( jq -r .client_id delegate_wallet.json )
     fi
     echo "Delegate wallet ID: ${CLIENTID}"
