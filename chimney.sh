@@ -83,13 +83,15 @@ if [ -f "${PROJECT_ROOT}/docker-compose.yml" ]; then
   rm -rf ${PROJECT_ROOT} || true
 fi
 
-#Disk setup
-mkdir -p $PWD/disk-setup/
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
+# #Disk setup
+# mkdir -p $PWD/disk-setup/
+# wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
+# wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
 
-sudo chmod +x $PWD/disk-setup/disk_setup.sh
-bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+# sudo chmod +x $PWD/disk-setup/disk_setup.sh
+# bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+mkdir -p $PROJECT_ROOT_SSD
+mkdir -p $PROJECT_ROOT_HDD
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >/tmp/portainer_password
