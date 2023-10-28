@@ -15,7 +15,7 @@ echo -e "\e[32m 1. Apt update. \e[23m \e[0;37m"
 sudo apt update
 echo -e "\e[32m 2. Installing jq, zip, unzip. \e[23m \e[0;37m"
 sudo apt install jq zip unzip -y
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 echo -e "\e[32m 2. Installing build essentials and gcc. \e[23m \e[0;37m"
 apt-get -y install build-essential nghttp2 libnghttp2-dev libssl-dev
 sudo apt install gcc-11 g++-11
