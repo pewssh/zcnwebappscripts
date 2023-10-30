@@ -32,7 +32,7 @@ export DEBIAN_FRONTEND=noninteractive
 export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
-export BRANCH_NAME=tablespace
+export BRANCH_NAME=main
 
 sudo apt update
 
