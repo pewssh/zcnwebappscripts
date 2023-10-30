@@ -92,7 +92,11 @@ fi
 # sudo chmod +x $PWD/disk-setup/disk_setup.sh
 # bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
 mkdir -p $PROJECT_ROOT_SSD
-mkdir -p $PROJECT_ROOT_HDD
+mkdir -p ${PROJECT_ROOT_HDD}/pg_hdd_data
+
+# provide required permission for tablespace volume to mount to postgres
+chown -R "999:999" ${PROJECT_ROOT_HDD}/pg_hdd_data
+
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >/tmp/portainer_password
@@ -228,9 +232,6 @@ ${BLOBBER_HOST} {
 }
 
 EOF
-
-# provide required permission for tablespace volume to mount to postgres
-chown -R "999:999" ${PROJECT_ROOT_HDD}/pg_hdd_data
 
 ### docker-compose.yaml
 echo "creating docker-compose file"
