@@ -29,9 +29,12 @@ pushd ${PROJECT_ROOT} > /dev/null;
     fi
 
     #Sharder Delegate wallet
-    if [[ -f sharder/del_wal_id.txt ]] ; then
+    if [[ -f del_wal_id.txt ]] ; then
         echo -e "\e[32m Sharders delegate wallet id present \e[23m \e[0;37m"
-        SHARDER_DEL=$(cat sharder/del_wal_id.txt)
+        SHARDER_DEL=$(cat del_wal_id.txt)
+    else
+        echo "Unable to find sharder delegate wallet"
+        exit 1
     fi
 
     #Checking shader var's

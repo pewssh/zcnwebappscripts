@@ -30,9 +30,12 @@ pushd ${PROJECT_ROOT} > /dev/null;
     fi
 
     #Miner Delegate wallet
-    if [[ -f miner/del_wal_id.txt ]] ; then
+    if [[ -f del_wal_id.txt ]] ; then
         echo -e "\e[32m Miner delegate wallet id present \e[23m \e[0;37m"
-        MINER_DEL=$(cat miner/del_wal_id.txt)
+        MINER_DEL=$(cat del_wal_id.txt)
+    else
+        echo "Unable to find miner delegate wallet"
+        exit 1
     fi
 
     #checking miner var's

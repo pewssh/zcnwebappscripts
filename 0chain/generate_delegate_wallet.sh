@@ -9,7 +9,7 @@ export PROJECT_ROOT="/var/0chain" # /var/0chain
 mkdir -p $PROJECT_ROOT
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                Installing some pre-requisite tools on your server
+                                                                        Installing some pre-requisite tools on your server
 ===============================================================================================================================================================================  \e[39m"
 echo -e "\e[32m 1. Apt update. \e[23m \e[0;37m"
 sudo apt update
@@ -21,15 +21,44 @@ sudo apt install build-essential nghttp2 libnghttp2-dev libssl-dev -y
 sudo apt install gcc-11 g++-11 -y
 
 echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                Persisting inputs.
+                                                                        Persisting Delegate wallet inputs.
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT} > /dev/null;
+
+    #Delegate wallet input
+    if [[ -f del_wal_id.txt ]] ; then
+        CLIENTID=$(cat del_wal_id.txt)
+        echo "Delegate wallet id already exists i.e.: ${CLIENTID}"
+    else
+        while true; do
+            read -p "Do you wish to enter delegate wallet id as an input? Input yes or no. " yn
+            case $yn in
+                [Yy]* )
+                    read -p "Enter the pregenerated delegate wallet id : " CLIENTID
+                    sudo sh -c "echo -n ${CLIENTID} > del_wal_id.txt"
+                    break;;
+                [Nn]* )
+                    echo "You entered no. Will create a new delegate wallet for you."
+                    break;;
+                * )
+                    echo "Please answer yes or no.";;
+            esac
+        done
+    fi
+
+popd > /dev/null;
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                            Generating delegate wallet.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
 
     #Delegate Wallet Input
-    if [[ -f delegate_wallet.json ]] ; then
-        CLIENTID=$( jq -r .client_id delegate_wallet.json )
+    if [[ -n ${CLIENTID} ]] ; then
+        echo "Delegate wallet id found."
+        CLIENTID=$(cat del_wal_id.txt)
     else
-        echo "\e[32m Creating new delegate wallet. \e[23m \e[0;37m"
+        echo -e "\e[32m Creating new delegate wallet. \e[23m \e[0;37m"
         if [[ -f bin/zwallet ]] ; then
             echo "zwallet binary already present"
         else
@@ -56,18 +85,6 @@ pushd ${PROJECT_ROOT} > /dev/null;
         fi
         ./bin/zwallet create-wallet --wallet delegate_wallet.json --configDir . --config config.yaml --silent
         CLIENTID=$( jq -r .client_id delegate_wallet.json )
-    fi
-popd > /dev/null;
-
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                Ouput delegate wallet id.
-===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT} > /dev/null;
-    if [[ -z ${CLIENTID} ]]; then
-        echo "Delegate wallet didn't got created. Please check with zus team"
-        exit 1
-    else
-        echo "Delegate wallet ID: ${CLIENTID}"
         sudo sh -c "echo -n ${CLIENTID} > del_wal_id.txt"
     fi
 popd > /dev/null;
