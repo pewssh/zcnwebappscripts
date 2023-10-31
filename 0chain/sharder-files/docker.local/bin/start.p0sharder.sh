@@ -23,8 +23,4 @@ fi
 
 echo Starting sharder"$SHARDER_ID" in daemon mode ...
 
-mkdir -p $HDD_PATH/sharder1/data/postgresql2
-cd $HDD_PATH/sharder1/data/
-chown -R 999:999 postgresql2
-
 SHARDER=$SHARDER_ID PROJECT_ROOT_SSD=$SSD_PATH PROJECT_ROOT_HDD=$HDD_PATH docker-compose -p sharder"$SHARDER_ID" -f ../build.sharder/p0docker-compose.yaml up -d
