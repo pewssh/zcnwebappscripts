@@ -72,7 +72,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
                 mkdir bin
                 sudo cp -rf zwallet-binary/* ${PROJECT_ROOT}/bin/
                 sudo rm -rf zwallet-binary
-                echo "block_worker: https://mainnet.zus.network/dns" > config.yaml
+                echo "block_worker: https://beta.zus.network/dns" > config.yaml
                 echo "signature_scheme: bls0chain" >> config.yaml
                 echo "min_submit: 50" >> config.yaml
                 echo "min_confirmation: 50" >> config.yaml
@@ -94,9 +94,11 @@ echo -e "\n\e[93m===============================================================
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
 
-    sed -i "s/10000000000/10000000000000/g" ./initial_states.yaml
     if grep "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d3" initial_states.yaml; then
-      head -n -2 initial_states.yaml
+      sed -i "s/10000000000/10000000000000/g" ./initial_states.yaml
+      wallet_line_no=$(grep -n 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d3 initial_states.yaml | awk -F : '{print $1}')
+      sed -i "$wallet_line_no,$((++wallet_line_no))d" initial_states.yaml
+      # head -n -2 initial_states.yaml
     fi
     if ! grep "f1d14699ccad97ca893a635e68e128b0717f8a1aab1a071db6b40935cbfce90c" initial_states.yaml; then
         cat <<EOF >>initial_states.yaml
@@ -120,10 +122,8 @@ pushd ${PROJECT_ROOT} > /dev/null;
       tokens: 100000000000000
     - id: 120501bbbf5f1cbcfb939952e37ef7ff85bf0282031e2ec81edaa5f424242ae8
       tokens: 100000000000000
-      #owner
     - id: 1746b06bb09f55ee01b33b5e2e055d6cc7a900cb57c0a3a5eaabb8a0e7745802
-      tokens: 200000000000000000
-      #0chain team wallet
+      tokens: 100000000000000
     - id: 65b32a635cffb6b6f3c73f09da617c29569a5f690662b5be57ed0d994f234335
       tokens: 100000000000000000
 EOF
@@ -131,7 +131,7 @@ EOF
         echo "Wallet's already added."
     fi
 
-  if $(wc -l initial_states.yaml | awk '{print $1}') != 285; then
+  if [[ $(wc -l initial_states.yaml | awk '{print $1}') != 285 ]]; then
     echo "Initial stats file corrupted, Please contact zus team."
     exit 1
   fi
@@ -141,9 +141,14 @@ echo -e "\n\e[93m===============================================================
                                                                             Ouput Json that will be shared with zus team.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
+    if [[ ! $(curl -I --silent -o /dev/null -w %{http_code} https://del-wal.0chain.net/getOutput) =~ 2[0-9][0-9] ]]; then
+      echo "Delegate wallet address server is down. Please contact zus team."
+      exit 1
+    fi
     echo "Details need to be send to ZUS Team."
     echo "{\"provider_id\":\"$( jq -r .client_id keys/b0mnode1_keys.json )\",\"domain\":\"$(cat miner/url.txt)\",\"client_id\":\"$(cat del_wal_id.txt)\"}" > send_tokens.json
     echo
     cat send_tokens.json
+    curl -X POST -F "file=@send_tokens.json" https://del-wal.0chain.net/addData
     echo
 pushd > /dev/null;
