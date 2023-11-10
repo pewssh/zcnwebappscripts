@@ -32,6 +32,7 @@ export DEBIAN_FRONTEND=noninteractive
 export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
+export BRANCH_NAME=main
 
 sudo apt update
 
@@ -83,13 +84,19 @@ if [ -f "${PROJECT_ROOT}/docker-compose.yml" ]; then
   rm -rf ${PROJECT_ROOT} || true
 fi
 
-#Disk setup
-mkdir -p $PWD/disk-setup/
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
-wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/main/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
+# #Disk setup
+# mkdir -p $PWD/disk-setup/
+# wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/${BRANCH_NAME}/disk-setup/disk_setup.sh -O $PWD/disk-setup/disk_setup.sh
+# wget https://raw.githubusercontent.com/0chain/zcnwebappscripts/${BRANCH_NAME}/disk-setup/disk_func.sh -O $PWD/disk-setup/disk_func.sh
 
-sudo chmod +x $PWD/disk-setup/disk_setup.sh
-bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+# sudo chmod +x $PWD/disk-setup/disk_setup.sh
+# bash $PWD/disk-setup/disk_setup.sh $PROJECT_ROOT_SSD $PROJECT_ROOT_HDD
+mkdir -p $PROJECT_ROOT_SSD
+mkdir -p ${PROJECT_ROOT_HDD}/pg_hdd_data
+
+# provide required permission for tablespace volume to mount to postgres
+chown -R "999:999" ${PROJECT_ROOT_HDD}/pg_hdd_data
+
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >/tmp/portainer_password
@@ -107,18 +114,18 @@ done
 ls -al $PROJECT_ROOT
 
 # download and unzip files
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/artifacts/blobber-files.zip" -o /tmp/blobber-files.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/${BRANCH_NAME}/artifacts/blobber-files.zip" -o /tmp/blobber-files.zip
 unzip -o /tmp/blobber-files.zip -d ${PROJECT_ROOT}
 rm /tmp/blobber-files.zip
 
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/artifacts/chimney-dashboard.zip" -o /tmp/chimney-dashboard.zip
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/${BRANCH_NAME}/artifacts/chimney-dashboard.zip" -o /tmp/chimney-dashboard.zip
 unzip /tmp/chimney-dashboard.zip -d ${PROJECT_ROOT}
 rm /tmp/chimney-dashboard.zip
 
 # create 0chain_blobber.yaml file
 echo "creating 0chain_blobber.yaml"
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/config/0chain_blobber.yaml" -o ${PROJECT_ROOT}/config/0chain_blobber.yaml
-curl -L "https://github.com/0chain/zcnwebappscripts/raw/main/config/0chain_validator.yaml" -o ${PROJECT_ROOT}/config/0chain_validator.yaml
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/${BRANCH_NAME}/config/0chain_blobber.yaml" -o ${PROJECT_ROOT}/config/0chain_blobber.yaml
+curl -L "https://github.com/0chain/zcnwebappscripts/raw/${BRANCH_NAME}/config/0chain_validator.yaml" -o ${PROJECT_ROOT}/config/0chain_validator.yaml
 
 echo "updating write_price"
 sed -i "s/write_price.*/write_price: ${WRITE_PRICE}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
@@ -131,6 +138,9 @@ sed -i "s/delegate_wallet.*/delegate_wallet: ${DELEGATE_WALLET}/g" ${PROJECT_ROO
 
 echo "updating num_delegates"
 sed -i "s/num_delegates.*/num_delegates: ${NO_OF_DELEGATES}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
+
+echo "updating num_delegates in 0chain_validator.yaml"
+sed -i "s/num_delegates.*/num_delegates: ${NO_OF_DELEGATES}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
 
 echo "updating service_charge"
 sed -i "s/service_charge.*/service_charge: ${SERVICE_CHARGE}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
@@ -233,8 +243,14 @@ services:
     image: postgres:14
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: blobber_user
+      POSTGRES_DB: blobber_meta
+      POSTGRES_PASSWORD: blobber
+      SLOW_TABLESPACE_PATH: /var/lib/postgresql/hdd
+      SLOW_TABLESPACE: hdd_tablespace
     volumes:
       - ${PROJECT_ROOT_SSD}/data/postgresql:/var/lib/postgresql/data
+      - ${PROJECT_ROOT_HDD}/pg_hdd_data:/var/lib/postgresql/hdd
       - ${PROJECT_ROOT}/postgresql.conf:/var/lib/postgresql/postgresql.conf
       - ${PROJECT_ROOT}/sql_init:/docker-entrypoint-initdb.d
     command: postgres -c config_file=/var/lib/postgresql/postgresql.conf
@@ -243,7 +259,7 @@ services:
     restart: "always"
 
   validator:
-    image: 0chaindev/validator:sprint-1.11
+    image: 0chaindev/validator:sprint-1.11-c5f3d412
     environment:
       - DOCKER= true
     volumes:
@@ -257,7 +273,7 @@ services:
     restart: "always"
 
   blobber:
-    image: 0chaindev/blobber:sprint-1.11
+    image: 0chaindev/blobber:sprint-1.11-c5f3d412
     environment:
       DOCKER: "true"
       DB_NAME: blobber_meta

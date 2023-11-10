@@ -184,7 +184,7 @@ services:
       MINIO_SERVER: "minioserver:9000"
 
   s3mgrt:
-    image: 0chaindev/s3mgrt:pr-756-b0886880
+    image: 0chaindev/s3mgrt:staging
     restart: always
     environment:
       BUCKET: "${BUCKET}"
