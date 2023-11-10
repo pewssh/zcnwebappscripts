@@ -38,6 +38,7 @@ DOCKER_TAG=staging
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq
+snap install yq
 
 echo "download docker-compose"
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -55,6 +56,9 @@ rm -rf ${MIGRATION_ROOT}/*
 mkdir -p ${MIGRATION_LOGS}
 mkdir -p ${CONFIG_DIR}
 mkdir -p ${CONFIG_DIR_MIGRATION}
+
+MINIO_ROOT_USER=$(cat docker-compose.yml |  yq e '.services.minioserver.environment | select(.MINIO_ROOT_USER != null) | .MINIO_ROOT_USER')
+MINIO_ROOT_PASSWORD=$(cat docker-compose.yml |  yq e '.services.minioserver.environment | select(.MINIO_ROOT_PASSWORD != null) | .MINIO_ROOT_PASSWORD')
 
 # create wallet.json
 cat <<EOF >${CONFIG_DIR_MIGRATION}/wallet.json
@@ -165,8 +169,8 @@ services:
       MINIO_AUDIT_WEBHOOK_ENDPOINT: ${MINIO_TOKEN}
       MINIO_AUDIT_WEBHOOK_AUTH_TOKEN: 12345
       MINIO_AUDIT_WEBHOOK_ENABLE: "on"
-      MINIO_ROOT_USER: ${MINIO_USERNAME}
-      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USERNAME}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BROWSER: "OFF"
     links:
       - api:api
