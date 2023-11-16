@@ -89,6 +89,11 @@ ${BLIMP_DOMAIN} {
 		reverse_proxy minioclient:3001
 	}
 
+	route /s3server* {
+		uri strip_prefix /s3server
+		reverse_proxy minioserver:9000
+	}
+
 	route /logsearch/* {
 		uri strip_prefix /logsearch
 		reverse_proxy api:8080
