@@ -259,7 +259,7 @@ services:
     restart: "always"
 
   validator:
-    image: 0chaindev/validator:sprint-1.11-c5f3d412
+    image: 0chaindev/validator:sprint-1.11
     environment:
       - DOCKER= true
     volumes:
@@ -273,7 +273,7 @@ services:
     restart: "always"
 
   blobber:
-    image: 0chaindev/blobber:sprint-1.11-c5f3d412
+    image: 0chaindev/blobber:sprint-1.11
     environment:
       DOCKER: "true"
       DB_NAME: blobber_meta
