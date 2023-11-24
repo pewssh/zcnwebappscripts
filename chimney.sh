@@ -232,7 +232,6 @@ ${BLOBBER_HOST} {
 }
 
 EOF
-# aslkdfjaslfj
 ### docker-compose.yaml
 echo "creating docker-compose file"
 cat <<EOF >${PROJECT_ROOT}/docker-compose.yml
