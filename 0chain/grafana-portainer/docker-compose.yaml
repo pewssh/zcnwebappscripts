@@ -42,7 +42,7 @@ services:
     volumes:
       - ./loki/loki-config.yaml:/mnt/config/loki-config.yaml
       - ./loki:/data
-      - ./loki/rules:/tmp/loki/rules
+      - ./loki/rules:/etc/loki/rules
     command: -config.file=/mnt/config/loki-config.yaml
     # ports:
     #   - "3100:3100"

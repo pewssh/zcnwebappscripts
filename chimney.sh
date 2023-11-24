@@ -324,7 +324,7 @@ services:
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/loki-config.yaml:/mnt/config/loki-config.yaml
       - ${PROJECT_ROOT_HDD}/loki:/data
-      - ${PROJECT_ROOT_HDD}/loki/rules:/tmp/loki/rules
+      - ${PROJECT_ROOT_HDD}/loki/rules:/etc/loki/rules
     command: -config.file=/mnt/config/loki-config.yaml
     restart: "always"
 
