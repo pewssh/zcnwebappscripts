@@ -15,7 +15,26 @@ WALLET_PRIVATE_KEY=0chainwalletprivatekey
 DOCKER_IMAGE=sprint-1.11-9bd91947
 
 sudo apt update
-sudo apt install -y unzip curl containerd docker.io jq
+sudo apt install -y unzip curl containerd docker.io jq net-tools
+
+check_port_443() {
+  PORT=443
+  command -v netstat >/dev/null 2>&1 || {
+    echo >&2 "netstat command not found. Exiting."
+    exit 1
+  }
+
+  if netstat -tulpn | grep ":$PORT" >/dev/null; then
+    echo "Port $PORT is in use."
+    echo "Please stop the process running on port $PORT and run the script again"
+    exit 1
+  else
+    echo "Port $PORT is not in use."
+  fi
+}
+echo "checking if ports are available..."
+check_port_443
+
 
 echo "download docker-compose"
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -88,12 +107,12 @@ ${BLIMP_DOMAIN} {
 		uri strip_prefix /minioclient
 		reverse_proxy minioclient:3001
 	}
- 
+
 	route /logsearch/* {
 		uri strip_prefix /logsearch
 		reverse_proxy api:8080
 	}
- 
+
  	route {
   		reverse_proxy minioserver:9000
   	}
