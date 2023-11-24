@@ -37,8 +37,26 @@ fi
 DOCKER_TAG=sprint-1.11-9bd91947
 
 sudo apt update
-DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq
+DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq net-tools
 snap install yq
+
+check_port_443() {
+  PORT=443
+  command -v netstat >/dev/null 2>&1 || {
+    echo >&2 "netstat command not found. Exiting."
+    exit 1
+  }
+
+  if netstat -tulpn | grep ":$PORT" >/dev/null; then
+    echo "Port $PORT is in use."
+    echo "Please stop the process running on port $PORT and run the script again"
+    exit 1
+  else
+    echo "Port $PORT is not in use."
+  fi
+}
+echo "checking if ports are available..."
+check_port_443
 
 echo "download docker-compose"
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose

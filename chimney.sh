@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ "$(id -u)" -ne 0 ]; then
-    echo "This script requires sudo privileges. Please enter your password:"
-    exec sudo "$0" "$@"  # This re-executes the script with sudo
+  echo "This script requires sudo privileges. Please enter your password:"
+  exec sudo "$0" "$@" # This re-executes the script with sudo
 fi
 
 # setup variables
@@ -49,9 +49,24 @@ install_tools_utilities() {
   echo -e "\e[37mChecking for $REQUIRED_PKG if it is already installed. \e[73m"
   if [ "" = "$PKG_OK" ]; then
     echo -e "\e[31m  No $REQUIRED_PKG is found on the server. \e[13m\e[32m$REQUIRED_PKG installed. \e[23m \n"
-    sudo apt --yes install $REQUIRED_PKG &> /dev/null
+    sudo apt --yes install $REQUIRED_PKG &>/dev/null
   else
     echo -e "\e[32m  $REQUIRED_PKG is already installed on the server/machine.  \e[23m \n"
+  fi
+}
+check_port_443() {
+  PORT=443
+  command -v netstat >/dev/null 2>&1 || {
+    echo >&2 "netstat command not found. Exiting."
+    exit 1
+  }
+
+  if netstat -tulpn | grep ":$PORT" >/dev/null; then
+    echo "Port $PORT is in use."
+    echo "Please stop the process running on port $PORT and run the script again"
+    exit 1
+  else
+    echo "Port $PORT is not in use."
   fi
 }
 
@@ -64,6 +79,7 @@ install_tools_utilities "systemd-timesyncd"
 install_tools_utilities ufw
 install_tools_utilities ntp
 install_tools_utilities ntpdate
+install_tools_utilities net-tools
 
 sudo ufw allow 123/udp
 sudo ufw allow out to any port 123
@@ -71,6 +87,9 @@ sudo systemctl stop ntp
 sudo ntpdate pool.ntp.org
 sudo systemctl start ntp
 sudo systemctl enable ntp
+
+echo "checking if ports are available..."
+check_port_443
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -96,7 +115,6 @@ mkdir -p ${PROJECT_ROOT_HDD}/pg_hdd_data
 
 # provide required permission for tablespace volume to mount to postgres
 chown -R "999:999" ${PROJECT_ROOT_HDD}/pg_hdd_data
-
 
 # generate password for portainer
 echo -n ${GF_ADMIN_PASSWORD} >/tmp/portainer_password
@@ -159,7 +177,6 @@ sed -i "s/service_charge.*/service_charge: ${SERVICE_CHARGE}/g" ${PROJECT_ROOT}/
 
 echo "updating block_worker"
 sed -i "s|block_worker.*|block_worker: ${BLOCK_WORKER_URL}|g" ${PROJECT_ROOT}/config/0chain_validator.yaml
-
 
 ### Create minio_config.txt file
 echo "creating minio_config.txt"
@@ -433,17 +450,17 @@ sed -i "s/blobber_host/${BLOBBER_HOST}/g" ${DASHBOARDS}/homepage.json
 echo "setting up chimney dashboards..."
 
 curl -X POST -H "Content-Type: application/json" \
-      -d "{\"dashboard\":$(cat ${DASHBOARDS}/homepage.json)}" \
-      "https://${GF_ADMIN_USER}:${escapedPassword}@${BLOBBER_HOST}/grafana/api/dashboards/import"
+  -d "{\"dashboard\":$(cat ${DASHBOARDS}/homepage.json)}" \
+  "https://${GF_ADMIN_USER}:${escapedPassword}@${BLOBBER_HOST}/grafana/api/dashboards/import"
 
 curl -X PUT -H "Content-Type: application/json" \
-     -d '{ "theme": "", "homeDashboardUID": "homepage", "timezone": "utc" }' \
-     "https://${GF_ADMIN_USER}:${escapedPassword}@${BLOBBER_HOST}/grafana/api/org/preferences"
+  -d '{ "theme": "", "homeDashboardUID": "homepage", "timezone": "utc" }' \
+  "https://${GF_ADMIN_USER}:${escapedPassword}@${BLOBBER_HOST}/grafana/api/org/preferences"
 
 for dashboard in "${DASHBOARDS}/blobber.json" "${DASHBOARDS}/server.json" "${DASHBOARDS}/validator.json"; do
-    echo -e "\nUploading dashboard: ${dashboard}"
-    curl -X POST -H "Content-Type: application/json" \
-          -d "@${dashboard}" \
-         "https://${GF_ADMIN_USER}:${escapedPassword}@${BLOBBER_HOST}/grafana/api/dashboards/import"
-     echo ""
+  echo -e "\nUploading dashboard: ${dashboard}"
+  curl -X POST -H "Content-Type: application/json" \
+    -d "@${dashboard}" \
+    "https://${GF_ADMIN_USER}:${escapedPassword}@${BLOBBER_HOST}/grafana/api/dashboards/import"
+  echo ""
 done
