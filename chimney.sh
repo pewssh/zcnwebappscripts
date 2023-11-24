@@ -231,8 +231,8 @@ ${BLOBBER_HOST} {
   }
 }
 
-
 EOF
+
 ### docker-compose.yaml
 echo "creating docker-compose file"
 cat <<EOF >${PROJECT_ROOT}/docker-compose.yml
@@ -324,7 +324,6 @@ services:
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/loki-config.yaml:/mnt/config/loki-config.yaml
       - ${PROJECT_ROOT_HDD}/loki:/data
-      # 
       - ${PROJECT_ROOT_HDD}/loki/rules:/etc/loki/rules
     command: -config.file=/mnt/config/loki-config.yaml
     restart: "always"
