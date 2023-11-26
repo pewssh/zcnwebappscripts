@@ -1,8 +1,8 @@
 version: "1.0"
 
 logging:
-  level: "error"
-  console: false
+  level: "info"
+  console: false # printing log to console is only supported in development mode
 
 # for testing
 #  500 MB - 536870912
@@ -121,10 +121,9 @@ storage:
 #  Similarly for some file_hash "ef935503b66b1ce026610edf18bffd756a79676a8fe317d951965b77a77c0227" with dir_level [2, 2, 1]
 #  following path is created for the file:
 # {alloc_dir}/ef/93/5/503b66b1ce026610edf18bffd756a79676a8fe317d951965b77a77c0227
-  alloc_dir_level: [2, 1] #TODO sort it out
+  alloc_dir_level: [2, 1]
   file_dir_level: [2, 2, 1]
 
-#TODO remove
 disk_update:
   # defaults to true. If false, blobber has to manually update blobber's capacity upon increase/decrease
   # If blobber has to limit its capacity to 5% of its capacity then it should turn automaci_update to false.
