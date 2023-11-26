@@ -88,8 +88,7 @@ sudo ntpdate pool.ntp.org
 sudo systemctl start ntp
 sudo systemctl enable ntp
 
-echo "checking if ports are available..."
-check_port_443
+
 
 # download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -102,6 +101,9 @@ if [ -f "${PROJECT_ROOT}/docker-compose.yml" ]; then
   docker-compose -f ${PROJECT_ROOT}/docker-compose.yml down --volumes
   rm -rf ${PROJECT_ROOT} || true
 fi
+
+echo "checking if ports are available..."
+check_port_443
 
 # #Disk setup
 # mkdir -p $PWD/disk-setup/
