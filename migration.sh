@@ -59,8 +59,6 @@ check_port_443() {
     echo "Port $PORT is not in use."
   fi
 }
-echo "checking if ports are available..."
-check_port_443
 
 echo "download docker-compose"
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -74,6 +72,9 @@ mkdir -p ${MIGRATION_ROOT}
 
 sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
 rm -rf ${MIGRATION_ROOT}/*
+
+echo "checking if ports are available..."
+check_port_443
 
 mkdir -p ${MIGRATION_LOGS}
 mkdir -p ${CONFIG_DIR}
