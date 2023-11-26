@@ -34,7 +34,7 @@ if [[ -d $HOME/.zcn/docker-compose.yml ]]; then
 fi
 
 # docker image
-DOCKER_TAG=sprint-1.11-9bd91947
+DOCKER_TAG=sprint-1.11
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq net-tools
