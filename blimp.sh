@@ -32,8 +32,6 @@ check_port_443() {
     echo "Port $PORT is not in use."
   fi
 }
-echo "checking if ports are available..."
-check_port_443
 
 
 echo "download docker-compose"
@@ -122,6 +120,9 @@ EOF
 if [[ -f ${CONFIG_DIR}/docker-compose.yml ]]; then
 	sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml down
 fi
+
+echo "checking if ports are available..."
+check_port_443
 
 # create docker-compose
 cat <<EOF >${CONFIG_DIR}/docker-compose.yml
