@@ -87,7 +87,7 @@ openconnection_cleaner:
   tolerance: 3600 # 60 * 60
 writemarker_redeem:
   frequency: 10
-  num_workers: 5
+  num_workers: 8
 readmarker_redeem:
   frequency: 10
   num_workers: 5
