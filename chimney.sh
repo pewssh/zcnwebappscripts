@@ -80,6 +80,7 @@ install_tools_utilities ufw
 install_tools_utilities ntp
 install_tools_utilities ntpdate
 install_tools_utilities net-tools
+install_tools_utilities python3
 
 sudo ufw allow 123/udp
 sudo ufw allow out to any port 123
@@ -450,7 +451,7 @@ DASHBOARDS=${PROJECT_ROOT}/chimney-dashboard
 echo "sleeping for 10secs.."
 sleep 10
 
-escapedPassword=$(curl -Gso /dev/null -w %{url_effective} --data-urlencode "password=$GF_ADMIN_PASSWORD" "" | cut -d'=' -f2)
+escapedPassword=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$GF_ADMIN_PASSWORD'''))")
 
 sed -i "s/blobber_host/${BLOBBER_HOST}/g" ${DASHBOARDS}/homepage.json
 
