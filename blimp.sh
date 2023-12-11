@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$(id -u)" -ne 0 ]; then
+  echo "This script requires sudo privileges. Please enter your password:"
+  exec sudo "$0" "$@" # This re-executes the script with sudo
+fi
+
 CONFIG_DIR=$HOME/.zcn
 CONFIG_DIR_BLIMP=${CONFIG_DIR}/blimp # to store wallet.json, config.json, allocation.json
 MIGRATION_ROOT=$HOME/.s3migration
