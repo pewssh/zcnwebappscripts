@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$(id -u)" -ne 0 ]; then
+  echo "This script requires sudo privileges. Please enter your password:"
+  exec sudo "$0" "$@" # This re-executes the script with sudo
+fi
+
 MIGRATION_ROOT=$HOME/s3migration/state
 MIGRATION_LOGS=$HOME/s3migration/logs
 ACCESS_KEY=0chainaccesskey
