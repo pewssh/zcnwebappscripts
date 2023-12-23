@@ -398,6 +398,8 @@ services:
       GF_SERVER_ROOT_URL: "https://${BLOBBER_HOST}/grafana"
       GF_SECURITY_ADMIN_USER: "${GF_ADMIN_USER}"
       GF_SECURITY_ADMIN_PASSWORD: "${GF_ADMIN_PASSWORD}"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
     volumes:
       - ${PROJECT_ROOT}/monitoringconfig/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
       - grafana_data:/var/lib/grafana
