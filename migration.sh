@@ -138,10 +138,6 @@ EOF
 mkdir -p ${CONFIG_DIR}/caddyfiles
 
 cat <<EOF >${CONFIG_DIR}/caddyfiles/Caddyfile
-import /etc/caddy/*.caddy
-EOF
-
-cat <<EOF >${CONFIG_DIR}/caddyfiles/migration.caddy
 {
    acme_ca https://acme.ssl.com/sslcom-dv-ecc
     acme_eab {
@@ -150,7 +146,10 @@ cat <<EOF >${CONFIG_DIR}/caddyfiles/migration.caddy
     }
    email   b.manu199@gmail.com
 }
+import /etc/caddy/*.caddy
+EOF
 
+cat <<EOF >${CONFIG_DIR}/caddyfiles/migration.caddy
 ${BLIMP_DOMAIN} {
 	route /s3migration {
 		reverse_proxy s3mgrt:8080
