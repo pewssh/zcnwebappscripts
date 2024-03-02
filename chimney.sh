@@ -423,11 +423,14 @@ services:
   portainer:
     image: portainer/portainer-ce:2.18.2-alpine
     command: '-H tcp://agent:9001 --tlsskipverify --admin-password-file /tmp/portainer_password'
+    depends_on:
+      - agent
     links:
       - agent:agent
     volumes:
       - portainer_data:/data
       - /tmp/portainer_password:/tmp/portainer_password
+    restart: "always"
 
 networks:
   default:
