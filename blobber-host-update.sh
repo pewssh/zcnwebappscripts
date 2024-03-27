@@ -43,6 +43,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
 
   if [[ -f bin/zbox ]] ; then
       echo "zbox binary already present"
+      sudo chmod +x bin/zbox
   else
       ubuntu_version=$(lsb_release -rs | cut -f1 -d'.')
       if [[ ${ubuntu_version} -eq 18 ]]; then
@@ -96,7 +97,7 @@ echo -e "\n\e[93m===============================================================
                                                                             Updating URL on mainnet chain
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-  ./bin/zbox bl-update --blobber_id ${BLOBBER_ID} --url https://${BLOBBER_HOST_NEW_URL}/ --wallet ./blob_del.json --configDir . --config ./config.yaml
+  ./bin/zbox bl-update --blobber_id ${BLOBBER_ID} --url https://${BLOBBER_HOST_NEW_URL}/ --wallet ./blob_wallet.json --configDir . --config ./config.yaml
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
