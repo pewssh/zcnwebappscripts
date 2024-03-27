@@ -10,6 +10,7 @@ export PROJECT_ROOT=/var/0chain/blobber
 export BLOCK_WORKER_URL=0chainblockworker
 export BLOBBER_HOST_OLD_URL=0chainblobberhostoldurl
 export BLOBBER_HOST_NEW_URL=0chainblobberhostnewurl
+export BLOBBER_ID=0chainblobberid
 
 # export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 # export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
@@ -44,6 +45,56 @@ echo -e "\n\e[93m===============================================================
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
   docker-compose -f docker-compose.yml up -d
+popd > /dev/null;
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                        Downloading zbox binary.
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT} > /dev/null;
+  echo "generating config.yaml file"
+  echo "block_worker: https://mainnet.zus.network/dns" > config.yaml
+  echo "signature_scheme: bls0chain" >> config.yaml
+  echo "min_submit: 20" >> config.yaml
+  echo "min_confirmation: 20" >> config.yaml
+  echo "confirmation_chain_length: 3" >> config.yaml
+  echo "max_txn_query: 5" >> config.yaml
+  echo "query_sleep_time: 5" >> config.yaml
+  sleep 5s
+
+  if [[ -f bin/zbox ]] ; then
+      echo "zbox binary already present"
+  else
+      ubuntu_version=$(lsb_release -rs | cut -f1 -d'.')
+      if [[ ${ubuntu_version} -eq 18 ]]; then
+          echo "Ubuntu 18 is not supported"
+          exit 1
+      elif [[ ${ubuntu_version} -eq 20 || ${ubuntu_version} -eq 22 ]]; then
+          wget https://github.com/0chain/zcnwebappscripts/raw/as-deploy/0chain/zwallet-binary/zbox
+          mkdir bin || true
+          sudo mv zbox ${PROJECT_ROOT}/bin/
+      else
+          echo "Didn't found any Ubuntu version with 20/22."
+      fi
+  fi
+popd > /dev/null;
+
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                            Check if blob_del.json wallet file exists or not.
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT} > /dev/null;
+  if [[ -f del_wallet.json ]] ; then
+    echo "del_wallet.json is present"
+  else
+    echo "Didn't found del_wallet.json file. Kindly place the file at location ${PROJECT_ROOT} and rerun the script again"
+  fi
+popd > /dev/null;
+
+echo -e "\n\e[93m===============================================================================================================================================================================
+                                                                            Updating URL on mainnet chain
+===============================================================================================================================================================================  \e[39m"
+pushd ${PROJECT_ROOT} > /dev/null;
+  ./bin/zbox bl-update --blobber_id ${BLOBBER_ID} --url https://${BLOBBER_HOST_NEW_URL}/ --wallet ./blob_del.json --configDir . --config ./config.yaml
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
