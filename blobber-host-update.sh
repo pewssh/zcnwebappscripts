@@ -19,10 +19,10 @@ echo -e "\n\e[93m===============================================================
                                                                             Check if blob_wallet.json wallet file exists or not.
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-  if [[ -f del_wallet.json ]] ; then
-    echo "del_wallet.json is present"
+  if [[ -f blob_wallet.json ]] ; then
+    echo "blob_wallet.json is present"
   else
-    echo "Didn't found del_wallet.json file. Kindly place the file at location ${PROJECT_ROOT}/del_wallet.json and rerun the script again"
+    echo "Didn't found blob_wallet.json file. Kindly place the file at location ${PROJECT_ROOT}/blob_wallet.json and rerun the script again"
     exit 1
   fi
 popd > /dev/null;
