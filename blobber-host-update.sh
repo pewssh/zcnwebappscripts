@@ -10,10 +10,7 @@ export PROJECT_ROOT=/var/0chain/blobber
 export BLOCK_WORKER_URL=0chainblockworker
 export BLOBBER_HOST_OLD_URL=0chainblobberhostoldurl
 export BLOBBER_HOST_NEW_URL=0chainblobberhostnewurl
-export BLOBBER_ID=0chainblobberid
-
-# export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
-# export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
+# export BLOBBER_ID=0chainblobberid
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                             Check if blob_wallet.json wallet file exists or not.
@@ -93,12 +90,12 @@ pushd ${PROJECT_ROOT} > /dev/null;
   docker-compose -f docker-compose.yml up -d
 popd > /dev/null;
 
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                            Updating URL on mainnet chain
-===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT} > /dev/null;
-  ./bin/zbox bl-update --blobber_id ${BLOBBER_ID} --url https://${BLOBBER_HOST_NEW_URL}/ --wallet ./blob_wallet.json --configDir . --config ./config.yaml
-popd > /dev/null;
+# echo -e "\n\e[93m===============================================================================================================================================================================
+#                                                                             Updating URL on mainnet chain
+# ===============================================================================================================================================================================  \e[39m"
+# pushd ${PROJECT_ROOT} > /dev/null;
+#   ./bin/zbox bl-update --blobber_id ${BLOBBER_ID} --url https://${BLOBBER_HOST_NEW_URL}/ --wallet ./blob_wallet.json --configDir . --config ./config.yaml
+# popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                             Blobber must be available on the new url now.
