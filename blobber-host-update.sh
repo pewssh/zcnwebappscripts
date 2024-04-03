@@ -12,17 +12,17 @@ export BLOBBER_HOST_OLD_URL=0chainblobberhostoldurl
 export BLOBBER_HOST_NEW_URL=0chainblobberhostnewurl
 # export BLOBBER_ID=0chainblobberid
 
-echo -e "\n\e[93m===============================================================================================================================================================================
-                                                                            Check if blob_wallet.json wallet file exists or not.
-===============================================================================================================================================================================  \e[39m"
-pushd ${PROJECT_ROOT} > /dev/null;
-  if [[ -f blob_wallet.json ]] ; then
-    echo "blob_wallet.json is present"
-  else
-    echo "Didn't found blob_wallet.json file. Kindly place the file at location ${PROJECT_ROOT}/blob_wallet.json and rerun the script again"
-    exit 1
-  fi
-popd > /dev/null;
+# echo -e "\n\e[93m===============================================================================================================================================================================
+#                                                                             Check if blob_wallet.json wallet file exists or not.
+# ===============================================================================================================================================================================  \e[39m"
+# pushd ${PROJECT_ROOT} > /dev/null;
+#   if [[ -f blob_wallet.json ]] ; then
+#     echo "blob_wallet.json is present"
+#   else
+#     echo "Didn't found blob_wallet.json file. Kindly place the file at location ${PROJECT_ROOT}/blob_wallet.json and rerun the script again"
+#     exit 1
+#   fi
+# popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                         Downloading zbox binary.
