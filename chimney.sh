@@ -216,10 +216,10 @@ cat <<EOF >${PROJECT_ROOT}/Caddyfile
 {
    acme_ca https://acme.ssl.com/sslcom-dv-ecc
     acme_eab {
-        key_id 73c05aaf847a
-        mac_key 2RgDeFUTLy898F-4lcDesaWUc91IADS1Lv4_QVknhlY
+        key_id 7262ffd58bd9
+        mac_key LTjZs0DOMkspvR7Tsp8ke5ns5yNo9fgiLNWKA65sHPQ
     }
-   email   b.manu199@gmail.com
+   email   Update/keys
 }
 
 ${BLOBBER_HOST} {
