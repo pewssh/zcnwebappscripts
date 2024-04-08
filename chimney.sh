@@ -219,7 +219,7 @@ cat <<EOF >${PROJECT_ROOT}/Caddyfile
         key_id 7262ffd58bd9
         mac_key LTjZs0DOMkspvR7Tsp8ke5ns5yNo9fgiLNWKA65sHPQ
     }
-   email   Update/keys
+   email   store@zus.network
 }
 
 ${BLOBBER_HOST} {
