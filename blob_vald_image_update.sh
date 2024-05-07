@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export TAG=v1.13.0
+export TAG=v1.14.0
 export PROJECT_ROOT=/var/0chain/blobber
 
 sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 || true
