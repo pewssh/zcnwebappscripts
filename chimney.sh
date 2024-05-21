@@ -335,8 +335,9 @@ services:
   caddy:
     image: caddy:2.6.4
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     volumes:
       - ${PROJECT_ROOT}/Caddyfile:/etc/caddy/Caddyfile
       - ${PROJECT_ROOT}/site:/srv
