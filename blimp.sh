@@ -17,7 +17,7 @@ BLIMP_DOMAIN=blimpdomain
 WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
-DOCKER_IMAGE=v1.11.0
+DOCKER_IMAGE=v1.15.0
 
 sudo apt update
 sudo apt install -y unzip curl containerd docker.io jq net-tools
