@@ -17,6 +17,7 @@ BLIMP_DOMAIN=blimpdomain
 WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
+WALLET_MNEMONICS=0chainmnemonics
 DOCKER_IMAGE=v1.15.0
 
 sudo apt update
@@ -61,7 +62,7 @@ cat <<EOF >${CONFIG_DIR_BLIMP}/wallet.json
       "private_key": "${WALLET_PRIVATE_KEY}"
     }
   ],
-  "mnemonics": "0chainmnemonics",
+  "mnemonics": "${WALLET_MNEMONICS}",
   "version": "1.0"
 }
 EOF
