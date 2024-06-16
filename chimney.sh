@@ -145,7 +145,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
           curl -L "https://github.com/0chain/zcnwebappscripts/raw/as-deploy/0chain/artifacts/zwallet-binary.zip" -o /tmp/zwallet-binary.zip
           sudo unzip -o /tmp/zwallet-binary.zip && rm -rf /tmp/zwallet-binary.zip
           mkdir bin || true
-          sudo cp -rf zwallet-binary/* ${PROJECT_ROOT}/bin/
+          sudo cp -rf zwallet-binary/* ./bin/
           sudo rm -rf zwallet-binary
           echo "block_worker: https://mainnet.zus.network/dns" > config.yaml
           echo "signature_scheme: bls0chain" >> config.yaml
