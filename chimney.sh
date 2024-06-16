@@ -20,12 +20,12 @@ export PROJECT_ROOT=/var/0chain/blobber
 export BLOCK_WORKER_URL=0chainblockworker
 export BLOBBER_HOST=0chainblobberhost
 
-export VALIDATOR_WALLET_ID=0chainvalwalletid
-export VALIDATOR_WALLET_PUBLIC_KEY=0chainvalwalletpublickey
-export VALIDATOR_WALLET_PRIV_KEY=0chainvalwalletprivkey
-export BLOBBER_WALLET_ID=0chainblobwalletid
-export BLOBBER_WALLET_PUBLIC_KEY=0chainblobwalletpublickey
-export BLOBBER_WALLET_PRIV_KEY=0chainblobwalletprivkey
+# export VALIDATOR_WALLET_ID=0chainvalwalletid
+# export VALIDATOR_WALLET_PUBLIC_KEY=0chainvalwalletpublickey
+# export VALIDATOR_WALLET_PRIV_KEY=0chainvalwalletprivkey
+# export BLOBBER_WALLET_ID=0chainblobwalletid
+# export BLOBBER_WALLET_PUBLIC_KEY=0chainblobwalletpublickey
+# export BLOBBER_WALLET_PRIV_KEY=0chainblobwalletprivkey
 
 export DEBIAN_FRONTEND=noninteractive
 
