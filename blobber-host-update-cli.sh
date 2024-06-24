@@ -94,7 +94,7 @@ echo -e "\n\e[93m===============================================================
                                                                             Updating URL on mainnet chain
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-  ./bin/zbox bl-update --blobber_id ${BLOBBER_ID} --url https://${BLOBBER_HOST_NEW_URL}/ --wallet ./blob_wallet.json --configDir . --config ./config.yaml
+  ./bin/zbox bl-update --blobber_id ${BLOBBER_ID} --url https://${BLOBBER_HOST_NEW_URL} --wallet ./blob_wallet.json --configDir . --config ./config.yaml
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
