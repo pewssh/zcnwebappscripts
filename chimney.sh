@@ -141,7 +141,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
       if [[ ${ubuntu_version} -eq 18 ]]; then
           echo "Ubuntu 18 is not supported"
           exit 1
-      elif [[ ${ubuntu_version} -eq 20 || ${ubuntu_version} -eq 22 ]]; then
+      elif [[ ${ubuntu_version} -eq 20 || ${ubuntu_version} -eq 22 || ${ubuntu_version} -eq 24 ]]; then
           curl -L "https://github.com/0chain/zcnwebappscripts/raw/as-deploy/0chain/artifacts/zwallet-binary.zip" -o /tmp/zwallet-binary.zip
           sudo unzip -o /tmp/zwallet-binary.zip && rm -rf /tmp/zwallet-binary.zip
           mkdir bin || true
