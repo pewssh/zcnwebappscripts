@@ -98,6 +98,17 @@ cat <<EOF >${CONFIG_DIR_BLIMP}/allocation.txt
 $ALLOCATION
 EOF
 
+# adding zs3server.json
+cat <<EOF >${CONFIG_DIR_BLIMP}/zs3server.json
+{
+  "encrypt": false,
+  "compress": false,
+  "max_batch_size": 100,
+  "batch_wait_time": 500,
+  "batch_workers": 5
+}
+EOF
+
 # create a seperate folder to store caddy files
 mkdir -p ${CONFIG_DIR}/caddyfiles
 
