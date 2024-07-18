@@ -18,7 +18,7 @@ WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 WALLET_MNEMONICS=0chainmnemonics
-DOCKER_IMAGE=v1.16.0
+DOCKER_IMAGE=v1.16.1
 
 sudo apt update
 sudo apt install -y unzip curl containerd docker.io jq net-tools
