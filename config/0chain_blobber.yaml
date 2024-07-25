@@ -143,3 +143,5 @@ admin:
 0box:
   public_key: "c88b543dbad234b181f4d28c3a6962496970ed2794ebaa3c414f770b75153612c1ab6728be203b00157e6ba349b0273a1f3c2a2be274a2ba6baaccb9a8a81f16"
   client_id: "a4e6999add55dd7ac050904d2af2d248dd3329cdde953021bfa9ed9ef677f942"
+
+is_enterprise : false
