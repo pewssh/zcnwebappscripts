@@ -126,6 +126,13 @@ EOF
 
 cat <<EOF >${CONFIG_DIR}/caddyfiles/blimp.caddy
 ${BLIMP_DOMAIN} {
+	log {
+		output file /var/log/access.log {
+		roll_size 1gb
+		roll_keep 5
+		roll_keep_for 720h
+		}
+	}
 	route /minioclient/* {
 		uri strip_prefix /minioclient
 		reverse_proxy minioclient:3001
@@ -163,6 +170,7 @@ services:
       - ${CONFIG_DIR}/caddy/site:/srv
       - ${CONFIG_DIR}/caddy/caddy_data:/data
       - ${CONFIG_DIR}/caddy/caddy_config:/config
+      - ${CONFIG_DIR}/caddy/caddy_logs:/var/log/
     restart: "always"
 
   db:
