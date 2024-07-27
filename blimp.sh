@@ -170,6 +170,7 @@ services:
       - ${CONFIG_DIR}/caddy/site:/srv
       - ${CONFIG_DIR}/caddy/caddy_data:/data
       - ${CONFIG_DIR}/caddy/caddy_config:/config
+      - ${CONFIG_DIR}/caddy/caddy_logs:/var/log/
     restart: "always"
 
   db:
