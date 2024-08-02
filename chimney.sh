@@ -19,6 +19,7 @@ export GF_ADMIN_PASSWORD='0chaingfadminpassword'
 export PROJECT_ROOT=/var/0chain/blobber
 export BLOCK_WORKER_URL=0chainblockworker
 export BLOBBER_HOST=0chainblobberhost
+export IS_ENTERPRISE=isenterprise
 
 # export VALIDATOR_WALLET_ID=0chainvalwalletid
 # export VALIDATOR_WALLET_PUBLIC_KEY=0chainvalwalletpublickey
@@ -223,6 +224,9 @@ sed -i "s|block_worker.*|block_worker: ${BLOCK_WORKER_URL}|g" ${PROJECT_ROOT}/co
 
 echo "updating delegate_wallet"
 sed -i "s/delegate_wallet.*/delegate_wallet: ${DELEGATE_WALLET}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
+
+echo "updating is_enterprise"
+sed -i "s/is_enterprise.*/is_enterprise: ${IS_ENTERPRISE}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
 
 ### Create minio_config.txt file
 echo "creating minio_config.txt"
