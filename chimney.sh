@@ -210,6 +210,9 @@ sed -i "s/service_charge.*/service_charge: ${SERVICE_CHARGE}/g" ${PROJECT_ROOT}/
 echo "updating block_worker"
 sed -i "s|block_worker.*|block_worker: ${BLOCK_WORKER_URL}|g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
+echo "updating is_enterprise"
+sed -i "s/is_enterprise.*/is_enterprise: ${IS_ENTERPRISE}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
+
 echo "updating username"
 rev ${PROJECT_ROOT}/config/0chain_blobber.yaml | sed -i "s/.*username.*/  username: ${GF_ADMIN_USER}/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
 
@@ -224,9 +227,6 @@ sed -i "s|block_worker.*|block_worker: ${BLOCK_WORKER_URL}|g" ${PROJECT_ROOT}/co
 
 echo "updating delegate_wallet"
 sed -i "s/delegate_wallet.*/delegate_wallet: ${DELEGATE_WALLET}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
-
-echo "updating is_enterprise"
-sed -i "s/is_enterprise.*/is_enterprise: ${IS_ENTERPRISE}/g" ${PROJECT_ROOT}/config/0chain_validator.yaml
 
 ### Create minio_config.txt file
 echo "creating minio_config.txt"
