@@ -34,7 +34,7 @@ export PROJECT_ROOT_SSD=/var/0chain/blobber/ssd
 export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 export BRANCH_NAME=main
-export DOCKER_IMAGE=pr-1463
+export DOCKER_IMAGE=v1.17.0-RC1
 
 sudo apt update
 
