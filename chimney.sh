@@ -486,6 +486,11 @@ volumes:
 
 EOF
 
+if [ "$IS_ENTERPRISE" = true ]; then
+  sed -i "s/validator:${DOCKER_IMAGE}/evalidator:${DOCKER_IMAGE}/g" docker-compose.yml
+  sed -i "s/blobber:${DOCKER_IMAGE}/eblobber:${DOCKER_IMAGE}/g" docker-compose.yml
+fi
+
 pushd ${PROJECT_ROOT} > /dev/null;
   jq -r .client_key blob_op_wallet.json > keys_config/b0bnode01_keys.txt
   jq -r '.keys | .[] | .private_key' blob_op_wallet.json >> keys_config/b0bnode01_keys.txt
