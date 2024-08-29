@@ -487,8 +487,8 @@ volumes:
 EOF
 
 if [ "$IS_ENTERPRISE" = true ]; then
-  sed -i "s/validator:${DOCKER_IMAGE}/evalidator:${DOCKER_IMAGE}/g" docker-compose.yml
-  sed -i "s/blobber:${DOCKER_IMAGE}/eblobber:${DOCKER_IMAGE}/g" docker-compose.yml
+  sed -i "s/validator:${DOCKER_IMAGE}/evalidator:${DOCKER_IMAGE}/g" ${PROJECT_ROOT}/docker-compose.yml
+  sed -i "s/blobber:${DOCKER_IMAGE}/eblobber:${DOCKER_IMAGE}/g" ${PROJECT_ROOT}/docker-compose.yml
 fi
 
 pushd ${PROJECT_ROOT} > /dev/null;
