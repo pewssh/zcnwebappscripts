@@ -19,6 +19,8 @@ WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 WALLET_MNEMONICS=0chainmnemonics
 DOCKER_IMAGE=v1.16.1
+IS_ENTERPRISE=isenterprise
+EDOCKER_IMAGE=v1.16.1
 
 sudo apt update
 sudo apt install -y unzip curl containerd docker.io jq net-tools
@@ -234,6 +236,11 @@ volumes:
 
 EOF
 
+if [ "$IS_ENTERPRISE" = true ]; then
+  sed -i "s/blimp-logsearchapi:${DOCKER_IMAGE}/blimp-logsearchapi:${EDOCKER_IMAGE}/g" ${CONFIG_DIR}/docker-compose.yml
+  sed -i "s/blimp-minioserver:${DOCKER_IMAGE}/blimp-minioserver:${EDOCKER_IMAGE}/g" ${CONFIG_DIR}/docker-compose.yml
+  sed -i "s/blimp-clientapi:${DOCKER_IMAGE}/blimp-clientapi:${EDOCKER_IMAGE}/g" ${CONFIG_DIR}/docker-compose.yml
+fi
 
 sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml pull
 sudo docker-compose -f ${CONFIG_DIR}/docker-compose.yml up -d
