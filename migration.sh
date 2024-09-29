@@ -16,6 +16,7 @@ WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 BLOCK_WORKER_URL=0chainblockworker
+SOURCE=0chainsource
 
 # optional params
 CONCURRENCY=1
@@ -253,9 +254,10 @@ done
 echo "Starting migration..."
 echo ""
 
-flags="--configDir ${CONFIG_DIR_MIGRATION} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY} --secret-key ${SECRET_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET} "
+flags="--configDir ${CONFIG_DIR_MIGRATION} --source ${SOURCE} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET} "
 
 # setup optional parameters
+if [$SOURCE == "s3"];then flags=$flags"--secret-key {SECRET_KEY}"
 if [ $ENCRYPT == "true" ]; then flags=$flags" --encrypt true"; fi
 if [ $DELETE_SOURCE == "true" ]; then flags=$flags" --delete-source true"; fi
 if [ $REGION != "0chainregion" ]; then flags=$flags"--region ${REGION}"; fi
