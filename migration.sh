@@ -257,7 +257,7 @@ echo ""
 flags="--configDir ${CONFIG_DIR_MIGRATION} --source ${SOURCE} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET} "
 
 # setup optional parameters
-if [$SOURCE == "s3"];then flags=$flags" --secret-key {SECRET_KEY}"
+if [ $SOURCE == "s3"]; then flags=$flags" --secret-key {SECRET_KEY}"; fi
 if [ $ENCRYPT == "true" ]; then flags=$flags" --encrypt true"; fi
 if [ $DELETE_SOURCE == "true" ]; then flags=$flags" --delete-source true"; fi
 if [ $REGION != "0chainregion" ]; then flags=$flags"--region ${REGION}"; fi
