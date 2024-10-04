@@ -35,7 +35,7 @@ export PROJECT_ROOT_HDD=/var/0chain/blobber/hdd
 
 export BRANCH_NAME=main
 export DOCKER_IMAGE=v1.17.0
-export DOCKER_IMAGE_EBLOBBER=v1.17.0
+export DOCKER_IMAGE_EBLOBBER=v1.17.1
 
 sudo apt update
 
