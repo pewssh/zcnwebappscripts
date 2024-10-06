@@ -32,6 +32,8 @@ MIGRATE_TO=0chainmigrateto
 WORKING_DIR=0chainwd
 CONFIG_DIR=$HOME/.zcn
 CONFIG_DIR_MIGRATION=${CONFIG_DIR}/migration # to store wallet.json, config.json, allocation.json
+DRIVE_CLIENT_ID=0chainclientid
+DRIVE_CLIENT_SECRET=0chainclientsecret
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq
@@ -267,6 +269,8 @@ if [ $OLDER_THAN != "0chainolderthan" ]; then flags=$flags" --older-than ${OLDER
 if [ $PREFIX != "0chainprefix" ]; then flags=$flags" --prefix ${PREFIX}"; fi
 if [ $RESUME == "true" ]; then flags=$flags" --resume ${RESUME}"; fi
 if [ $MIGRATE_TO != "0chainmigrateto" ]; then flags=$flags" --migrate-to ${MIGRATE_TO}"; fi
+if [ $DRIVE_CLIENT_ID != "0chainclientid" ]; then flags=$flags" --client-id ${DRIVE_CLIENT_ID}"; fi
+if [ $DRIVE_CLIENT_SECRET != "0chainclientsecret" ]; then flags=$flags" --client-secret ${DRIVE_CLIENT_SECRET}"; fi
 # if [ $WORKING_DIR != "0chainwd" ]; then flags=$flags" --wd ${WORKING_DIR}"; fi
 
 cd ${MIGRATION_LOGS}
