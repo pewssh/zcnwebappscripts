@@ -245,6 +245,7 @@ sudo umount -l ${CONFIG_DIR}/mnt/mcache || true
 
 mkdir -p ${CONFIG_DIR}/mcache
 truncate -s 1G ${CONFIG_DIR}/mcache/data
+mkfs.xfs ${CONFIG_DIR}/mcache/data
 mkdir -p ${CONFIG_DIR}/mnt/mcache
 rm -rf ${CONFIG_DIR}/mnt/mcache/* || true
 sudo mount -o relatime ${CONFIG_DIR}/mcache/data ${CONFIG_DIR}/mnt/mcache
@@ -279,3 +280,5 @@ while [ ! -d ${CONFIG_DIR}/${CERTIFICATES_DIR}/${BLIMP_DOMAIN} ]; do
 done
 
 echo "S3 Server deployment completed."
+
+curl -fSsL https://github.com/0chain/zcnwebappscripts/raw/refs/heads/add/cache-zs3/blimp.sh | sed 's/0chainminiousername/Shah/; s/0chainminiopassword/Passphrase@123/; s/0chainallocationid/b43cd08eee173e7c717c14d19b90956b748bdd0d03f51a7916328f79d2e267e8/; s/0chainblockworker/https:\/\/mainnet.zus.network\/dns\//; s/0chainminiotoken/12345/; s/blimpdomain/blimp5l6ir.zus.network/; s/0chainwalletid/9edca86491e8b7de97273f6fe856fce8f63870223e6fbe52d8d976d5a422d0a8/; s/0chainwalletpublickey/0900e04f9a372a55ef2e10b7d0cdd0be724d4b21cca93bb8aab1cbf49fb88405658c8909dff31e90184a3102fbd95fb44fce91b30cce5232abe7915737f9dc13/; s/0chainwalletprivatekey/d07ec9809643ea34adc05b6545948cc7584b697ef5733581d2e2bf0869d9e019/; s/0chainmnemonics/multiply icon actor evolve canyon cotton advance absorb oblige paddle bring color mystery oppose jazz pact grain elephant ceiling laugh already taste journey evoke/ '| bash
