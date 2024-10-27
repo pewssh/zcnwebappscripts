@@ -46,8 +46,8 @@ if [[ -d $HOME/.zcn/docker-compose.yml ]]; then
 fi
 
 # docker image
-DOCKER_TAG=v1.11.0
-S3MGRT_AGENT_TAG=v1.11.5
+DOCKER_TAG=v1.17.0
+S3MGRT_AGENT_TAG=v1.17.0
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq net-tools
