@@ -7,6 +7,9 @@ fi
 
 MIGRATION_ROOT=$HOME/s3migration/state
 MIGRATION_LOGS=$HOME/s3migration/logs
+MINIO_USERNAME=0chainminiousername
+MINIO_PASSWORD=0chainminiopassword
+MINIO_TOKEN=0chainminiotoken
 ACCESS_KEY=0chainaccesskey
 SECRET_KEY=0chainsecretkey
 ALLOCATION=0chainallocation
