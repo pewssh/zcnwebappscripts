@@ -218,6 +218,7 @@ echo "updating 0box keys"
 if [ "$BLOCK_WORKER_URL" != "https://mainnet.zus.network/dns/" ]; then
   sed -i "s/c88b543dbad234b181f4d28c3a6962496970ed2794ebaa3c414f770b75153612c1ab6728be203b00157e6ba349b0273a1f3c2a2be274a2ba6baaccb9a8a81f16/381fb2e8298680fc9c71e664821394adaa5db4537456aaa257ef4388ba8c090e476c89fbcd2c8a1b0871ba36b7001f778d178c8dfff1504fbafb43f7ee3b3c92" ${PROJECT_ROOT}/config/0chain_blobber.yaml
   sed -i "s/a4e6999add55dd7ac050904d2af2d248dd3329cdde953021bfa9ed9ef677f942/65b32a635cffb6b6f3c73f09da617c29569a5f690662b5be57ed0d994f234335/g" ${PROJECT_ROOT}/config/0chain_blobber.yaml
+  export DOCKER_IMAGE=v1.18.0-RC12
 else 
   echo "bye"
 fi
