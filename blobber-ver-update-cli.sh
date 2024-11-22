@@ -28,7 +28,7 @@ pushd ${PROJECT_ROOT} > /dev/null;
     echo "blob_wallet.json is present"
   else
     echo "Didn't found blob_wallet.json file. Kindly place the file at location ${PROJECT_ROOT}/blob_wallet.json and rerun the script again"
-    exit 1
+    # exit 1
   fi
 popd > /dev/null;
 
