@@ -18,6 +18,7 @@ yq e -i ".services.blobber.image = \"0chaindev/blobber:v1.18.3\"" ${PROJECT_ROOT
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml pull
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml up -d
 
+sleep 10s
 
 echo -e "\n\e[93m===============================================================================================================================================================================
                                                                             Check if blob_wallet.json wallet file exists or not.
