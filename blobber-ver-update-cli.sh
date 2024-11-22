@@ -13,6 +13,8 @@ else
     yq e -i '.services.blobber.volumes += ["/var/0chain/blobber/ssd//data/pebble/data:/pebble/data", "/var/0chain/blobber/ssd//data/pebble/wal:/pebble/wal"]' ${PROJECT_ROOT}/docker-compose.yml
 fi
 
+yq e -i ".services.validator.image = \"0chaindev/validator:v1.18.3\"" ${PROJECT_ROOT}/docker-compose.yml
+yq e -i ".services.blobber.image = \"0chaindev/blobber:v1.18.3\"" ${PROJECT_ROOT}/docker-compose.yml
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml pull
 /usr/local/bin/docker-compose -f ${PROJECT_ROOT}/docker-compose.yml up -d
 
