@@ -66,7 +66,7 @@ echo -e "\n\e[93m===============================================================
                                                                             Updating blobber storage version on mainnet chain
 ===============================================================================================================================================================================  \e[39m"
 pushd ${PROJECT_ROOT} > /dev/null;
-  ./bin/zbox bl-update --storage_version 1 --blobber_id ${BLOBBER_ID} --wallet ./blob_wallet.json --config ./config.yaml --configDir .
+  ./bin/zbox bl-update --storage_version 1 --blobber_id ${BLOBBER_ID} --wallet blob_wallet.json --config ./config.yaml --configDir .
 popd > /dev/null;
 
 echo -e "\n\e[93m===============================================================================================================================================================================
