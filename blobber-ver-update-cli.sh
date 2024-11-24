@@ -10,7 +10,7 @@ if grep -qF "pebble" "${PROJECT_ROOT}/docker-compose.yml"; then
     echo "pebble path already present in blobber docker-compose file"
 else
     echo "Adding pebble path to blobber docker-compose file."
-    yq e -i '.services.blobber.volumes += ["/var/0chain/blobber/ssd//data/pebble/data:/pebble/data", "/var/0chain/blobber/ssd//data/pebble/wal:/pebble/wal"]' ${PROJECT_ROOT}/docker-compose.yml
+    yq e -i '.services.blobber.volumes += ["/var/0chain/blobber/ssd/data/pebble/data:/pebble/data", "/var/0chain/blobber/ssd/data/pebble/wal:/pebble/wal"]' ${PROJECT_ROOT}/docker-compose.yml
 fi
 
 yq e -i ".services.validator.image = \"0chaindev/validator:v1.18.3\"" ${PROJECT_ROOT}/docker-compose.yml
