@@ -241,27 +241,27 @@ volumes:
 
 EOF
 
-sudo umount -l ${CONFIG_DIR}/mnt/mcache || true
+# sudo umount -l ${CONFIG_DIR}/mnt/mcache || true
 
-mkdir -p ${CONFIG_DIR}/mcache
-truncate -s 1G ${CONFIG_DIR}/mcache/data
-mkfs.xfs ${CONFIG_DIR}/mcache/data
-mkdir -p ${CONFIG_DIR}/mnt/mcache
-rm -rf ${CONFIG_DIR}/mnt/mcache/* || true
-sudo mount -o relatime ${CONFIG_DIR}/mcache/data ${CONFIG_DIR}/mnt/mcache
+# mkdir -p ${CONFIG_DIR}/mcache
+# truncate -s 1G ${CONFIG_DIR}/mcache/data
+# mkfs.xfs ${CONFIG_DIR}/mcache/data
+# mkdir -p ${CONFIG_DIR}/mnt/mcache
+# rm -rf ${CONFIG_DIR}/mnt/mcache/* || true
+# sudo mount -o relatime ${CONFIG_DIR}/mcache/data ${CONFIG_DIR}/mnt/mcache
 
-yq e -i '.services.minioserver.environment.MINIO_CACHE_DRIVES = "/mcache"' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_CACHE_EXPIRY = 90' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_CACHE_COMMIT = "writeback"' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_CACHE_QUOTA = 99' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_CACHE_WATERMARK_LOW = 90' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_CACHE_WATERMARK_HIGH = 95' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_WRITE_BACK_INTERVAL = 900' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_MAX_CACHE_FILE_SIZE = 1073741824' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_WRITE_BACK_UPLOAD_WORKERS = 50' ${CONFIG_DIR}/docker-compose.yml
-yq e -i '.services.minioserver.environment.MINIO_UPLOAD_QUEUE_TH = 10' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_CACHE_DRIVES = "/mcache"' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_CACHE_EXPIRY = 90' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_CACHE_COMMIT = "writeback"' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_CACHE_QUOTA = 99' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_CACHE_WATERMARK_LOW = 90' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_CACHE_WATERMARK_HIGH = 95' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_WRITE_BACK_INTERVAL = 900' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_MAX_CACHE_FILE_SIZE = 1073741824' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_WRITE_BACK_UPLOAD_WORKERS = 50' ${CONFIG_DIR}/docker-compose.yml
+# yq e -i '.services.minioserver.environment.MINIO_UPLOAD_QUEUE_TH = 10' ${CONFIG_DIR}/docker-compose.yml
 
-yq eval '.services.minioserver.volumes += ["./mnt/mcache:/mcache"]' -i ${CONFIG_DIR}/docker-compose.yml
+# yq eval '.services.minioserver.volumes += ["./mnt/mcache:/mcache"]' -i ${CONFIG_DIR}/docker-compose.yml
 
 if [ "$IS_ENTERPRISE" = true ]; then
   sed -i "s/blimp-logsearchapi:${DOCKER_IMAGE}/blimp-logsearchapi:${EDOCKER_IMAGE}/g" ${CONFIG_DIR}/docker-compose.yml
