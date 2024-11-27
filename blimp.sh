@@ -18,7 +18,7 @@ WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 WALLET_MNEMONICS=0chainmnemonics
-DOCKER_IMAGE=v1.17.2
+DOCKER_IMAGE=v1.18.0
 IS_ENTERPRISE=isenterprise
 EDOCKER_IMAGE=v1.17.1
 
