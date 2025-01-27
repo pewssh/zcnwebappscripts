@@ -18,12 +18,16 @@ WALLET_ID=0chainwalletid
 WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 WALLET_MNEMONICS=0chainmnemonics
-DOCKER_IMAGE=v1.18.0
 IS_ENTERPRISE=isenterprise
 EDOCKER_IMAGE=v1.17.1
 
 sudo apt update
 sudo apt install -y unzip curl containerd docker.io jq net-tools
+
+#Setting latest docker image wrt latest release
+export DOCKER_TAG=$(curl -s https://registry.hub.docker.com/v2/repositories/0chaindev/blimp-minioserver/tags?page_size=100 | jq -r '.results[] | select(.name | test("^v[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' | sort -V | tail -n 1)
+export S3MGRT_AGENT_TAG=$(curl -s https://registry.hub.docker.com/v2/repositories/0chaindev/s3mgrt/tags?page_size=100 | jq -r '.results[] | select(.name | test("^v[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' | sort -V | tail -n 1)
+
 
 check_port_443() {
   PORT=443
@@ -230,7 +234,7 @@ services:
       MINIO_SERVER: "minioserver:9000"
 
   s3mgrt:
-    image: 0chaindev/s3mgrt:staging
+    image: 0chaindev/s3mgrt:${S3MGRT_AGENT_TAG}
     restart: always
     volumes:
       - ${MIGRATION_ROOT}:/migrate
