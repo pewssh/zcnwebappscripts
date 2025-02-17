@@ -281,5 +281,6 @@ if [ $CONTAINER != "0chaincontainername" ]; then flags=$flags" --container ${CON
 cd ${MIGRATION_LOGS}
 /usr/local/bin/s3mgrt migrate $flags
 
+echo $CONTAINER
 echo  $flags
 echo "Migration complete..."
