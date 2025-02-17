@@ -20,9 +20,6 @@ WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 BLOCK_WORKER_URL=0chainblockworker
 SOURCE=0chainsource
-CONNECTION_STRING=0connectionstring
-ACCOUNT_NAME=0accountname
-CONTAINER=0chaincontainer
 
 # optional params
 CONCURRENCY=1
@@ -40,6 +37,9 @@ CONFIG_DIR=$HOME/.zcn
 CONFIG_DIR_MIGRATION=${CONFIG_DIR}/migration # to store wallet.json, config.json, allocation.json
 DRIVE_CLIENT_ID=0chainclientid
 DRIVE_CLIENT_SECRET=0chainclientsecret
+CONNECTION_STRING=0chainconnectionstring
+ACCOUNT_NAME=0chainaccountname
+CONTAINER=0chaincontainername
 
 sudo apt update
 DEBIAN_FRONTEND=noninteractive sudo apt install -y unzip curl containerd docker.io jq
@@ -274,6 +274,10 @@ if [ $RESUME == "true" ]; then flags=$flags" --resume ${RESUME}"; fi
 if [ $MIGRATE_TO != "0chainmigrateto" ]; then flags=$flags" --migrate-to ${MIGRATE_TO}"; fi
 if [ $DRIVE_CLIENT_ID != "0chainclientid" ]; then flags=$flags" --client-id ${DRIVE_CLIENT_ID}"; fi
 if [ $DRIVE_CLIENT_SECRET != "0chainclientsecret" ]; then flags=$flags" --client-secret ${DRIVE_CLIENT_SECRET}"; fi
+if [ $CONNECTION_STRING != "0chainconnectionstring" ]; then flags=$flags" --connection-string ${CONNECTION_STRING}"; fi
+if [ $ACCOUNT_NAME != "0chainaccountname" ]; then flags=$flags" --account-name ${ACCOUNT_NAME}"; fi
+if [ $CONTAINER != "0chaincontainername" ]; then flags=$flags" --container ${CONTAINER}"; fi
+
 # if [ $WORKING_DIR != "0chainwd" ]; then flags=$flags" --wd ${WORKING_DIR}"; fi
 
 cd ${MIGRATION_LOGS}
