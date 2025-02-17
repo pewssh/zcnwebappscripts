@@ -20,6 +20,8 @@ WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 BLOCK_WORKER_URL=0chainblockworker
 SOURCE=0chainsource
+ACCOUNT_NAME=0chainaccountname
+CONTAINER=0chaincontainername
 
 # optional params
 CONCURRENCY=1
@@ -258,7 +260,7 @@ done
 echo "Starting migration..."
 echo ""
 
-flags="--configDir ${CONFIG_DIR_MIGRATION} --source ${SOURCE} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY}  --secret-key ${SECRET_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET} "
+flags="--configDir ${CONFIG_DIR_MIGRATION} --source ${SOURCE} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY}  --secret-key ${SECRET_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET} --container ${CONTAINER} --account-name ${ACCOUNT_NAME}"
 
 if [ $ENCRYPT == "true" ]; then flags=$flags" --encrypt true"; fi
 if [ $DELETE_SOURCE == "true" ]; then flags=$flags" --delete-source true"; fi
