@@ -260,7 +260,7 @@ CONTAINER=0chaincontainername
 echo "Starting migration..."
 echo ""
 
-flags="--configDir ${CONFIG_DIR_MIGRATION} --source ${SOURCE} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY}  --secret-key ${SECRET_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET}  --account-name ${ACCOUNT_NAME} --container ${CONTAINER} "
+flags="--configDir ${CONFIG_DIR_MIGRATION} --source ${SOURCE} --wd ${MIGRATION_ROOT} --access-key ${ACCESS_KEY}  --secret-key ${SECRET_KEY} --allocation ${ALLOCATION} --bucket ${BUCKET} "
 
 if [ $ENCRYPT == "true" ]; then flags=$flags" --encrypt true"; fi
 if [ $DELETE_SOURCE == "true" ]; then flags=$flags" --delete-source true"; fi
