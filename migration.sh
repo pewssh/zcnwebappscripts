@@ -20,6 +20,9 @@ WALLET_PUBLIC_KEY=0chainwalletpublickey
 WALLET_PRIVATE_KEY=0chainwalletprivatekey
 BLOCK_WORKER_URL=0chainblockworker
 SOURCE=0chainsource
+CONNECTION_STRING=0connectionstring
+ACCOUNT_NAME=0accountname
+CONTAINER=0chaincontainer
 
 # optional params
 CONCURRENCY=1
