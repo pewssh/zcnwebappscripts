@@ -279,7 +279,7 @@ if [ $CONTAINER != "0chaincontainername" ]; then flags=$flags" --container ${CON
 # if [ $WORKING_DIR != "0chainwd" ]; then flags=$flags" --wd ${WORKING_DIR}"; fi
 
 cd ${MIGRATION_LOGS}
-/usr/local/bin/s3mgrt migrate $flags
+# /usr/local/bin/s3mgrt migrate $flags
 
 echo $CONTAINER != "0chainaccountname"
 echo $CONTAINER
