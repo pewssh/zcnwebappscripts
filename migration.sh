@@ -274,9 +274,9 @@ if [ $RESUME == "true" ]; then flags=$flags" --resume ${RESUME}"; fi
 if [ $MIGRATE_TO != "0chainmigrateto" ]; then flags=$flags" --migrate-to ${MIGRATE_TO}"; fi
 if [ $DRIVE_CLIENT_ID != "0chainclientid" ]; then flags=$flags" --client-id ${DRIVE_CLIENT_ID}"; fi
 if [ $DRIVE_CLIENT_SECRET != "0chainclientsecret" ]; then flags=$flags" --client-secret ${DRIVE_CLIENT_SECRET}"; fi
-if [ $CONNECTION_STRING != "0chainconnectionstring" ]; then flags=$flags" --connection-string ${CONNECTION_STRING}"; fi
 if [ $ACCOUNT_NAME != "0chainaccountname" ]; then flags=$flags" --account-name ${ACCOUNT_NAME}"; fi
 if [ $CONTAINER != "0chaincontainername" ]; then flags=$flags" --container ${CONTAINER}"; fi
+if [ $CONNECTION_STRING != "0chainconnectionstring" ]; then flags=$flags" --connection-string ${CONNECTION_STRING}"; fi
 
 # if [ $WORKING_DIR != "0chainwd" ]; then flags=$flags" --wd ${WORKING_DIR}"; fi
 
